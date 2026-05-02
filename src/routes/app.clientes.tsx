@@ -11,19 +11,34 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, formatBRL, formatPhoneForWhatsApp, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
-import { Plus, Search, MessageCircle, Pencil, Trash2, Download } from "lucide-react";
+import { STAGES, formatBRL, formatPhoneForWhatsApp, onlyDigits, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/clientes")({
   component: ClientesPage,
 });
 
+type SortKey = "nome" | "telefone" | "orgao" | "stage" | "taxa_rps" | "created_at";
+type SortDir = "asc" | "desc";
+
+const PAGE_SIZES = [10, 25, 50, 100];
+
 function ClientesPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // search & filters
+  const [searchType, setSearchType] = useState<"nome" | "cpf">("nome");
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
+
+  // sort & pagination
+  const [sortKey, setSortKey] = useState<SortKey>("created_at");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+
   const [openForm, setOpenForm] = useState(false);
   const [editing, setEditing] = useState<Client | null>(null);
 
@@ -37,14 +52,58 @@ function ClientesPage() {
 
   useEffect(() => { load(); }, []);
 
+  // reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [search, searchType, stageFilter, pageSize]);
+
   const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
+    const q = search.trim().toLowerCase();
+    const qDigits = onlyDigits(search);
     return clients.filter((c) => {
       if (stageFilter !== "all" && c.stage !== stageFilter) return false;
       if (!q) return true;
-      return [c.nome, c.cpf, c.telefone, c.orgao].filter(Boolean).some((v) => v!.toLowerCase().includes(q));
+      if (searchType === "cpf") {
+        if (!c.cpf) return false;
+        return onlyDigits(c.cpf).includes(qDigits);
+      }
+      return c.nome.toLowerCase().includes(q);
     });
-  }, [clients, search, stageFilter]);
+  }, [clients, search, searchType, stageFilter]);
+
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
+    const dir = sortDir === "asc" ? 1 : -1;
+    arr.sort((a, b) => {
+      const av = a[sortKey as keyof Client];
+      const bv = b[sortKey as keyof Client];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+      return String(av).localeCompare(String(bv), "pt-BR", { numeric: true }) * dir;
+    });
+    return arr;
+  }, [filtered, sortKey, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = useMemo(
+    () => sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [sorted, currentPage, pageSize]
+  );
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const sortIcon = (key: SortKey) => {
+    if (sortKey !== key) return <ArrowUpDown className="h-3 w-3 opacity-50" />;
+    return sortDir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />;
+  };
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("clients").delete().eq("id", id);
@@ -55,7 +114,7 @@ function ClientesPage() {
 
   const exportCSV = () => {
     const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Endereço", "Estágio", "Taxa RPS", "Próximo contato", "Observações"];
-    const rows = filtered.map((c) => [
+    const rows = sorted.map((c) => [
       c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.orgao ?? "", c.endereco ?? "",
       stageLabel(c.stage), c.taxa_rps ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
     ]);
@@ -75,12 +134,25 @@ function ClientesPage() {
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setStageFilter("all");
+    setSearchType("nome");
+  };
+
+  const hasFilters = search.trim() !== "" || stageFilter !== "all";
+  const startIdx = sorted.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endIdx = Math.min(currentPage * pageSize, sorted.length);
+
   return (
     <div className="space-y-4 p-4 md:p-8">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Clientes</h1>
-          <p className="text-sm text-muted-foreground">{filtered.length} de {clients.length} clientes</p>
+          <p className="text-sm text-muted-foreground">
+            {sorted.length} de {clients.length} clientes
+            {hasFilters && " (filtrado)"}
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4 mr-2" />CSV</Button>
@@ -91,19 +163,67 @@ function ClientesPage() {
       </div>
 
       <Card className="p-4" style={{ background: "var(--gradient-card)" }}>
-        <div className="flex flex-col gap-3 md:flex-row">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <Select value={searchType} onValueChange={(v) => setSearchType(v as "nome" | "cpf")}>
+            <SelectTrigger className="md:w-36"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="nome">Por nome</SelectItem>
+              <SelectItem value="cpf">Por CPF</SelectItem>
+            </SelectContent>
+          </Select>
+
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input className="pl-9" placeholder="Buscar por nome, CPF, telefone, órgão..." value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input
+              className="pl-9 pr-9"
+              placeholder={searchType === "cpf" ? "Digite o CPF (somente números)" : "Buscar por nome..."}
+              inputMode={searchType === "cpf" ? "numeric" : "text"}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted"
+                aria-label="Limpar busca"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
+
           <Select value={stageFilter} onValueChange={setStageFilter}>
-            <SelectTrigger className="md:w-56"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="md:w-56"><SelectValue placeholder="Estágio" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os estágios</SelectItem>
               {STAGES.map((s) => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
             </SelectContent>
           </Select>
+
+          {hasFilters && (
+            <Button variant="ghost" onClick={clearFilters} className="md:w-auto">
+              <X className="h-4 w-4 mr-2" />Limpar
+            </Button>
+          )}
         </div>
+
+        {hasFilters && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {search.trim() && (
+              <Badge variant="secondary" className="gap-1">
+                {searchType === "cpf" ? "CPF" : "Nome"}: {search}
+                <button onClick={() => setSearch("")} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
+              </Badge>
+            )}
+            {stageFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Estágio: {stageLabel(stageFilter as PipelineStage)}
+                <button onClick={() => setStageFilter("all")} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
+              </Badge>
+            )}
+          </div>
+        )}
       </Card>
 
       <Card className="overflow-hidden" style={{ background: "var(--gradient-card)" }}>
@@ -111,20 +231,40 @@ function ClientesPage() {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
-                <th className="px-4 py-3 text-left">Nome</th>
-                <th className="px-4 py-3 text-left">Telefone</th>
-                <th className="px-4 py-3 text-left">Órgão</th>
-                <th className="px-4 py-3 text-left">Estágio</th>
-                <th className="px-4 py-3 text-right">Taxa RPS</th>
+                <th className="px-4 py-3 text-left">
+                  <button onClick={() => toggleSort("nome")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Nome {sortIcon("nome")}
+                  </button>
+                </th>
+                <th className="px-4 py-3 text-left">
+                  <button onClick={() => toggleSort("telefone")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Telefone {sortIcon("telefone")}
+                  </button>
+                </th>
+                <th className="px-4 py-3 text-left">
+                  <button onClick={() => toggleSort("orgao")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Órgão {sortIcon("orgao")}
+                  </button>
+                </th>
+                <th className="px-4 py-3 text-left">
+                  <button onClick={() => toggleSort("stage")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Estágio {sortIcon("stage")}
+                  </button>
+                </th>
+                <th className="px-4 py-3 text-right">
+                  <button onClick={() => toggleSort("taxa_rps")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Taxa RPS {sortIcon("taxa_rps")}
+                  </button>
+                </th>
                 <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
-              ) : filtered.length === 0 ? (
+              ) : paginated.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
-              ) : filtered.map((c) => (
+              ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
                   <td className="px-4 py-3">
                     <div className="font-medium">{c.nome}</div>
@@ -167,6 +307,30 @@ function ClientesPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-border/50 p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>Mostrando {startIdx}-{endIdx} de {sorted.length}</span>
+            <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+              <SelectTrigger className="h-8 w-20"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {PAGE_SIZES.map((s) => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <span>por página</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button size="sm" variant="outline" disabled={currentPage >= totalPages} onClick={() => setPage(currentPage + 1)}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </Card>
 
