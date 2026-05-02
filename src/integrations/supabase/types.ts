@@ -14,16 +14,209 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activities: {
+        Row: {
+          client_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          tipo: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          tipo: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          tipo?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          cpf: string | null
+          created_at: string
+          endereco: string | null
+          id: string
+          idade: number | null
+          nome: string
+          observacoes: string | null
+          orgao: string | null
+          owner_id: string
+          paid_at: string | null
+          proximo_contato: string | null
+          stage: Database["public"]["Enums"]["pipeline_stage"]
+          taxa_rps: number | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string
+          endereco?: string | null
+          id?: string
+          idade?: number | null
+          nome: string
+          observacoes?: string | null
+          orgao?: string | null
+          owner_id: string
+          paid_at?: string | null
+          proximo_contato?: string | null
+          stage?: Database["public"]["Enums"]["pipeline_stage"]
+          taxa_rps?: number | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string
+          endereco?: string | null
+          id?: string
+          idade?: number | null
+          nome?: string
+          observacoes?: string | null
+          orgao?: string | null
+          owner_id?: string
+          paid_at?: string | null
+          proximo_contato?: string | null
+          stage?: Database["public"]["Enums"]["pipeline_stage"]
+          taxa_rps?: number | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      commissions: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          paga: boolean
+          percentual: number
+          taxa_rps: number
+          valor: number
+          vendedor_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          paga?: boolean
+          percentual?: number
+          taxa_rps?: number
+          valor?: number
+          vendedor_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          paga?: boolean
+          percentual?: number
+          taxa_rps?: number
+          valor?: number
+          vendedor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          commission_rate: number
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string
+          email?: string
+          full_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_manager_or_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "gerente" | "vendedor"
+      pipeline_stage:
+        | "novo"
+        | "quente"
+        | "frio"
+        | "descartado"
+        | "em_negociacao"
+        | "digitado"
+        | "aguardando_link"
+        | "pago"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +343,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "gerente", "vendedor"],
+      pipeline_stage: [
+        "novo",
+        "quente",
+        "frio",
+        "descartado",
+        "em_negociacao",
+        "digitado",
+        "aguardando_link",
+        "pago",
+      ],
+    },
   },
 } as const
