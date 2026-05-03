@@ -126,7 +126,12 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
-            <Input value={form.telefone} onChange={(e) => update("telefone", e.target.value)} placeholder="(11) 99999-9999" />
+            <Input
+              value={form.telefone}
+              onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+              placeholder="+55 (11) 99999-9999"
+              inputMode="tel"
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
