@@ -182,10 +182,11 @@ function ClientesPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-9 pr-9"
-              placeholder={searchType === "cpf" ? "Digite o CPF (somente números)" : "Buscar por nome..."}
+              placeholder={searchType === "cpf" ? "Digite o CPF (000.000.000-00)" : "Buscar por nome..."}
               inputMode={searchType === "cpf" ? "numeric" : "text"}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchType === "cpf" ? formatCPF(search) : search}
+              onChange={(e) => setSearch(searchType === "cpf" ? onlyDigits(e.target.value).slice(0, 11) : e.target.value)}
+              aria-invalid={cpfInvalid || undefined}
             />
             {search && (
               <button
@@ -196,6 +197,15 @@ function ClientesPage() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+            )}
+            {searchType === "cpf" && search && (
+              <p className={`mt-1 text-xs ${cpfInvalid ? "text-destructive" : cpfValid ? "text-success" : "text-muted-foreground"}`}>
+                {cpfInvalid
+                  ? "CPF inválido — verifique os dígitos."
+                  : cpfValid
+                  ? "CPF válido"
+                  : `Digite ${11 - cpfDigits.length} dígito(s) restante(s)`}
+              </p>
             )}
           </div>
 
