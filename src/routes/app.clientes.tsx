@@ -55,6 +55,10 @@ function ClientesPage() {
   // reset to page 1 when filters change
   useEffect(() => { setPage(1); }, [search, searchType, stageFilter, pageSize]);
 
+  const cpfDigits = searchType === "cpf" ? onlyDigits(search) : "";
+  const cpfValid = searchType === "cpf" && cpfDigits.length === 11 && isValidCPF(cpfDigits);
+  const cpfInvalid = searchType === "cpf" && cpfDigits.length === 11 && !cpfValid;
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const qDigits = onlyDigits(search);
@@ -62,12 +66,14 @@ function ClientesPage() {
       if (stageFilter !== "all" && c.stage !== stageFilter) return false;
       if (!q) return true;
       if (searchType === "cpf") {
+        // Only filter by CPF when 11 digits AND check digits are valid
+        if (!cpfValid) return true;
         if (!c.cpf) return false;
         return onlyDigits(c.cpf).includes(qDigits);
       }
       return c.nome.toLowerCase().includes(q);
     });
-  }, [clients, search, searchType, stageFilter]);
+  }, [clients, search, searchType, stageFilter, cpfValid]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
