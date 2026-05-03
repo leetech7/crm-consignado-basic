@@ -11,7 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, formatBRL, formatPhoneForWhatsApp, onlyDigits, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
@@ -55,6 +55,10 @@ function ClientesPage() {
   // reset to page 1 when filters change
   useEffect(() => { setPage(1); }, [search, searchType, stageFilter, pageSize]);
 
+  const cpfDigits = searchType === "cpf" ? onlyDigits(search) : "";
+  const cpfValid = searchType === "cpf" && cpfDigits.length === 11 && isValidCPF(cpfDigits);
+  const cpfInvalid = searchType === "cpf" && cpfDigits.length === 11 && !cpfValid;
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const qDigits = onlyDigits(search);
@@ -62,12 +66,14 @@ function ClientesPage() {
       if (stageFilter !== "all" && c.stage !== stageFilter) return false;
       if (!q) return true;
       if (searchType === "cpf") {
+        // Only filter by CPF when 11 digits AND check digits are valid
+        if (!cpfValid) return true;
         if (!c.cpf) return false;
         return onlyDigits(c.cpf).includes(qDigits);
       }
       return c.nome.toLowerCase().includes(q);
     });
-  }, [clients, search, searchType, stageFilter]);
+  }, [clients, search, searchType, stageFilter, cpfValid]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -176,10 +182,11 @@ function ClientesPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-9 pr-9"
-              placeholder={searchType === "cpf" ? "Digite o CPF (somente números)" : "Buscar por nome..."}
+              placeholder={searchType === "cpf" ? "Digite o CPF (000.000.000-00)" : "Buscar por nome..."}
               inputMode={searchType === "cpf" ? "numeric" : "text"}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchType === "cpf" ? formatCPF(search) : search}
+              onChange={(e) => setSearch(searchType === "cpf" ? onlyDigits(e.target.value).slice(0, 11) : e.target.value)}
+              aria-invalid={cpfInvalid || undefined}
             />
             {search && (
               <button
@@ -190,6 +197,15 @@ function ClientesPage() {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+            )}
+            {searchType === "cpf" && search && (
+              <p className={`mt-1 text-xs ${cpfInvalid ? "text-destructive" : cpfValid ? "text-success" : "text-muted-foreground"}`}>
+                {cpfInvalid
+                  ? "CPF inválido — verifique os dígitos."
+                  : cpfValid
+                  ? "CPF válido"
+                  : `Digite ${11 - cpfDigits.length} dígito(s) restante(s)`}
+              </p>
             )}
           </div>
 

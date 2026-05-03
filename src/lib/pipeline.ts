@@ -45,6 +45,27 @@ export const formatBRL = (n: number | null | undefined) =>
 
 export const onlyDigits = (s: string) => s.replace(/\D/g, "");
 
+export const isValidCPF = (input: string): boolean => {
+  const cpf = onlyDigits(input);
+  if (cpf.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(cpf)) return false;
+  const calc = (len: number) => {
+    let sum = 0;
+    for (let i = 0; i < len; i++) sum += parseInt(cpf[i]) * (len + 1 - i);
+    const rest = (sum * 10) % 11;
+    return rest === 10 ? 0 : rest;
+  };
+  return calc(9) === parseInt(cpf[9]) && calc(10) === parseInt(cpf[10]);
+};
+
+export const formatCPF = (input: string): string => {
+  const d = onlyDigits(input).slice(0, 11);
+  return d
+    .replace(/^(\d{3})(\d)/, "$1.$2")
+    .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1-$2");
+};
+
 export const formatPhoneForWhatsApp = (phone: string | null) => {
   if (!phone) return null;
   const digits = onlyDigits(phone);
