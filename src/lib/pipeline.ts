@@ -66,9 +66,53 @@ export const formatCPF = (input: string): string => {
     .replace(/\.(\d{3})(\d)/, ".$1-$2");
 };
 
-export const formatPhoneForWhatsApp = (phone: string | null) => {
+// DDDs válidos no Brasil
+const VALID_BR_DDDS = new Set([
+  11,12,13,14,15,16,17,18,19,
+  21,22,24,27,28,
+  31,32,33,34,35,37,38,
+  41,42,43,44,45,46,47,48,49,
+  51,53,54,55,
+  61,62,63,64,65,66,67,68,69,
+  71,73,74,75,77,79,
+  81,82,83,84,85,86,87,88,89,
+  91,92,93,94,95,96,97,98,99,
+]);
+
+/**
+ * Normaliza um telefone brasileiro para o formato E.164 sem o "+"
+ * exigido pelo wa.me (ex.: 5511999999999).
+ *
+ * Regras:
+ * - Remove todos os símbolos não numéricos.
+ * - Aceita números com ou sem DDI 55.
+ * - Exige DDD válido (2 dígitos) + 8 ou 9 dígitos do assinante.
+ * - Retorna null se inválido.
+ */
+export const formatPhoneForWhatsApp = (phone: string | null): string | null => {
   if (!phone) return null;
-  const digits = onlyDigits(phone);
-  if (digits.length < 10) return null;
-  return digits.startsWith("55") ? digits : `55${digits}`;
+  let digits = onlyDigits(phone);
+  if (!digits) return null;
+
+  // Remove zeros à esquerda (ex.: 0xx ou prefixo 00 internacional)
+  digits = digits.replace(/^0+/, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+
+  // Remove DDI 55 para validar a parte nacional
+  let national = digits.startsWith("55") && digits.length > 11 ? digits.slice(2) : digits;
+
+  // Esperamos 10 (fixo: DDD + 8) ou 11 (celular: DDD + 9) dígitos
+  if (national.length !== 10 && national.length !== 11) return null;
+
+  const ddd = parseInt(national.slice(0, 2), 10);
+  if (!VALID_BR_DDDS.has(ddd)) return null;
+
+  const subscriber = national.slice(2);
+  // Celular deve começar com 9
+  if (national.length === 11 && subscriber[0] !== "9") return null;
+  // Fixo não pode começar com 0 ou 1
+  if (national.length === 10 && /^[01]/.test(subscriber)) return null;
+
+  return `55${national}`;
 };
+
