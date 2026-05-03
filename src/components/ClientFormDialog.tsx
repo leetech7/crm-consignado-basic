@@ -136,6 +136,12 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Label>Observações</Label>
             <Textarea rows={3} value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
+          {client && (
+            <div className="sm:col-span-2 space-y-2 rounded-md border border-border/50 p-3">
+              <Label>Anexos (extratos, contracheques, etc.)</Label>
+              <ClientAttachments clientId={client.id} />
+            </div>
+          )}
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
