@@ -7,7 +7,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, onlyDigits, type Client, type PipelineStage } from "@/lib/pipeline";
+
+// Formata o telefone com "+" na frente: +55 (11) 99999-9999
+const formatPhoneInput = (raw: string): string => {
+  let d = onlyDigits(raw);
+  if (!d) return "";
+  // Se o usuário não digitou DDI, assume Brasil (55)
+  if (d.length <= 11) d = "55" + d;
+  d = d.slice(0, 13); // DDI(2) + DDD(2) + 9 dígitos
+  const ddi = d.slice(0, 2);
+  const ddd = d.slice(2, 4);
+  const rest = d.slice(4);
+  let out = `+${ddi}`;
+  if (ddd) out += ` (${ddd}`;
+  if (ddd.length === 2) out += ")";
+  if (rest) {
+    if (rest.length <= 4) out += ` ${rest}`;
+    else if (rest.length <= 8) out += ` ${rest.slice(0, 4)}-${rest.slice(4)}`;
+    else out += ` ${rest.slice(0, 5)}-${rest.slice(5)}`;
+  }
+  return out;
+};
 import { ClientAttachments } from "@/components/ClientAttachments";
 import { toast } from "sonner";
 
@@ -105,7 +126,12 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
-            <Input value={form.telefone} onChange={(e) => update("telefone", e.target.value)} placeholder="(11) 99999-9999" />
+            <Input
+              value={form.telefone}
+              onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+              placeholder="+55 (11) 99999-9999"
+              inputMode="tel"
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
