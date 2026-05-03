@@ -135,10 +135,12 @@ function ClientesPage() {
 
   const openWhatsApp = (c: Client) => {
     const phone = formatPhoneForWhatsApp(c.telefone);
-    if (!phone) return toast.error("Telefone inválido");
-    const msg = encodeURIComponent(`Olá ${c.nome.split(" ")[0]}, tudo bem?`);
-    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    if (!phone) return toast.error("Telefone inválido — verifique DDD e número");
+    const firstName = (c.nome ?? "").trim().split(/\s+/)[0] || "";
+    const msg = encodeURIComponent(`Olá ${firstName}, tudo bem?`.trim());
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener,noreferrer");
   };
+
 
   const clearFilters = () => {
     setSearch("");
