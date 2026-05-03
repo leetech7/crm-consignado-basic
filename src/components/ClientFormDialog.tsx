@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { STAGES, type Client, type PipelineStage } from "@/lib/pipeline";
+import { ClientAttachments } from "@/components/ClientAttachments";
 import { toast } from "sonner";
 
 interface Props {
