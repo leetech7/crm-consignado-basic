@@ -286,7 +286,19 @@ function ClientesPage() {
                     <div className="font-medium">{c.nome}</div>
                     {c.cpf && <div className="text-xs text-muted-foreground">{c.cpf}</div>}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{c.telefone ?? "-"}</td>
+                  <td className="px-4 py-3">
+                    {c.telefone ? (
+                      <button
+                        onClick={() => openWhatsApp(c)}
+                        className="text-primary hover:underline"
+                        title="Abrir conversa no WhatsApp"
+                      >
+                        {c.telefone}
+                      </button>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{c.orgao ?? "-"}</td>
                   <td className="px-4 py-3">
                     <Badge variant="outline" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
