@@ -1,17 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { STAGES, formatBRL, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
-import { Card } from "@/components/ui/card";
+import { STAGES, formatBRL, type Client, type PipelineStage } from "@/lib/pipeline";
+import { Button } from "@/components/ui/button";
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
 import { toast } from "sonner";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
+import { ClientFormDialog } from "@/components/ClientFormDialog";
 
 export const Route = createFileRoute("/app/pipeline")({
   component: PipelinePage,
 });
 
-function ClientCard({ client }: { client: Client }) {
+function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: client.id });
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 50, opacity: isDragging ? 0.6 : 1 }
@@ -23,7 +24,9 @@ function ClientCard({ client }: { client: Client }) {
       style={style}
       {...listeners}
       {...attributes}
+      onDoubleClick={() => onEdit(client)}
       className="cursor-grab rounded-lg border border-border bg-card p-3 text-sm shadow-sm transition-all hover:border-primary/50 active:cursor-grabbing"
+      title="Duplo clique para editar"
     >
       <div className="flex items-start gap-2">
         <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -39,7 +42,7 @@ function ClientCard({ client }: { client: Client }) {
   );
 }
 
-function Column({ stage, clients }: { stage: typeof STAGES[number]; clients: Client[] }) {
+function Column({ stage, clients, onEdit }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
   const total = clients.reduce((s, c) => s + Number(c.taxa_rps ?? 0), 0);
 
@@ -59,7 +62,7 @@ function Column({ stage, clients }: { stage: typeof STAGES[number]; clients: Cli
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
         {clients.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted-foreground">Vazio</div>
-        ) : clients.map((c) => <ClientCard key={c.id} client={c} />)}
+        ) : clients.map((c) => <ClientCard key={c.id} client={c} onEdit={onEdit} />)}
       </div>
     </div>
   );
@@ -67,6 +70,8 @@ function Column({ stage, clients }: { stage: typeof STAGES[number]; clients: Cli
 
 function PipelinePage() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<Client | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const load = async () => {
@@ -88,19 +93,40 @@ function PipelinePage() {
     else toast.success(`Movido para ${STAGES.find((s) => s.id === newStage)?.label}`);
   };
 
+  const handleEdit = (c: Client) => {
+    setEditing(c);
+    setDialogOpen(true);
+  };
+
+  const handleNew = () => {
+    setEditing(null);
+    setDialogOpen(true);
+  };
+
   return (
     <div className="space-y-4 p-4 md:p-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Pipeline</h1>
-        <p className="text-sm text-muted-foreground">Arraste os cards para mover entre estágios</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Pipeline</h1>
+          <p className="text-sm text-muted-foreground">Arraste os cards para mover entre estágios. Duplo clique para editar.</p>
+        </div>
+        <Button onClick={handleNew} style={{ background: "var(--gradient-primary)" }}>
+          <Plus className="h-4 w-4" /> Adicionar cliente
+        </Button>
       </div>
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {STAGES.map((s) => (
-            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id)} />
+            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id)} onEdit={handleEdit} />
           ))}
         </div>
       </DndContext>
+      <ClientFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        client={editing}
+        onSaved={load}
+      />
     </div>
   );
 }
