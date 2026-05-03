@@ -49,6 +49,50 @@ export type Database = {
           },
         ]
       }
+      client_attachments: {
+        Row: {
+          categoria: string
+          client_id: string
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          categoria?: string
+          client_id: string
+          created_at?: string
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          categoria?: string
+          client_id?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_attachments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           cpf: string | null
