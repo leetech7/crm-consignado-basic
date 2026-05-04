@@ -26,12 +26,22 @@ function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) =>
       {...attributes}
       onDoubleClick={() => onEdit(client)}
       className="cursor-grab rounded-lg border border-border bg-card p-3 text-sm shadow-sm transition-all hover:border-primary/50 active:cursor-grabbing"
-      title="Duplo clique para editar"
+      title="Clique no nome para editar • arraste para mover"
     >
       <div className="flex items-start gap-2">
         <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
-          <div className="truncate font-semibold">{client.nome}</div>
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(client);
+            }}
+            className="block w-full truncate text-left font-semibold hover:text-primary hover:underline"
+          >
+            {client.nome}
+          </button>
           {client.orgao && <div className="truncate text-xs text-muted-foreground">{client.orgao}</div>}
           {!!client.taxa_rps && (
             <div className="mt-1 text-xs font-mono text-primary">{formatBRL(Number(client.taxa_rps))}</div>
