@@ -42,7 +42,17 @@ function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) =>
           >
             {client.nome}
           </button>
-          {client.orgao && <div className="truncate text-xs text-muted-foreground">{client.orgao}</div>}
+          {(client.cpf || client.orgao) && (
+            <div
+              className="truncate text-xs text-muted-foreground select-text cursor-text"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {client.cpf}
+              {client.cpf && client.orgao && " • "}
+              {client.orgao}
+            </div>
+          )}
           {!!client.taxa_rps && (
             <div className="mt-1 text-xs font-mono text-primary">{formatBRL(Number(client.taxa_rps))}</div>
           )}
