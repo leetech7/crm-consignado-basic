@@ -119,7 +119,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
   );
 }
 
-function Column({ stage, clients, onEdit }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void }) {
+function Column({ stage, clients, onEdit, onMove }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void; onMove: (c: Client, s: PipelineStage) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
   const total = clients.reduce((s, c) => s + Number(c.taxa_rps ?? 0), 0);
 
@@ -139,7 +139,7 @@ function Column({ stage, clients, onEdit }: { stage: typeof STAGES[number]; clie
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
         {clients.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted-foreground">Vazio</div>
-        ) : clients.map((c) => <ClientCard key={c.id} client={c} onEdit={onEdit} />)}
+        ) : clients.map((c) => <ClientCard key={c.id} client={c} onEdit={onEdit} onMove={onMove} />)}
       </div>
     </div>
   );
