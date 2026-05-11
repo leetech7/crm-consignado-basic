@@ -158,16 +158,21 @@ function PipelinePage() {
 
   useEffect(() => { load(); }, []);
 
+  const moveClient = async (client: Client, newStage: PipelineStage) => {
+    if (client.stage === newStage) return;
+    setClients((cs) => cs.map((c) => (c.id === client.id ? { ...c, stage: newStage } : c)));
+    const { error } = await supabase.from("clients").update({ stage: newStage }).eq("id", client.id);
+    if (error) { toast.error(error.message); load(); }
+    else toast.success(`Movido para ${STAGES.find((s) => s.id === newStage)?.label}`);
+  };
+
   const onDragEnd = async (e: DragEndEvent) => {
     const id = e.active.id as string;
     const newStage = e.over?.id as PipelineStage | undefined;
     if (!newStage) return;
     const client = clients.find((c) => c.id === id);
-    if (!client || client.stage === newStage) return;
-    setClients((cs) => cs.map((c) => (c.id === id ? { ...c, stage: newStage } : c)));
-    const { error } = await supabase.from("clients").update({ stage: newStage }).eq("id", id);
-    if (error) { toast.error(error.message); load(); }
-    else toast.success(`Movido para ${STAGES.find((s) => s.id === newStage)?.label}`);
+    if (!client) return;
+    moveClient(client, newStage);
   };
 
   const handleEdit = (c: Client) => {
