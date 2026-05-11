@@ -165,7 +165,13 @@ export function ClientAttachments({ clientId }: { clientId: string }) {
           </SelectContent>
         </Select>
         <input ref={inputRef} type="file" accept="application/pdf,image/*" className="hidden" onChange={onFile} />
-        <Button type="button" onClick={() => inputRef.current?.click()} disabled={uploading} variant="outline">
+        <Button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          onKeyDown={(e) => { if (e.key === " ") e.preventDefault(); }}
+          disabled={uploading}
+          variant="outline"
+        >
           {uploading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
           {uploading ? "Enviando..." : "Anexar arquivo"}
         </Button>
