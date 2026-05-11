@@ -20,11 +20,17 @@ export const Route = createFileRoute("/app/pipeline")({
   component: PipelinePage,
 });
 
-function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) => void }) {
+function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Client) => void; onMove: (c: Client, stage: PipelineStage) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: client.id });
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 50, opacity: isDragging ? 0.6 : 1 }
     : undefined;
+
+  const currentIdx = STAGES.findIndex((s) => s.id === client.stage);
+  const prevStage = currentIdx > 0 ? STAGES[currentIdx - 1] : null;
+  const nextStage = currentIdx >= 0 && currentIdx < STAGES.length - 1 ? STAGES[currentIdx + 1] : null;
+
+  const stop = (e: React.SyntheticEvent) => e.stopPropagation();
 
   return (
     <div
@@ -34,14 +40,14 @@ function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) =>
       {...attributes}
       onDoubleClick={() => onEdit(client)}
       className="cursor-grab rounded-lg border border-border bg-card p-3 text-sm shadow-sm transition-all hover:border-primary/50 active:cursor-grabbing"
-      title="Clique no nome para editar • arraste para mover"
+      title="Clique no nome para editar • use as setas ou arraste para mover"
     >
       <div className="flex items-start gap-2">
         <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
           <button
             type="button"
-            onPointerDown={(e) => e.stopPropagation()}
+            onPointerDown={stop}
             onClick={(e) => {
               e.stopPropagation();
               onEdit(client);
@@ -53,8 +59,8 @@ function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) =>
           {(client.cpf || client.orgao) && (
             <div
               className="truncate text-xs text-muted-foreground select-text cursor-text"
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
+              onPointerDown={stop}
+              onClick={stop}
             >
               {client.cpf}
               {client.cpf && client.orgao && " • "}
@@ -65,6 +71,49 @@ function ClientCard({ client, onEdit }: { client: Client; onEdit: (c: Client) =>
             <div className="mt-1 text-xs font-mono text-primary">{formatBRL(Number(client.taxa_rps))}</div>
           )}
         </div>
+      </div>
+      <div
+        className="mt-2 flex items-center justify-between gap-1 border-t border-border/50 pt-2"
+        onPointerDown={stop}
+        onClick={stop}
+      >
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs"
+          disabled={!prevStage}
+          onClick={() => prevStage && onMove(client, prevStage.id)}
+          title={prevStage ? `Mover para ${prevStage.label}` : "Sem estágio anterior"}
+        >
+          <ChevronLeft className="h-3.5 w-3.5" />
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-7 flex-1 px-2 text-xs text-muted-foreground" onPointerDown={stop}>
+              <MoveRight className="h-3.5 w-3.5" /> Mover
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center" onPointerDown={stop} onClick={stop}>
+            <DropdownMenuLabel>Mover para</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {STAGES.filter((s) => s.id !== client.stage).map((s) => (
+              <DropdownMenuItem key={s.id} onClick={() => onMove(client, s.id)}>
+                <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
+                {s.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs"
+          disabled={!nextStage}
+          onClick={() => nextStage && onMove(client, nextStage.id)}
+          title={nextStage ? `Mover para ${nextStage.label}` : "Sem próximo estágio"}
+        >
+          <ChevronRight className="h-3.5 w-3.5" />
+        </Button>
       </div>
     </div>
   );
