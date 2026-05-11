@@ -5,8 +5,16 @@ import { STAGES, formatBRL, type Client, type PipelineStage } from "@/lib/pipeli
 import { Button } from "@/components/ui/button";
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
 import { toast } from "sonner";
-import { GripVertical, Plus } from "lucide-react";
+import { GripVertical, Plus, ChevronLeft, ChevronRight, MoveRight } from "lucide-react";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/app/pipeline")({
   component: PipelinePage,
