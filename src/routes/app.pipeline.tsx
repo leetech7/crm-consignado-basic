@@ -199,7 +199,7 @@ function PipelinePage() {
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {STAGES.map((s) => (
-            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id)} onEdit={handleEdit} />
+            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id)} onEdit={handleEdit} onMove={moveClient} />
           ))}
         </div>
       </DndContext>
