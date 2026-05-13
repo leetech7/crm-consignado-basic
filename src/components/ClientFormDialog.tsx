@@ -125,7 +125,30 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>CPF</Label>
-            <Input value={form.cpf} onChange={(e) => update("cpf", e.target.value)} placeholder="000.000.000-00" />
+            <Input
+              value={form.cpf}
+              onChange={(e) => update("cpf", formatCPF(e.target.value))}
+              onBlur={(e) => {
+                const v = e.target.value;
+                if (v && !isValidCPF(v)) toast.error("CPF inválido");
+              }}
+              placeholder="000.000.000-00"
+              inputMode="numeric"
+              maxLength={14}
+              aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
+              className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
+            />
+            {form.cpf && !isValidCPF(form.cpf) && (
+              <p className="text-xs text-destructive">CPF inválido</p>
+            )}
+          </div>
+          <div className="space-y-1.5">
+            <Label>Data de nascimento</Label>
+            <Input
+              type="date"
+              value={form.data_nascimento}
+              onChange={(e) => update("data_nascimento", e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Idade</Label>
