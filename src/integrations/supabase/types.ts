@@ -97,6 +97,7 @@ export type Database = {
         Row: {
           cpf: string | null
           created_at: string
+          data_nascimento: string | null
           endereco: string | null
           id: string
           idade: number | null
@@ -114,6 +115,7 @@ export type Database = {
         Insert: {
           cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           endereco?: string | null
           id?: string
           idade?: number | null
@@ -131,6 +133,7 @@ export type Database = {
         Update: {
           cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           endereco?: string | null
           id?: string
           idade?: number | null
