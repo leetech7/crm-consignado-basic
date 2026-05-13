@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, onlyDigits, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 
 // Formata o telefone com "+" na frente: +55 (11) 99999-9999
 const formatPhoneInput = (raw: string): string => {
