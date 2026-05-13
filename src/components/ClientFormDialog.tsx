@@ -62,8 +62,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     if (client) {
       setForm({
         nome: client.nome ?? "",
-        cpf: client.cpf ?? "",
+        cpf: client.cpf ? formatCPF(client.cpf) : "",
         idade: client.idade?.toString() ?? "",
+        data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
         endereco: client.endereco ?? "",
@@ -80,12 +81,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    if (form.cpf && !isValidCPF(form.cpf)) {
+      toast.error("CPF inválido. Verifique os dígitos.");
+      return;
+    }
     setBusy(true);
     const payload = {
       owner_id: client?.owner_id ?? user.id,
       nome: form.nome.trim(),
-      cpf: form.cpf || null,
+      cpf: form.cpf ? formatCPF(form.cpf) : null,
       idade: form.idade ? parseInt(form.idade) : null,
+      data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
       orgao: form.orgao || null,
       endereco: form.endereco || null,
