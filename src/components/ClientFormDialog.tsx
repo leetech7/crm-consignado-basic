@@ -48,7 +48,8 @@ const empty = {
   orgao: "",
   endereco: "",
   observacoes: "",
-  proximo_contato: "",
+  proximo_contato_data: "",
+  proximo_contato_hora: "",
   taxa_rps: "",
   stage: "novo" as PipelineStage,
 };
@@ -60,6 +61,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   useEffect(() => {
     if (client) {
+      const pc = client.proximo_contato ? new Date(client.proximo_contato) : null;
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const dateStr = pc ? `${pc.getFullYear()}-${pad(pc.getMonth() + 1)}-${pad(pc.getDate())}` : "";
+      const timeStr = pc ? `${pad(pc.getHours())}:${pad(pc.getMinutes())}` : "";
       setForm({
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
@@ -69,7 +74,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         orgao: client.orgao ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
-        proximo_contato: client.proximo_contato ? client.proximo_contato.slice(0, 16) : "",
+        proximo_contato_data: dateStr,
+        proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
         stage: client.stage,
       });
@@ -96,7 +102,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       orgao: form.orgao || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
-      proximo_contato: form.proximo_contato ? new Date(form.proximo_contato).toISOString() : null,
+      proximo_contato: form.proximo_contato_data
+        ? new Date(`${form.proximo_contato_data}T${form.proximo_contato_hora || "09:00"}`).toISOString()
+        : null,
       taxa_rps: form.taxa_rps ? parseFloat(form.taxa_rps) : 0,
       stage: form.stage,
     };
@@ -173,7 +181,23 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Próximo contato</Label>
-            <Input type="datetime-local" value={form.proximo_contato} onChange={(e) => update("proximo_contato", e.target.value)} />
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                className="flex-1"
+                value={form.proximo_contato_data}
+                onChange={(e) => update("proximo_contato_data", e.target.value)}
+              />
+              <Input
+                type="time"
+                className="w-[130px] px-3 py-2 text-base"
+                value={form.proximo_contato_hora}
+                onChange={(e) => update("proximo_contato_hora", e.target.value)}
+                placeholder="--:--"
+                disabled={!form.proximo_contato_data}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">Horário opcional (padrão 09:00)</p>
           </div>
           <div className="space-y-1.5">
             <Label>Taxa RPS (R$)</Label>

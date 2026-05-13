@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { AppointmentReminders } from "@/components/AppointmentReminders";
 import {
   LayoutDashboard,
   Users,
@@ -166,6 +167,7 @@ export function AppShell() {
         <main className="flex-1 overflow-x-hidden">
           <Outlet />
         </main>
+        <AppointmentReminders />
       </div>
     </div>
   );
