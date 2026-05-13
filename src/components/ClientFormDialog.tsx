@@ -60,6 +60,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   useEffect(() => {
     if (client) {
+      const pc = client.proximo_contato ? new Date(client.proximo_contato) : null;
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const dateStr = pc ? `${pc.getFullYear()}-${pad(pc.getMonth() + 1)}-${pad(pc.getDate())}` : "";
+      const timeStr = pc ? `${pad(pc.getHours())}:${pad(pc.getMinutes())}` : "";
       setForm({
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
@@ -69,7 +73,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         orgao: client.orgao ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
-        proximo_contato: client.proximo_contato ? client.proximo_contato.slice(0, 16) : "",
+        proximo_contato_data: dateStr,
+        proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
         stage: client.stage,
       });
