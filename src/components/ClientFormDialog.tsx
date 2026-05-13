@@ -43,6 +43,7 @@ const empty = {
   nome: "",
   cpf: "",
   idade: "",
+  data_nascimento: "",
   telefone: "",
   orgao: "",
   endereco: "",
