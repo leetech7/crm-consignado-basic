@@ -102,7 +102,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       orgao: form.orgao || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
-      proximo_contato: form.proximo_contato ? new Date(form.proximo_contato).toISOString() : null,
+      proximo_contato: form.proximo_contato_data
+        ? new Date(`${form.proximo_contato_data}T${form.proximo_contato_hora || "09:00"}`).toISOString()
+        : null,
       taxa_rps: form.taxa_rps ? parseFloat(form.taxa_rps) : 0,
       stage: form.stage,
     };
