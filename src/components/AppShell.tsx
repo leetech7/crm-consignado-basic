@@ -166,6 +166,7 @@ export function AppShell() {
         <main className="flex-1 overflow-x-hidden">
           <Outlet />
         </main>
+        <AppointmentReminders />
       </div>
     </div>
   );
