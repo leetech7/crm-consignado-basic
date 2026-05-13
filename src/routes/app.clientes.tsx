@@ -285,7 +285,14 @@ function ClientesPage() {
               ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
                   <td className="px-4 py-3">
-                    <div className="font-medium">{c.nome}</div>
+                    <button
+                      type="button"
+                      onClick={() => { setEditing(c); setOpenForm(true); }}
+                      className="font-medium text-left cursor-pointer hover:underline hover:text-primary"
+                      title="Editar cliente"
+                    >
+                      {c.nome}
+                    </button>
                     {c.cpf && <div className="text-xs text-muted-foreground">{c.cpf}</div>}
                   </td>
                   <td className="px-4 py-3">
