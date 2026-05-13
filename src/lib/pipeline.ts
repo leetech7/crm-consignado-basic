@@ -30,6 +30,7 @@ export interface Client {
   nome: string;
   cpf: string | null;
   idade: number | null;
+  data_nascimento: string | null;
   telefone: string | null;
   orgao: string | null;
   endereco: string | null;

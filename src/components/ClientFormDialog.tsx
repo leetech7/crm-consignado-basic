@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, onlyDigits, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 
 // Formata o telefone com "+" na frente: +55 (11) 99999-9999
 const formatPhoneInput = (raw: string): string => {
@@ -43,6 +43,7 @@ const empty = {
   nome: "",
   cpf: "",
   idade: "",
+  data_nascimento: "",
   telefone: "",
   orgao: "",
   endereco: "",
@@ -61,8 +62,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     if (client) {
       setForm({
         nome: client.nome ?? "",
-        cpf: client.cpf ?? "",
+        cpf: client.cpf ? formatCPF(client.cpf) : "",
         idade: client.idade?.toString() ?? "",
+        data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
         endereco: client.endereco ?? "",
@@ -79,12 +81,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    if (form.cpf && !isValidCPF(form.cpf)) {
+      toast.error("CPF inválido. Verifique os dígitos.");
+      return;
+    }
     setBusy(true);
     const payload = {
       owner_id: client?.owner_id ?? user.id,
       nome: form.nome.trim(),
-      cpf: form.cpf || null,
+      cpf: form.cpf ? formatCPF(form.cpf) : null,
       idade: form.idade ? parseInt(form.idade) : null,
+      data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
       orgao: form.orgao || null,
       endereco: form.endereco || null,
@@ -118,7 +125,30 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>CPF</Label>
-            <Input value={form.cpf} onChange={(e) => update("cpf", e.target.value)} placeholder="000.000.000-00" />
+            <Input
+              value={form.cpf}
+              onChange={(e) => update("cpf", formatCPF(e.target.value))}
+              onBlur={(e) => {
+                const v = e.target.value;
+                if (v && !isValidCPF(v)) toast.error("CPF inválido");
+              }}
+              placeholder="000.000.000-00"
+              inputMode="numeric"
+              maxLength={14}
+              aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
+              className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
+            />
+            {form.cpf && !isValidCPF(form.cpf) && (
+              <p className="text-xs text-destructive">CPF inválido</p>
+            )}
+          </div>
+          <div className="space-y-1.5">
+            <Label>Data de nascimento</Label>
+            <Input
+              type="date"
+              value={form.data_nascimento}
+              onChange={(e) => update("data_nascimento", e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Idade</Label>
