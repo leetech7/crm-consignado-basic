@@ -48,7 +48,8 @@ const empty = {
   orgao: "",
   endereco: "",
   observacoes: "",
-  proximo_contato: "",
+  proximo_contato_data: "",
+  proximo_contato_hora: "",
   taxa_rps: "",
   stage: "novo" as PipelineStage,
 };
