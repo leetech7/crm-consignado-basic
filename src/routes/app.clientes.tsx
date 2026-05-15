@@ -254,7 +254,7 @@ function ClientesPage() {
           <div className="mt-3 flex flex-wrap gap-2">
             {search.trim() && (
               <Badge variant="secondary" className="gap-1">
-                {searchType === "cpf" ? "CPF" : "Nome"}: {search}
+                {searchType === "cpf" ? "CPF" : searchType === "telefone" ? "Telefone" : searchType === "orgao" ? "Órgão" : "Nome"}: {search}
                 <button onClick={() => setSearch("")} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
               </Badge>
             )}
