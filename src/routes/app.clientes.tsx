@@ -29,7 +29,7 @@ function ClientesPage() {
   const [loading, setLoading] = useState(true);
 
   // search & filters
-  const [searchType, setSearchType] = useState<"nome" | "cpf">("nome");
+  const [searchType, setSearchType] = useState<"nome" | "cpf" | "telefone" | "orgao">("nome");
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
 
@@ -70,6 +70,14 @@ function ClientesPage() {
         if (!cpfValid) return true;
         if (!c.cpf) return false;
         return onlyDigits(c.cpf).includes(qDigits);
+      }
+      if (searchType === "telefone") {
+        if (!c.telefone) return false;
+        return onlyDigits(c.telefone).includes(qDigits);
+      }
+      if (searchType === "orgao") {
+        if (!c.orgao) return false;
+        return c.orgao.toLowerCase().includes(q);
       }
       return c.nome.toLowerCase().includes(q);
     });
@@ -172,11 +180,13 @@ function ClientesPage() {
 
       <Card className="p-4" style={{ background: "var(--gradient-card)" }}>
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
-          <Select value={searchType} onValueChange={(v) => setSearchType(v as "nome" | "cpf")}>
-            <SelectTrigger className="md:w-36"><SelectValue /></SelectTrigger>
+          <Select value={searchType} onValueChange={(v) => setSearchType(v as "nome" | "cpf" | "telefone" | "orgao")}>
+            <SelectTrigger className="md:w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="nome">Por nome</SelectItem>
               <SelectItem value="cpf">Por CPF</SelectItem>
+              <SelectItem value="telefone">Por telefone</SelectItem>
+              <SelectItem value="orgao">Por órgão</SelectItem>
             </SelectContent>
           </Select>
 
@@ -184,10 +194,24 @@ function ClientesPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-9 pr-9"
-              placeholder={searchType === "cpf" ? "Digite o CPF (000.000.000-00)" : "Buscar por nome..."}
-              inputMode={searchType === "cpf" ? "numeric" : "text"}
+              placeholder={
+                searchType === "cpf"
+                  ? "Digite o CPF (000.000.000-00)"
+                  : searchType === "telefone"
+                  ? "Buscar por telefone..."
+                  : searchType === "orgao"
+                  ? "Buscar por órgão..."
+                  : "Buscar por nome..."
+              }
+              inputMode={searchType === "cpf" || searchType === "telefone" ? "numeric" : "text"}
               value={searchType === "cpf" ? formatCPF(search) : search}
-              onChange={(e) => setSearch(searchType === "cpf" ? onlyDigits(e.target.value).slice(0, 11) : e.target.value)}
+              onChange={(e) => setSearch(
+                searchType === "cpf"
+                  ? onlyDigits(e.target.value).slice(0, 11)
+                  : searchType === "telefone"
+                  ? onlyDigits(e.target.value)
+                  : e.target.value
+              )}
               aria-invalid={cpfInvalid || undefined}
             />
             {search && (
@@ -230,7 +254,7 @@ function ClientesPage() {
           <div className="mt-3 flex flex-wrap gap-2">
             {search.trim() && (
               <Badge variant="secondary" className="gap-1">
-                {searchType === "cpf" ? "CPF" : "Nome"}: {search}
+                {searchType === "cpf" ? "CPF" : searchType === "telefone" ? "Telefone" : searchType === "orgao" ? "Órgão" : "Nome"}: {search}
                 <button onClick={() => setSearch("")} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
               </Badge>
             )}
