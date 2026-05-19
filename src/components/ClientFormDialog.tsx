@@ -170,12 +170,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input
               type="date"
               value={form.data_nascimento}
-              onChange={(e) => update("data_nascimento", e.target.value)}
+              onChange={(e) => handleDobChange(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
             <Label>Idade</Label>
-            <Input type="number" value={form.idade} onChange={(e) => update("idade", e.target.value)} />
+            <Input
+              type="number"
+              value={form.idade}
+              onChange={(e) => update("idade", e.target.value)}
+              readOnly={!!form.data_nascimento}
+              className={form.data_nascimento ? "bg-muted" : ""}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
