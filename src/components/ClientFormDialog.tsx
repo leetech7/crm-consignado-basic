@@ -244,6 +244,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label>Margem disponível (global) — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.margem_disponivel}
+              onChange={(e) => update("margem_disponivel", e.target.value)}
+              placeholder="0,00"
+            />
+            <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
+          </div>
           <div className="space-y-1.5">
             <Label>Valor bruto (a receber) — R$</Label>
             <Input
