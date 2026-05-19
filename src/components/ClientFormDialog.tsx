@@ -138,6 +138,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         ? new Date(`${form.proximo_contato_data}T${form.proximo_contato_hora || "09:00"}`).toISOString()
         : null,
       taxa_rps: form.taxa_rps ? parseFloat(form.taxa_rps) : 0,
+      valor_bruto: form.valor_bruto ? parseFloat(form.valor_bruto) : 0,
+      valor_rps_total: form.valor_bruto && form.taxa_rps
+        ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
+        : 0,
       stage: form.stage,
     };
 
