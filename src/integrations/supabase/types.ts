@@ -101,6 +101,7 @@ export type Database = {
           endereco: string | null
           id: string
           idade: number | null
+          margem_disponivel: number | null
           nome: string
           observacoes: string | null
           orgao: string | null
@@ -121,6 +122,7 @@ export type Database = {
           endereco?: string | null
           id?: string
           idade?: number | null
+          margem_disponivel?: number | null
           nome: string
           observacoes?: string | null
           orgao?: string | null
@@ -141,6 +143,7 @@ export type Database = {
           endereco?: string | null
           id?: string
           idade?: number | null
+          margem_disponivel?: number | null
           nome?: string
           observacoes?: string | null
           orgao?: string | null
