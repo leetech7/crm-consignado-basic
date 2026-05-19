@@ -216,24 +216,24 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Próximo contato</Label>
-            <div className="flex gap-2">
-              <Input
-                type="date"
-                className="flex-1"
-                value={form.proximo_contato_data}
-                onChange={(e) => update("proximo_contato_data", e.target.value)}
-              />
-              <Input
-                type="time"
-                className="w-[130px] px-3 py-2 text-base"
-                value={form.proximo_contato_hora}
-                onChange={(e) => update("proximo_contato_hora", e.target.value)}
-                placeholder="--:--"
-                disabled={!form.proximo_contato_data}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">Horário opcional (padrão 09:00)</p>
+            <Label>Agendado para</Label>
+            <Input
+              type="date"
+              value={form.proximo_contato_data}
+              onChange={(e) => update("proximo_contato_data", e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Horário</Label>
+            <Input
+              type="time"
+              className="px-3 py-2 text-base"
+              value={form.proximo_contato_hora}
+              onChange={(e) => update("proximo_contato_hora", e.target.value)}
+              placeholder="--:--"
+              disabled={!form.proximo_contato_data}
+            />
+            <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
           <div className="space-y-1.5">
             <Label>Taxa RPS (R$)</Label>
