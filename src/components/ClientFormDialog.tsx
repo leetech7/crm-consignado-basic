@@ -66,6 +66,7 @@ const empty = {
   proximo_contato_data: "",
   proximo_contato_hora: "",
   taxa_rps: "",
+  valor_bruto: "",
   stage: "novo" as PipelineStage,
 };
 
@@ -92,6 +93,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         proximo_contato_data: dateStr,
         proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
+        valor_bruto: client.valor_bruto?.toString() ?? "",
         stage: client.stage,
       });
     } else setForm(empty);
@@ -136,6 +138,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         ? new Date(`${form.proximo_contato_data}T${form.proximo_contato_hora || "09:00"}`).toISOString()
         : null,
       taxa_rps: form.taxa_rps ? parseFloat(form.taxa_rps) : 0,
+      valor_bruto: form.valor_bruto ? parseFloat(form.valor_bruto) : 0,
+      valor_rps_total: form.valor_bruto && form.taxa_rps
+        ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
+        : 0,
       stage: form.stage,
     };
 
@@ -236,8 +242,39 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
           <div className="space-y-1.5">
-            <Label>Taxa RPS (R$)</Label>
-            <Input type="number" step="0.01" value={form.taxa_rps} onChange={(e) => update("taxa_rps", e.target.value)} />
+            <Label>Valor bruto (a receber) — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.valor_bruto}
+              onChange={(e) => update("valor_bruto", e.target.value)}
+              placeholder="0,00"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Taxa RPS (%)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.taxa_rps}
+              onChange={(e) => update("taxa_rps", e.target.value)}
+              placeholder="0,00"
+            />
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label>Valor RPS total (R$)</Label>
+            <Input
+              readOnly
+              className="bg-muted font-mono"
+              value={
+                form.valor_bruto && form.taxa_rps
+                  ? (parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                  : "R$ 0,00"
+              }
+            />
+            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × Taxa RPS (%)</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Estágio</Label>
