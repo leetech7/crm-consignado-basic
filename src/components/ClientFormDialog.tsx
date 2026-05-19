@@ -66,6 +66,7 @@ const empty = {
   proximo_contato_data: "",
   proximo_contato_hora: "",
   taxa_rps: "",
+  valor_bruto: "",
   stage: "novo" as PipelineStage,
 };
 
