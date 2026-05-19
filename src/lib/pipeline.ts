@@ -37,6 +37,8 @@ export interface Client {
   observacoes: string | null;
   proximo_contato: string | null;
   taxa_rps: number | null;
+  valor_bruto: number | null;
+  valor_rps_total: number | null;
   stage: PipelineStage;
   paid_at: string | null;
   created_at: string;
