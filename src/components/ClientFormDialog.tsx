@@ -9,23 +9,38 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { STAGES, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 
-// Formata o telefone com "+" na frente: +55 (11) 99999-9999
+// Formata o telefone progressivamente da esquerda para a direita.
+// Aceita digitação livre, sem prefixar DDI automaticamente.
+// Formatos suportados:
+//   - 10 dígitos: (11) 9999-9999
+//   - 11 dígitos: (11) 99999-9999
+//   - 12 dígitos: +55 (11) 9999-9999
+//   - 13 dígitos: +55 (11) 99999-9999
 const formatPhoneInput = (raw: string): string => {
-  let d = onlyDigits(raw);
+  const d = onlyDigits(raw).slice(0, 13);
   if (!d) return "";
-  // Se o usuário não digitou DDI, assume Brasil (55)
-  if (d.length <= 11) d = "55" + d;
-  d = d.slice(0, 13); // DDI(2) + DDD(2) + 9 dígitos
-  const ddi = d.slice(0, 2);
-  const ddd = d.slice(2, 4);
-  const rest = d.slice(4);
-  let out = `+${ddi}`;
-  if (ddd) out += ` (${ddd}`;
-  if (ddd.length === 2) out += ")";
-  if (rest) {
-    if (rest.length <= 4) out += ` ${rest}`;
-    else if (rest.length <= 8) out += ` ${rest.slice(0, 4)}-${rest.slice(4)}`;
-    else out += ` ${rest.slice(0, 5)}-${rest.slice(5)}`;
+
+  let ddi = "";
+  let rest = d;
+  if (d.length > 11) {
+    ddi = d.slice(0, d.length - 11);
+    rest = d.slice(d.length - 11);
+  }
+
+  const ddd = rest.slice(0, 2);
+  const sub = rest.slice(2);
+
+  let out = "";
+  if (ddi) out += `+${ddi} `;
+  if (ddd) {
+    out += `(${ddd}`;
+    if (ddd.length === 2) out += ")";
+  }
+  if (sub) {
+    out += " ";
+    if (sub.length <= 4) out += sub;
+    else if (sub.length <= 8) out += `${sub.slice(0, 4)}-${sub.slice(4)}`;
+    else out += `${sub.slice(0, 5)}-${sub.slice(5)}`;
   }
   return out;
 };
