@@ -67,6 +67,7 @@ const empty = {
   proximo_contato_hora: "",
   taxa_rps: "",
   valor_bruto: "",
+  margem_disponivel: "",
   stage: "novo" as PipelineStage,
 };
 
@@ -94,6 +95,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
         valor_bruto: client.valor_bruto?.toString() ?? "",
+        margem_disponivel: client.margem_disponivel?.toString() ?? "",
         stage: client.stage,
       });
     } else setForm(empty);
@@ -142,6 +144,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       valor_rps_total: form.valor_bruto && form.taxa_rps
         ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
+      margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
       stage: form.stage,
     };
 
@@ -240,6 +243,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               disabled={!form.proximo_contato_data}
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label>Margem disponível (global) — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.margem_disponivel}
+              onChange={(e) => update("margem_disponivel", e.target.value)}
+              placeholder="0,00"
+            />
+            <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
           </div>
           <div className="space-y-1.5">
             <Label>Valor bruto (a receber) — R$</Label>

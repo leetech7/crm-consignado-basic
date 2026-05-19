@@ -39,6 +39,7 @@ export interface Client {
   taxa_rps: number | null;
   valor_bruto: number | null;
   valor_rps_total: number | null;
+  margem_disponivel: number | null;
   stage: PipelineStage;
   paid_at: string | null;
   created_at: string;

@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN IF NOT EXISTS margem_disponivel NUMERIC(12,2) DEFAULT 0;
