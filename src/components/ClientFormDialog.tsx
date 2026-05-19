@@ -93,6 +93,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         proximo_contato_data: dateStr,
         proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
+        valor_bruto: client.valor_bruto?.toString() ?? "",
         stage: client.stage,
       });
     } else setForm(empty);
