@@ -111,6 +111,8 @@ export type Database = {
           taxa_rps: number | null
           telefone: string | null
           updated_at: string
+          valor_bruto: number | null
+          valor_rps_total: number | null
         }
         Insert: {
           cpf?: string | null
@@ -129,6 +131,8 @@ export type Database = {
           taxa_rps?: number | null
           telefone?: string | null
           updated_at?: string
+          valor_bruto?: number | null
+          valor_rps_total?: number | null
         }
         Update: {
           cpf?: string | null
@@ -147,6 +151,8 @@ export type Database = {
           taxa_rps?: number | null
           telefone?: string | null
           updated_at?: string
+          valor_bruto?: number | null
+          valor_rps_total?: number | null
         }
         Relationships: []
       }
