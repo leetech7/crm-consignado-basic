@@ -84,6 +84,21 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   const update = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  const calcAge = (dob: string): string => {
+    if (!dob) return "";
+    const d = new Date(dob);
+    if (isNaN(d.getTime())) return "";
+    const today = new Date();
+    let age = today.getFullYear() - d.getFullYear();
+    const m = today.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+    return age >= 0 && age < 150 ? String(age) : "";
+  };
+
+  const handleDobChange = (v: string) => {
+    setForm((f) => ({ ...f, data_nascimento: v, idade: calcAge(v) || f.idade }));
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
