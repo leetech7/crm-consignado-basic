@@ -84,6 +84,21 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   const update = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  const calcAge = (dob: string): string => {
+    if (!dob) return "";
+    const d = new Date(dob);
+    if (isNaN(d.getTime())) return "";
+    const today = new Date();
+    let age = today.getFullYear() - d.getFullYear();
+    const m = today.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+    return age >= 0 && age < 150 ? String(age) : "";
+  };
+
+  const handleDobChange = (v: string) => {
+    setForm((f) => ({ ...f, data_nascimento: v, idade: calcAge(v) || f.idade }));
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -155,12 +170,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input
               type="date"
               value={form.data_nascimento}
-              onChange={(e) => update("data_nascimento", e.target.value)}
+              onChange={(e) => handleDobChange(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
             <Label>Idade</Label>
-            <Input type="number" value={form.idade} onChange={(e) => update("idade", e.target.value)} />
+            <Input
+              type="number"
+              value={form.idade}
+              onChange={(e) => update("idade", e.target.value)}
+              readOnly={!!form.data_nascimento}
+              className={form.data_nascimento ? "bg-muted" : ""}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
