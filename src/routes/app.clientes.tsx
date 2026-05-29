@@ -318,9 +318,9 @@ function ClientesPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
               ) : paginated.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
               ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
                   <td className="px-4 py-3">
