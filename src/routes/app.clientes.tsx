@@ -11,7 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
@@ -77,7 +77,7 @@ function ClientesPage() {
       }
       if (searchType === "orgao") {
         if (!c.orgao) return false;
-        return c.orgao.toLowerCase().includes(q);
+        return c.orgao.toLowerCase() === q;
       }
       return c.nome.toLowerCase().includes(q);
     });
@@ -191,47 +191,57 @@ function ClientesPage() {
           </Select>
 
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="pl-9 pr-9"
-              placeholder={
-                searchType === "cpf"
-                  ? "Digite o CPF (000.000.000-00)"
-                  : searchType === "telefone"
-                  ? "Buscar por telefone..."
-                  : searchType === "orgao"
-                  ? "Buscar por órgão..."
-                  : "Buscar por nome..."
-              }
-              inputMode={searchType === "cpf" || searchType === "telefone" ? "numeric" : "text"}
-              value={searchType === "cpf" ? formatCPF(search) : search}
-              onChange={(e) => setSearch(
-                searchType === "cpf"
-                  ? onlyDigits(e.target.value).slice(0, 11)
-                  : searchType === "telefone"
-                  ? onlyDigits(e.target.value)
-                  : e.target.value
-              )}
-              aria-invalid={cpfInvalid || undefined}
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted"
-                aria-label="Limpar busca"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-            {searchType === "cpf" && search && (
-              <p className={`mt-1 text-xs ${cpfInvalid ? "text-destructive" : cpfValid ? "text-success" : "text-muted-foreground"}`}>
-                {cpfInvalid
-                  ? "CPF inválido — verifique os dígitos."
-                  : cpfValid
-                  ? "CPF válido"
-                  : `Digite ${11 - cpfDigits.length} dígito(s) restante(s)`}
-              </p>
+            {searchType === "orgao" ? (
+              <Select value={search || "all"} onValueChange={(v) => setSearch(v === "all" ? "" : v)}>
+                <SelectTrigger><SelectValue placeholder="Selecione um órgão..." /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os órgãos</SelectItem>
+                  {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            ) : (
+              <>
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  className="pl-9 pr-9"
+                  placeholder={
+                    searchType === "cpf"
+                      ? "Digite o CPF (000.000.000-00)"
+                      : searchType === "telefone"
+                      ? "Buscar por telefone..."
+                      : "Buscar por nome..."
+                  }
+                  inputMode={searchType === "cpf" || searchType === "telefone" ? "numeric" : "text"}
+                  value={searchType === "cpf" ? formatCPF(search) : search}
+                  onChange={(e) => setSearch(
+                    searchType === "cpf"
+                      ? onlyDigits(e.target.value).slice(0, 11)
+                      : searchType === "telefone"
+                      ? onlyDigits(e.target.value)
+                      : e.target.value
+                  )}
+                  aria-invalid={cpfInvalid || undefined}
+                />
+                {search && (
+                  <button
+                    type="button"
+                    onClick={() => setSearch("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted"
+                    aria-label="Limpar busca"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                {searchType === "cpf" && search && (
+                  <p className={`mt-1 text-xs ${cpfInvalid ? "text-destructive" : cpfValid ? "text-success" : "text-muted-foreground"}`}>
+                    {cpfInvalid
+                      ? "CPF inválido — verifique os dígitos."
+                      : cpfValid
+                      ? "CPF válido"
+                      : `Digite ${11 - cpfDigits.length} dígito(s) restante(s)`}
+                  </p>
+                )}
+              </>
             )}
           </div>
 

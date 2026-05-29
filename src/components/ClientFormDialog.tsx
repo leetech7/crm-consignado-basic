@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 
 // Formata o telefone progressivamente da esquerda para a direita.
 // Aceita digitação livre, sem prefixar DDI automaticamente.
@@ -218,7 +218,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
-            <Input value={form.orgao} onChange={(e) => update("orgao", e.target.value)} placeholder="INSS, SIAPE..." />
+            <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
+              <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+              <SelectContent>
+                {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                {form.orgao && !ORGAOS.includes(form.orgao as typeof ORGAOS[number]) && (
+                  <SelectItem value={form.orgao} disabled>(legado: {form.orgao})</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Endereço</Label>
