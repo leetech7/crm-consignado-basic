@@ -19,7 +19,7 @@ export const Route = createFileRoute("/app/clientes")({
   component: ClientesPage,
 });
 
-type SortKey = "nome" | "telefone" | "orgao" | "stage" | "taxa_rps" | "created_at";
+type SortKey = "nome" | "telefone" | "orgao" | "stage" | "taxa_rps" | "margem_disponivel" | "created_at";
 type SortDir = "asc" | "desc";
 
 const PAGE_SIZES = [10, 25, 50, 100];
@@ -308,14 +308,19 @@ function ClientesPage() {
                     Taxa RPS {sortIcon("taxa_rps")}
                   </button>
                 </th>
+                <th className="px-4 py-3 text-right">
+                  <button onClick={() => toggleSort("margem_disponivel")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Margem {sortIcon("margem_disponivel")}
+                  </button>
+                </th>
                 <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
               ) : paginated.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
               ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
                   <td className="px-4 py-3">
@@ -349,6 +354,7 @@ function ClientesPage() {
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.taxa_rps ?? 0))}</td>
+                  <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
                       <Button size="icon" variant="ghost" onClick={() => openWhatsApp(c)} title="WhatsApp">
