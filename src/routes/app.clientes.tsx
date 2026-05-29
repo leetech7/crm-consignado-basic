@@ -353,7 +353,8 @@ function ClientesPage() {
                       {stageLabel(c.stage as PipelineStage)}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.taxa_rps ?? 0))}</td>
+                  <td className="px-4 py-3 text-right font-mono">{Number(c.taxa_rps ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</td>
+                  <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
                       <Button size="icon" variant="ghost" onClick={() => openWhatsApp(c)} title="WhatsApp">
