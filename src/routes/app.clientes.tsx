@@ -293,6 +293,7 @@ function ClientesPage() {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
+                <th className="px-2 py-3 text-center w-10"></th>
                 <th className="px-4 py-3 text-left">
                   <button onClick={() => toggleSort("nome")} className="inline-flex items-center gap-1 hover:text-foreground">
                     Nome {sortIcon("nome")}
