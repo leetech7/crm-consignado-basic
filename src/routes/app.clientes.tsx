@@ -77,7 +77,7 @@ function ClientesPage() {
       }
       if (searchType === "orgao") {
         if (!c.orgao) return false;
-        return c.orgao.toLowerCase().includes(q);
+        return c.orgao.toLowerCase() === q;
       }
       return c.nome.toLowerCase().includes(q);
     });
