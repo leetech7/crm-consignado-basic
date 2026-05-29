@@ -21,6 +21,19 @@ export const STAGES: { id: PipelineStage; label: string; color: string }[] = [
   { id: "descartado", label: "Descartados", color: "oklch(0.55 0.02 250)" },
 ];
 
+export const ORGAOS = [
+  "SIAPE",
+  "CLT",
+  "INSS",
+  "MARINHA",
+  "EXÉRCITO",
+  "AERONÁUTICA",
+  "PREFEITURA RJ",
+  "PREFEITURA (OUTRAS)",
+  "GOVERNO RJ",
+  "GOVERNO (OUTROS)",
+] as const;
+
 export const stageLabel = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.label ?? s;
 export const stageColor = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.color ?? "oklch(0.6 0 0)";
 
