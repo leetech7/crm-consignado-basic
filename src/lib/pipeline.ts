@@ -54,6 +54,7 @@ export interface Client {
   valor_rps_total: number | null;
   margem_disponivel: number | null;
   stage: PipelineStage;
+  favorito: boolean;
   paid_at: string | null;
   created_at: string;
   updated_at: string;

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
 import { STAGES, ORGAOS, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
-import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/clientes")({
@@ -117,6 +117,16 @@ function ClientesPage() {
   const sortIcon = (key: SortKey) => {
     if (sortKey !== key) return <ArrowUpDown className="h-3 w-3 opacity-50" />;
     return sortDir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />;
+  };
+
+  const toggleFavorito = async (c: Client) => {
+    const next = !c.favorito;
+    setClients((prev) => prev.map((x) => (x.id === c.id ? { ...x, favorito: next } : x)));
+    const { error } = await supabase.from("clients").update({ favorito: next }).eq("id", c.id);
+    if (error) {
+      setClients((prev) => prev.map((x) => (x.id === c.id ? { ...x, favorito: !next } : x)));
+      toast.error(error.message);
+    }
   };
 
   const remove = async (id: string) => {
@@ -283,6 +293,7 @@ function ClientesPage() {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
+                <th className="px-2 py-3 text-center w-10"></th>
                 <th className="px-4 py-3 text-left">
                   <button onClick={() => toggleSort("nome")} className="inline-flex items-center gap-1 hover:text-foreground">
                     Nome {sortIcon("nome")}
@@ -318,11 +329,24 @@ function ClientesPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
+               <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
               ) : paginated.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
               ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
+                  <td className="px-2 py-3 text-center">
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorito(c)}
+                      title={c.favorito ? "Remover dos favoritos" : "Marcar como favorito"}
+                      className="inline-flex items-center justify-center rounded p-1 hover:bg-muted transition-colors"
+                    >
+                      <Heart
+                        className={`h-4 w-4 transition-colors ${c.favorito ? "text-red-500" : "text-muted-foreground"}`}
+                        fill={c.favorito ? "currentColor" : "none"}
+                      />
+                    </button>
+                  </td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
