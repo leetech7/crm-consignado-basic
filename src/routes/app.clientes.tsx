@@ -119,6 +119,16 @@ function ClientesPage() {
     return sortDir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />;
   };
 
+  const toggleFavorito = async (c: Client) => {
+    const next = !c.favorito;
+    setClients((prev) => prev.map((x) => (x.id === c.id ? { ...x, favorito: next } : x)));
+    const { error } = await supabase.from("clients").update({ favorito: next }).eq("id", c.id);
+    if (error) {
+      setClients((prev) => prev.map((x) => (x.id === c.id ? { ...x, favorito: !next } : x)));
+      toast.error(error.message);
+    }
+  };
+
   const remove = async (id: string) => {
     const { error } = await supabase.from("clients").delete().eq("id", id);
     if (error) return toast.error(error.message);
