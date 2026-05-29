@@ -334,6 +334,19 @@ function ClientesPage() {
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
               ) : paginated.map((c) => (
                 <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
+                  <td className="px-2 py-3 text-center">
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorito(c)}
+                      title={c.favorito ? "Remover dos favoritos" : "Marcar como favorito"}
+                      className="inline-flex items-center justify-center rounded p-1 hover:bg-muted transition-colors"
+                    >
+                      <Heart
+                        className={`h-4 w-4 transition-colors ${c.favorito ? "text-red-500" : "text-muted-foreground"}`}
+                        fill={c.favorito ? "currentColor" : "none"}
+                      />
+                    </button>
+                  </td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
