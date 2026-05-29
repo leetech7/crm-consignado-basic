@@ -218,7 +218,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
-            <Input value={form.orgao} onChange={(e) => update("orgao", e.target.value)} placeholder="INSS, SIAPE..." />
+            <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
+              <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+              <SelectContent>
+                {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                {form.orgao && !ORGAOS.includes(form.orgao as typeof ORGAOS[number]) && (
+                  <SelectItem value={form.orgao} disabled>(legado: {form.orgao})</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Endereço</Label>
