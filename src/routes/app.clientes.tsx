@@ -308,6 +308,11 @@ function ClientesPage() {
                     Taxa RPS {sortIcon("taxa_rps")}
                   </button>
                 </th>
+                <th className="px-4 py-3 text-right">
+                  <button onClick={() => toggleSort("margem_disponivel")} className="inline-flex items-center gap-1 hover:text-foreground">
+                    Margem {sortIcon("margem_disponivel")}
+                  </button>
+                </th>
                 <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
