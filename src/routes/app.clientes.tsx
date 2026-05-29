@@ -19,7 +19,7 @@ export const Route = createFileRoute("/app/clientes")({
   component: ClientesPage,
 });
 
-type SortKey = "nome" | "telefone" | "orgao" | "stage" | "taxa_rps" | "created_at";
+type SortKey = "nome" | "telefone" | "orgao" | "stage" | "taxa_rps" | "margem_disponivel" | "created_at";
 type SortDir = "asc" | "desc";
 
 const PAGE_SIZES = [10, 25, 50, 100];
