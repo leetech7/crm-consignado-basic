@@ -310,7 +310,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Observações</Label>
-            <Textarea rows={3} value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
+            <Textarea rows={8} className="min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
           {client && (
             <div className="sm:col-span-2 space-y-2 rounded-md border border-border/50 p-3">

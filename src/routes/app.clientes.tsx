@@ -333,7 +333,7 @@ function ClientesPage() {
               ) : paginated.length === 0 ? (
                 <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">Nenhum cliente encontrado</td></tr>
               ) : paginated.map((c) => (
-                <tr key={c.id} className="border-t border-border/50 transition-colors hover:bg-muted/20">
+                <tr key={c.id} onDoubleClick={() => { setEditing(c); setOpenForm(true); }} className="border-t border-border/50 transition-colors hover:bg-muted/20 cursor-pointer select-none">
                   <td className="px-2 py-3 text-center">
                     <button
                       type="button"
