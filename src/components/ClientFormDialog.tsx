@@ -148,15 +148,25 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       stage: form.stage,
     };
 
-    const { error } = client
-      ? await supabase.from("clients").update(payload).eq("id", client.id)
-      : await supabase.from("clients").insert(payload);
+    try {
+      const { error } = client
+        ? await supabase.from("clients").update(payload).eq("id", client.id)
+        : await supabase.from("clients").insert(payload);
 
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(client ? "Cliente atualizado" : "Cliente cadastrado");
-    onOpenChange(false);
-    onSaved?.();
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success(client ? "Cliente atualizado" : "Cliente cadastrado");
+      setForm(empty);
+      onOpenChange(false);
+      onSaved?.();
+    } catch (err: any) {
+      toast.error(err?.message || "Erro inesperado ao salvar. Tente novamente.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
