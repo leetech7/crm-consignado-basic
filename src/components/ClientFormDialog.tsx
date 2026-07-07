@@ -310,6 +310,20 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × Taxa RPS (%)</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
+            <Label>Valor Líquido Cliente (R$)</Label>
+            <Input
+              readOnly
+              className="bg-muted font-mono"
+              value={(() => {
+                const vb = parseFloat(form.valor_bruto) || 0;
+                const tx = parseFloat(form.taxa_rps) || 0;
+                const rps = vb * tx / 100;
+                return (vb - rps).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+              })()}
+            />
+            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS total</p>
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
             <Label>Estágio</Label>
             <Select value={form.stage} onValueChange={(v) => update("stage", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
