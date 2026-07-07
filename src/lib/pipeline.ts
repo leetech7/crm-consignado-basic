@@ -5,7 +5,6 @@ export type PipelineStage =
   | "descartado"
   | "em_negociacao"
   | "digitado"
-  | "aguardando_link"
   | "pago"
   | "remarketing";
 
@@ -15,7 +14,6 @@ export const STAGES: { id: PipelineStage; label: string; color: string }[] = [
   { id: "frio", label: "Frios", color: "oklch(0.65 0.12 220)" },
   { id: "em_negociacao", label: "Em negociação", color: "oklch(0.78 0.16 75)" },
   { id: "digitado", label: "Digitado", color: "oklch(0.7 0.18 300)" },
-  { id: "aguardando_link", label: "Aguardando link/pgto", color: "oklch(0.72 0.16 200)" },
   { id: "pago", label: "PAGO!", color: "oklch(0.74 0.18 158)" },
   { id: "remarketing", label: "Remarketing", color: "oklch(0.7 0.15 320)" },
   { id: "descartado", label: "Descartados", color: "oklch(0.55 0.02 250)" },
