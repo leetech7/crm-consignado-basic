@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,6 +47,16 @@ const formatPhoneInput = (raw: string): string => {
 };
 import { ClientAttachments } from "@/components/ClientAttachments";
 import { toast } from "sonner";
+
+const copyToClipboard = async (text: string) => {
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success("Copiado para a área de transferência");
+  } catch {
+    toast.error("Não foi possível copiar");
+  }
+};
 
 interface Props {
   open: boolean;
@@ -182,19 +193,32 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>CPF</Label>
-            <Input
-              value={form.cpf}
-              onChange={(e) => update("cpf", formatCPF(e.target.value))}
-              onBlur={(e) => {
-                const v = e.target.value;
-                if (v && !isValidCPF(v)) toast.error("CPF inválido");
-              }}
-              placeholder="000.000.000-00"
-              inputMode="numeric"
-              maxLength={14}
-              aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
-              className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                value={form.cpf}
+                onChange={(e) => update("cpf", formatCPF(e.target.value))}
+                onBlur={(e) => {
+                  const v = e.target.value;
+                  if (v && !isValidCPF(v)) toast.error("CPF inválido");
+                }}
+                placeholder="000.000.000-00"
+                inputMode="numeric"
+                maxLength={14}
+                aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
+                className={`flex-1 ${form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.cpf}
+                onClick={() => copyToClipboard(form.cpf)}
+                title="Copiar CPF"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
             {form.cpf && !isValidCPF(form.cpf) && (
               <p className="text-xs text-destructive">CPF inválido</p>
             )}
@@ -219,12 +243,26 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
-            <Input
-              value={form.telefone}
-              onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
-              placeholder="+55 (11) 99999-9999"
-              inputMode="tel"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                value={form.telefone}
+                onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+                placeholder="+55 (11) 99999-9999"
+                inputMode="tel"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.telefone}
+                onClick={() => copyToClipboard(form.telefone)}
+                title="Copiar telefone"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
