@@ -243,12 +243,26 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
-            <Input
-              value={form.telefone}
-              onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
-              placeholder="+55 (11) 99999-9999"
-              inputMode="tel"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                value={form.telefone}
+                onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+                placeholder="+55 (11) 99999-9999"
+                inputMode="tel"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.telefone}
+                onClick={() => copyToClipboard(form.telefone)}
+                title="Copiar telefone"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>Órgão</Label>
