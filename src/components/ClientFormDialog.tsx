@@ -48,6 +48,16 @@ const formatPhoneInput = (raw: string): string => {
 import { ClientAttachments } from "@/components/ClientAttachments";
 import { toast } from "sonner";
 
+const copyToClipboard = async (text: string) => {
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success("Copiado para a área de transferência");
+  } catch {
+    toast.error("Não foi possível copiar");
+  }
+};
+
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
