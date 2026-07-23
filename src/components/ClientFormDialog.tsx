@@ -195,7 +195,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Label>CPF</Label>
             <div className="flex items-center gap-2">
               <Input
-                className="flex-1"
                 value={form.cpf}
                 onChange={(e) => update("cpf", formatCPF(e.target.value))}
                 onBlur={(e) => {
@@ -206,7 +205,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 inputMode="numeric"
                 maxLength={14}
                 aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
-                className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive flex-1" : "flex-1"}
+                className={`flex-1 ${form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
               <Button
                 type="button"
