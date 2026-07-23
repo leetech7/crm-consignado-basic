@@ -193,19 +193,33 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>CPF</Label>
-            <Input
-              value={form.cpf}
-              onChange={(e) => update("cpf", formatCPF(e.target.value))}
-              onBlur={(e) => {
-                const v = e.target.value;
-                if (v && !isValidCPF(v)) toast.error("CPF inválido");
-              }}
-              placeholder="000.000.000-00"
-              inputMode="numeric"
-              maxLength={14}
-              aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
-              className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                value={form.cpf}
+                onChange={(e) => update("cpf", formatCPF(e.target.value))}
+                onBlur={(e) => {
+                  const v = e.target.value;
+                  if (v && !isValidCPF(v)) toast.error("CPF inválido");
+                }}
+                placeholder="000.000.000-00"
+                inputMode="numeric"
+                maxLength={14}
+                aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
+                className={form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive flex-1" : "flex-1"}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.cpf}
+                onClick={() => copyToClipboard(form.cpf)}
+                title="Copiar CPF"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
             {form.cpf && !isValidCPF(form.cpf) && (
               <p className="text-xs text-destructive">CPF inválido</p>
             )}
