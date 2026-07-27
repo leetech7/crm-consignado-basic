@@ -17,6 +17,7 @@ import {
   Menu,
   TrendingUp,
   Settings,
+  Sigma,
 } from "lucide-react";
 
 const NAV = [
