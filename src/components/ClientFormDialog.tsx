@@ -386,21 +386,30 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
           </div>
           <div className="sm:col-span-2 space-y-1.5">
-            <Label>Fator</Label>
+            <Label>Fator *</Label>
             <Input
               type="number"
               step="0.00001"
-              min="0"
+              min="0.00001"
+              required
               value={form.fator}
               onChange={(e) => update("fator", e.target.value)}
               onBlur={(e) => {
                 const v = e.target.value;
-                if (v) update("fator", parseFloat(v).toFixed(5));
+                if (v && Number(v) > 0) update("fator", parseFloat(v).toFixed(5));
               }}
               placeholder="0,00000"
               inputMode="decimal"
+              aria-invalid={factorError}
+              className={factorError ? "border-destructive focus-visible:ring-destructive" : ""}
             />
-            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
+            {factorInvalid && (
+              <p className="text-xs text-destructive">O fator deve ser um número maior que zero.</p>
+            )}
+            {factorMissing && (
+              <p className="text-xs text-destructive">Informe o fator para calcular o valor bruto.</p>
+            )}
+            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais. Obrigatório.</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Valor RPS total (R$)</Label>
