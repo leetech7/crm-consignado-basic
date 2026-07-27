@@ -335,9 +335,30 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               step="0.01"
               min="0"
               value={form.valor_bruto}
-              onChange={(e) => update("valor_bruto", e.target.value)}
+              onChange={(e) => {
+                setValorBrutoTouched(true);
+                update("valor_bruto", e.target.value);
+              }}
               placeholder="0,00"
             />
+            <p className="text-xs text-muted-foreground">
+              Calculado automaticamente: Margem ÷ Fator. Pode ser editado manualmente.
+              {valorBrutoTouched && (
+                <>
+                  {" "}
+                  <button
+                    type="button"
+                    className="underline text-primary"
+                    onClick={() => {
+                      setValorBrutoTouched(false);
+                      update("valor_bruto", "");
+                    }}
+                  >
+                    Recalcular
+                  </button>
+                </>
+              )}
+            </p>
           </div>
           <div className="space-y-1.5">
             <Label>Taxa RPS (%)</Label>
