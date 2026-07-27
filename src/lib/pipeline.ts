@@ -51,6 +51,7 @@ export interface Client {
   valor_bruto: number | null;
   valor_rps_total: number | null;
   margem_disponivel: number | null;
+  fator: number | null;
   stage: PipelineStage;
   favorito: boolean;
   paid_at: string | null;

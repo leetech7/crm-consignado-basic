@@ -79,6 +79,7 @@ const empty = {
   taxa_rps: "",
   valor_bruto: "",
   margem_disponivel: "",
+  fator: "",
   stage: "novo" as PipelineStage,
 };
 
@@ -107,6 +108,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         taxa_rps: client.taxa_rps?.toString() ?? "",
         valor_bruto: client.valor_bruto?.toString() ?? "",
         margem_disponivel: client.margem_disponivel?.toString() ?? "",
+        fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
     } else setForm(empty);
@@ -156,6 +158,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
+      fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : 0,
       stage: form.stage,
     };
 
@@ -333,6 +336,23 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               onChange={(e) => update("taxa_rps", e.target.value)}
               placeholder="0,00"
             />
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label>Fator</Label>
+            <Input
+              type="number"
+              step="0.00001"
+              min="0"
+              value={form.fator}
+              onChange={(e) => update("fator", e.target.value)}
+              onBlur={(e) => {
+                const v = e.target.value;
+                if (v) update("fator", parseFloat(v).toFixed(5));
+              }}
+              placeholder="0,00000"
+              inputMode="decimal"
+            />
+            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Valor RPS total (R$)</Label>
