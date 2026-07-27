@@ -99,6 +99,7 @@ export type Database = {
           created_at: string
           data_nascimento: string | null
           endereco: string | null
+          fator: number | null
           favorito: boolean
           id: string
           idade: number | null
@@ -121,6 +122,7 @@ export type Database = {
           created_at?: string
           data_nascimento?: string | null
           endereco?: string | null
+          fator?: number | null
           favorito?: boolean
           id?: string
           idade?: number | null
@@ -143,6 +145,7 @@ export type Database = {
           created_at?: string
           data_nascimento?: string | null
           endereco?: string | null
+          fator?: number | null
           favorito?: boolean
           id?: string
           idade?: number | null
