@@ -415,29 +415,44 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
           </div>
           <div className="sm:col-span-2 space-y-1.5">
-            <Label>Fator *</Label>
+            <Label>Fator</Label>
             <Input
-              type="number"
-              step="0.00001"
-              min="0.00001"
-              required
-              value={form.fator}
-              onChange={(e) => update("fator", e.target.value)}
-              onBlur={(e) => {
-                const v = e.target.value;
-                if (v && Number(v) > 0) update("fator", parseFloat(v).toFixed(5));
+              type="text"
+              inputMode="numeric"
+              value={(() => {
+                if (!form.fator) return "";
+                const n = parseFloat(form.fator);
+                if (!Number.isFinite(n) || n <= 0) return "";
+                const d = Math.round(n * 100000).toString().padStart(6, "0");
+                return `${parseInt(d.slice(0, -5), 10)},${d.slice(-5)}`;
+              })()}
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
+                if (!digits) { update("fator", ""); return; }
+                update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
+              }}
+              onFocus={(e) => {
+                const el = e.currentTarget;
+                requestAnimationFrame(() => {
+                  const len = el.value.length;
+                  el.setSelectionRange(len, len);
+                });
+              }}
+              onClick={(e) => {
+                const el = e.currentTarget;
+                const len = el.value.length;
+                el.setSelectionRange(len, len);
               }}
               placeholder="0,00000"
-              inputMode="decimal"
-              aria-invalid={factorError}
-              className={factorError ? "border-destructive focus-visible:ring-destructive" : ""}
+              aria-invalid={factorInvalid}
+              className={factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}
             />
             {factorInvalid && (
               <p className="text-xs text-destructive">O fator deve ser um número maior que zero.</p>
             )}
-            {factorMissing && (
-              <p className="text-xs text-destructive">Informe o fator para calcular o valor bruto.</p>
-            )}
+            <p className="text-xs text-muted-foreground">
+              Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
+            </p>
             <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais. Obrigatório.</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
