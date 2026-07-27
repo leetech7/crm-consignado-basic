@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN fator NUMERIC(12,5) DEFAULT 0;
