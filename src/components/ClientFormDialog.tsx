@@ -89,6 +89,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
+  const [fatorTouched, setFatorTouched] = useState(false);
+  const { data: ageFactors } = useAgeFactors();
+
+  // Auto-preenche fator a partir da idade (a menos que editado manualmente)
+  useEffect(() => {
+    if (fatorTouched) return;
+    const idadeNum = parseInt(form.idade, 10);
+    const f = factorForAge(ageFactors, Number.isFinite(idadeNum) ? idadeNum : null);
+    if (f == null) return;
+    const formatted = f.toFixed(5);
+    setForm((prev) => (prev.fator === formatted ? prev : { ...prev, fator: formatted }));
+  }, [form.idade, ageFactors, fatorTouched]);
 
   const factorNum = Number(form.fator);
   const factorInvalid = form.fator !== "" && (Number.isNaN(factorNum) || factorNum <= 0);
