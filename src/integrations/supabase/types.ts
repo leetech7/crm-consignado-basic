@@ -49,6 +49,27 @@ export type Database = {
           },
         ]
       }
+      age_factors: {
+        Row: {
+          fator: number
+          idade: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          fator: number
+          idade: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          fator?: number
+          idade?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       client_attachments: {
         Row: {
           categoria: string
