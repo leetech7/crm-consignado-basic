@@ -104,8 +104,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   const factorNum = Number(form.fator);
   const factorInvalid = form.fator !== "" && (Number.isNaN(factorNum) || factorNum <= 0);
-  const factorMissing = form.fator === "";
-  const factorError = factorInvalid || factorMissing;
 
   // Auto-calcula valor bruto = margem / fator (a menos que o usuário tenha editado manualmente)
   useEffect(() => {
