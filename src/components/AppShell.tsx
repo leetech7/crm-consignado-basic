@@ -17,6 +17,7 @@ import {
   Menu,
   TrendingUp,
   Settings,
+  Sigma,
 } from "lucide-react";
 
 const NAV = [
@@ -53,18 +54,32 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
         );
       })}
       {isAdmin && (
-        <Link
-          to="/app/equipe"
-          onClick={onNavigate}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
-            path.startsWith("/app/equipe")
-              ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-              : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-          }`}
-        >
-          <Settings className="h-4 w-4" />
-          Equipe
-        </Link>
+        <>
+          <Link
+            to="/app/equipe"
+            onClick={onNavigate}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+              path.startsWith("/app/equipe")
+                ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+            }`}
+          >
+            <Settings className="h-4 w-4" />
+            Equipe
+          </Link>
+          <Link
+            to="/app/fatores"
+            onClick={onNavigate}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+              path.startsWith("/app/fatores")
+                ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+            }`}
+          >
+            <Sigma className="h-4 w-4" />
+            Fatores
+          </Link>
+        </>
       )}
     </nav>
   );

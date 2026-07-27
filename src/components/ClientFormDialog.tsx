@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { STAGES, ORGAOS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 
 // Formata o telefone progressivamente da esquerda para a direita.
 // Aceita digitação livre, sem prefixar DDI automaticamente.
@@ -88,6 +89,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
+  const [fatorTouched, setFatorTouched] = useState(false);
+  const { data: ageFactors } = useAgeFactors();
+
+  // Auto-preenche fator a partir da idade (a menos que editado manualmente)
+  useEffect(() => {
+    if (fatorTouched) return;
+    const idadeNum = parseInt(form.idade, 10);
+    const f = factorForAge(ageFactors, Number.isFinite(idadeNum) ? idadeNum : null);
+    if (f == null) return;
+    const formatted = f.toFixed(5);
+    setForm((prev) => (prev.fator === formatted ? prev : { ...prev, fator: formatted }));
+  }, [form.idade, ageFactors, fatorTouched]);
 
   const factorNum = Number(form.fator);
   const factorInvalid = form.fator !== "" && (Number.isNaN(factorNum) || factorNum <= 0);
@@ -135,9 +148,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       });
     } else setForm(empty);
     setValorBrutoTouched(!!client?.valor_bruto);
+    // Considera o fator existente como manual se já veio salvo (não sobrescreve ao trocar idade)
+    setFatorTouched(!!client?.fator);
   }, [client, open]);
 
-  const update = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const update = (k: keyof typeof form, v: string) => {
+    if (k === "fator") setFatorTouched(true);
+    setForm((f) => ({ ...f, [k]: v }));
+  };
 
   const calcAge = (dob: string): string => {
     if (!dob) return "";
