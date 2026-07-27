@@ -87,6 +87,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const { user } = useAuth();
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
+  const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
+
+  // Auto-calcula valor bruto = margem / fator (a menos que o usuário tenha editado manualmente)
+  useEffect(() => {
+    if (valorBrutoTouched) return;
+    const m = parseFloat(form.margem_disponivel);
+    const f = parseFloat(form.fator);
+    if (m > 0 && f > 0) {
+      const calc = (m / f).toFixed(2);
+      setForm((prev) => (prev.valor_bruto === calc ? prev : { ...prev, valor_bruto: calc }));
+    }
+  }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
 
   useEffect(() => {
     if (client) {
@@ -112,6 +124,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         stage: client.stage,
       });
     } else setForm(empty);
+    setValorBrutoTouched(!!client?.valor_bruto);
   }, [client, open]);
 
   const update = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
