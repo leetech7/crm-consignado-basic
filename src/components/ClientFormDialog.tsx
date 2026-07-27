@@ -89,12 +89,22 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [busy, setBusy] = useState(false);
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
 
+  const factorNum = Number(form.fator);
+  const factorInvalid = form.fator !== "" && (Number.isNaN(factorNum) || factorNum <= 0);
+  const factorMissing = form.fator === "";
+  const factorError = factorInvalid || factorMissing;
+
   // Auto-calcula valor bruto = margem / fator (a menos que o usuário tenha editado manualmente)
   useEffect(() => {
     if (valorBrutoTouched) return;
     const m = parseFloat(form.margem_disponivel);
     const f = parseFloat(form.fator);
-    if (m > 0 && f > 0) {
+    if (Number.isNaN(f) || f <= 0) {
+      // Evita divisão por zero/fator inválido e limpa valor bruto se estava calculado
+      setForm((prev) => (prev.valor_bruto === "" ? prev : { ...prev, valor_bruto: "" }));
+      return;
+    }
+    if (m > 0) {
       const calc = (m / f).toFixed(2);
       setForm((prev) => (prev.valor_bruto === calc ? prev : { ...prev, valor_bruto: calc }));
     }
