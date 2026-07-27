@@ -148,9 +148,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       });
     } else setForm(empty);
     setValorBrutoTouched(!!client?.valor_bruto);
+    // Considera o fator existente como manual se já veio salvo (não sobrescreve ao trocar idade)
+    setFatorTouched(!!client?.fator);
   }, [client, open]);
 
-  const update = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const update = (k: keyof typeof form, v: string) => {
+    if (k === "fator") setFatorTouched(true);
+    setForm((f) => ({ ...f, [k]: v }));
+  };
 
   const calcAge = (dob: string): string => {
     if (!dob) return "";
