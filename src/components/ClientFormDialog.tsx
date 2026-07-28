@@ -103,7 +103,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   }, [form.idade, ageFactors, fatorTouched]);
 
   const factorNum = Number(form.fator);
-  const factorInvalid = form.fator !== "" && (Number.isNaN(factorNum) || factorNum <= 0);
+  const factorInvalid = form.fator !== "" && Number.isNaN(factorNum);
 
   // Auto-calcula valor bruto = margem / fator (a menos que o usuário tenha editado manualmente)
   useEffect(() => {
@@ -177,8 +177,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       toast.error("CPF inválido. Verifique os dígitos.");
       return;
     }
-    if (form.fator !== "" && (Number.isNaN(Number(form.fator)) || Number(form.fator) <= 0)) {
-      toast.error("Fator inválido. Informe um número maior que zero ou deixe em branco.");
+    if (form.fator !== "" && Number.isNaN(Number(form.fator))) {
+      toast.error("Fator inválido. Informe um número válido ou deixe em branco.");
       return;
     }
     setBusy(true);
@@ -446,7 +446,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               className={factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}
             />
             {factorInvalid && (
-              <p className="text-xs text-destructive">O fator deve ser um número maior que zero.</p>
+              <p className="text-xs text-destructive">O fator deve ser um número válido.</p>
             )}
             <p className="text-xs text-muted-foreground">
               Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
