@@ -177,8 +177,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       toast.error("CPF inválido. Verifique os dígitos.");
       return;
     }
-    if (form.fator !== "" && (Number.isNaN(Number(form.fator)) || Number(form.fator) <= 0)) {
-      toast.error("Fator inválido. Informe um número maior que zero ou deixe em branco.");
+    if (form.fator !== "" && Number.isNaN(Number(form.fator))) {
+      toast.error("Fator inválido. Informe um número válido ou deixe em branco.");
       return;
     }
     setBusy(true);
