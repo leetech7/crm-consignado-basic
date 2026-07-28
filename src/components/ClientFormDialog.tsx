@@ -201,7 +201,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
-      fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : 0,
+      fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
     };
 
@@ -451,7 +451,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">
               Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
             </p>
-            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais. Obrigatório.</p>
+            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Valor RPS total (R$)</Label>
