@@ -166,6 +166,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     return age >= 0 && age < 150 ? String(age) : "";
   };
 
+  const formatFactorDisplay = (raw: string): string => {
+    if (!raw) return "";
+    const n = parseFloat(raw);
+    if (!Number.isFinite(n) || n <= 0) return "";
+    const d = Math.round(n * 100000).toString().padStart(6, "0");
+    return `${parseInt(d.slice(0, -5), 10)},${d.slice(-5)}`;
+  };
+
   const handleDobChange = (v: string) => {
     setForm((f) => ({ ...f, data_nascimento: v, idade: calcAge(v) || f.idade }));
   };
