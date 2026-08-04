@@ -618,9 +618,12 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <ClientAttachments clientId={client.id} />
             </div>
           )}
-          <DialogFooter className="sm:col-span-2">
+          <DialogFooter className="sm:col-span-2 flex-wrap gap-2">
             <Button type="button" variant="secondary" onClick={() => setOpenProposal(true)}>
               <FileText className="mr-2 h-4 w-4" />Gerar proposta
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => setOpenReport(true)}>
+              <ImageIcon className="mr-2 h-4 w-4" />Relatório (imagem)
             </Button>
             <Button type="button" variant="outline" onClick={discardDraft}>Cancelar</Button>
             <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
@@ -636,6 +639,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           telefone={form.telefone}
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
+        />
+        <ReportImageDialog
+          open={openReport}
+          onOpenChange={setOpenReport}
+          nome={form.nome}
+          telefone={form.telefone}
+          orgao={form.orgao}
+          valorBruto={parseFloat(form.valor_bruto) || 0}
+          taxaRps={parseFloat(form.taxa_rps) || 0}
+          margem={parseFloat(form.margem_disponivel) || 0}
+          fator={form.fator ? parseFloat(form.fator) : null}
         />
       </DialogContent>
     </Dialog>
