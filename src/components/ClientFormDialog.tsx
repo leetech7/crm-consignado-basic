@@ -84,13 +84,51 @@ const empty = {
   stage: "novo" as PipelineStage,
 };
 
+const draftKey = (id?: string | null) => `crm:client-draft:${id ?? "new"}`;
+
+const readDraft = (id?: string | null): typeof empty | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(draftKey(id));
+    return raw ? (JSON.parse(raw) as typeof empty) : null;
+  } catch {
+    return null;
+  }
+};
+
+const clearDraft = (id?: string | null) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(draftKey(id));
+  } catch {
+    /* ignore */
+  }
+};
+
 export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props) {
   const { user } = useAuth();
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
+  const [restored, setRestored] = useState(false);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const hydratedRef = useRef(false);
   const { data: ageFactors } = useAgeFactors();
+
+  // Autosave: grava rascunho no navegador enquanto o formulário está aberto
+  useEffect(() => {
+    if (!open || !hydratedRef.current) return;
+    const t = setTimeout(() => {
+      try {
+        window.localStorage.setItem(draftKey(client?.id), JSON.stringify(form));
+        setSavedAt(new Date());
+      } catch {
+        /* ignore */
+      }
+    }, 600);
+    return () => clearTimeout(t);
+  }, [form, open, client?.id]);
 
   // Auto-preenche fator a partir da idade (a menos que editado manualmente)
   useEffect(() => {
