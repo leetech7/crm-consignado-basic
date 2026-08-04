@@ -455,37 +455,44 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Fator</Label>
-            <Input
-              type="text"
-              inputMode="numeric"
-              value={(() => {
-                if (!form.fator) return "";
-                const n = parseFloat(form.fator);
-                if (!Number.isFinite(n) || n <= 0) return "";
-                const d = Math.round(n * 100000).toString().padStart(6, "0");
-                return `${parseInt(d.slice(0, -5), 10)},${d.slice(-5)}`;
-              })()}
-              onChange={(e) => {
-                const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
-                if (!digits) { update("fator", ""); return; }
-                update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
-              }}
-              onFocus={(e) => {
-                const el = e.currentTarget;
-                requestAnimationFrame(() => {
+            <div className="flex items-center gap-2">
+              <Input
+                className={`flex-1 ${factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}`}
+                type="text"
+                inputMode="numeric"
+                value={formatFactorDisplay(form.fator)}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
+                  if (!digits) { update("fator", ""); return; }
+                  update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
+                }}
+                onFocus={(e) => {
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    const len = el.value.length;
+                    el.setSelectionRange(len, len);
+                  });
+                }}
+                onClick={(e) => {
+                  const el = e.currentTarget;
                   const len = el.value.length;
                   el.setSelectionRange(len, len);
-                });
-              }}
-              onClick={(e) => {
-                const el = e.currentTarget;
-                const len = el.value.length;
-                el.setSelectionRange(len, len);
-              }}
-              placeholder="0,00000"
-              aria-invalid={factorInvalid}
-              className={factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}
-            />
+                }}
+                placeholder="0,00000"
+                aria-invalid={factorInvalid}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.fator}
+                onClick={() => copyToClipboard(formatFactorDisplay(form.fator))}
+                title="Copiar fator"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
             {factorInvalid && (
               <p className="text-xs text-destructive">O fator deve ser um número válido.</p>
             )}
