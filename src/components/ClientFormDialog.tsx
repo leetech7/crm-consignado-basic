@@ -277,21 +277,48 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>Data de nascimento</Label>
-            <Input
-              type="date"
-              value={form.data_nascimento}
-              onChange={(e) => handleDobChange(e.target.value)}
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                type="date"
+                value={form.data_nascimento}
+                onChange={(e) => handleDobChange(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.data_nascimento}
+                onClick={() => copyToClipboard(form.data_nascimento)}
+                title="Copiar data de nascimento"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>Idade</Label>
-            <Input
-              type="number"
-              value={form.idade}
-              onChange={(e) => update("idade", e.target.value)}
-              readOnly={!!form.data_nascimento}
-              className={form.data_nascimento ? "bg-muted" : ""}
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                type="number"
+                value={form.idade}
+                onChange={(e) => update("idade", e.target.value)}
+                readOnly={!!form.data_nascimento}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.idade}
+                onClick={() => copyToClipboard(form.idade)}
+                title="Copiar idade"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>Telefone</Label>
