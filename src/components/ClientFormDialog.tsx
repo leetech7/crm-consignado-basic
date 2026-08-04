@@ -615,11 +615,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
           )}
           <DialogFooter className="sm:col-span-2">
+            <Button type="button" variant="secondary" onClick={() => setOpenProposal(true)}>
+              <FileText className="mr-2 h-4 w-4" />Gerar proposta
+            </Button>
             <Button type="button" variant="outline" onClick={discardDraft}>Cancelar</Button>
             <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
               {busy ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
+
         </form>
       </DialogContent>
     </Dialog>
