@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Calculator, RefreshCcw } from "lucide-react";
+import { Copy, Calculator, RefreshCcw, FileText } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +46,9 @@ const formatPhoneInput = (raw: string): string => {
   }
   return out;
 };
+import { ProposalDialog } from "@/components/ProposalDialog";
 import { ClientAttachments } from "@/components/ClientAttachments";
+
 import { toast } from "sonner";
 
 const copyToClipboard = async (text: string) => {
@@ -109,6 +111,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const { user } = useAuth();
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
+  const [openProposal, setOpenProposal] = useState(false);
+
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
   const [restored, setRestored] = useState(false);
@@ -615,13 +619,26 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
           )}
           <DialogFooter className="sm:col-span-2">
+            <Button type="button" variant="secondary" onClick={() => setOpenProposal(true)}>
+              <FileText className="mr-2 h-4 w-4" />Gerar proposta
+            </Button>
             <Button type="button" variant="outline" onClick={discardDraft}>Cancelar</Button>
             <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
               {busy ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
+
         </form>
+        <ProposalDialog
+          open={openProposal}
+          onOpenChange={setOpenProposal}
+          nome={form.nome}
+          telefone={form.telefone}
+          valorBruto={parseFloat(form.valor_bruto) || 0}
+          taxaRps={parseFloat(form.taxa_rps) || 0}
+        />
       </DialogContent>
     </Dialog>
+
   );
 }
