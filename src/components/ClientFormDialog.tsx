@@ -271,6 +271,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       }
 
       toast.success(client ? "Cliente atualizado" : "Cliente cadastrado");
+      hydratedRef.current = false;
+      clearDraft(client?.id);
+      setRestored(false);
+      setSavedAt(null);
       setForm(empty);
       onOpenChange(false);
       onSaved?.();
@@ -279,6 +283,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     } finally {
       setBusy(false);
     }
+  };
+
+  const discardDraft = () => {
+    hydratedRef.current = false;
+    clearDraft(client?.id);
+    setRestored(false);
+    setSavedAt(null);
+    onOpenChange(false);
   };
 
   return (
@@ -292,7 +304,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       >
         <DialogHeader>
           <DialogTitle>{client ? "Editar cliente" : "Novo cliente"}</DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            {restored
+              ? "Rascunho recuperado — suas alterações não salvas foram restauradas."
+              : savedAt
+                ? `Rascunho salvo automaticamente às ${savedAt.toLocaleTimeString("pt-BR")}`
+                : "As alterações são guardadas automaticamente neste navegador."}
+          </p>
         </DialogHeader>
+
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Nome *</Label>
