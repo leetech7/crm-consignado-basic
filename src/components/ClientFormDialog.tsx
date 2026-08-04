@@ -627,7 +627,16 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </DialogFooter>
 
         </form>
+        <ProposalDialog
+          open={openProposal}
+          onOpenChange={setOpenProposal}
+          nome={form.nome}
+          telefone={form.telefone}
+          valorBruto={parseFloat(form.valor_bruto) || 0}
+          taxaRps={parseFloat(form.taxa_rps) || 0}
+        />
       </DialogContent>
     </Dialog>
+
   );
 }
