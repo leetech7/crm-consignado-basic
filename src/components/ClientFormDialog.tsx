@@ -46,7 +46,9 @@ const formatPhoneInput = (raw: string): string => {
   }
   return out;
 };
+import { ProposalDialog } from "@/components/ProposalDialog";
 import { ClientAttachments } from "@/components/ClientAttachments";
+
 import { toast } from "sonner";
 
 const copyToClipboard = async (text: string) => {
