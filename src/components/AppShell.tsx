@@ -95,8 +95,7 @@ function SidebarBrand() {
         <TrendingUp className="h-4 w-4 text-primary-foreground" />
       </div>
       <div className="flex flex-col leading-tight">
-        <span className="text-sm font-bold tracking-tight">CRM Consignado</span>
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">PRO</span>
+        <span className="text-sm font-bold tracking-tight">CRM-OSC - CONSIG</span>
       </div>
     </div>
   );
@@ -172,7 +171,7 @@ export function AppShell() {
             >
               <TrendingUp className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
-            <span className="text-sm font-bold">CRM Consignado <span className="text-primary">PRO</span></span>
+            <span className="text-sm font-bold">CRM-OSC - CONSIG</span>
           </div>
           <Button variant="ghost" size="icon" onClick={toggle}>
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

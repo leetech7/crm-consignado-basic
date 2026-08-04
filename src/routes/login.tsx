@@ -58,7 +58,7 @@ function LoginPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
             <TrendingUp className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold tracking-tight">CRM Consignado <span className="text-primary">PRO</span></span>
+          <span className="text-xl font-bold tracking-tight">CRM-OSC - CONSIG</span>
         </Link>
 
         <Card className="border-border/60 p-6" style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}>
