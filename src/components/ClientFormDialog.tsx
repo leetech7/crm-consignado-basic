@@ -160,12 +160,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
 
   useEffect(() => {
+    if (!open) {
+      hydratedRef.current = false;
+      return;
+    }
+    const draft = readDraft(client?.id);
     if (client) {
       const pc = client.proximo_contato ? new Date(client.proximo_contato) : null;
       const pad = (n: number) => String(n).padStart(2, "0");
       const dateStr = pc ? `${pc.getFullYear()}-${pad(pc.getMonth() + 1)}-${pad(pc.getDate())}` : "";
       const timeStr = pc ? `${pad(pc.getHours())}:${pad(pc.getMinutes())}` : "";
-      setForm({
+      setForm(draft ?? {
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
         idade: client.idade?.toString() ?? "",
@@ -182,11 +187,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
-    } else setForm(empty);
-    setValorBrutoTouched(!!client?.valor_bruto);
+    } else setForm(draft ?? empty);
+    setRestored(!!draft);
+    setSavedAt(null);
+    setValorBrutoTouched(!!(draft?.valor_bruto || client?.valor_bruto));
     // Considera o fator existente como manual se já veio salvo (não sobrescreve ao trocar idade)
-    setFatorTouched(!!client?.fator);
+    setFatorTouched(!!(draft?.fator || client?.fator));
+    hydratedRef.current = true;
   }, [client, open]);
+
 
   const update = (k: keyof typeof form, v: string) => {
     if (k === "fator") setFatorTouched(true);
