@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
 import { STAGES, ORGAOS, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
-import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Heart, Image as ImageIcon } from "lucide-react";
+import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/clientes")({
@@ -41,6 +42,7 @@ function ClientesPage() {
 
   const [openForm, setOpenForm] = useState(false);
   const [editing, setEditing] = useState<Client | null>(null);
+  const [reportClient, setReportClient] = useState<Client | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -384,6 +386,9 @@ function ClientesPage() {
                   <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
+                      <Button size="icon" variant="ghost" onClick={() => setReportClient(c)} title="Relatório em imagem">
+                        <ImageIcon className="h-4 w-4 text-primary" />
+                      </Button>
                       <Button size="icon" variant="ghost" onClick={() => openWhatsApp(c)} title="WhatsApp">
                         <MessageCircle className="h-4 w-4 text-success" />
                       </Button>
@@ -439,6 +444,17 @@ function ClientesPage() {
       </Card>
 
       <ClientFormDialog open={openForm} onOpenChange={setOpenForm} client={editing} onSaved={load} />
+      <ReportImageDialog
+        open={!!reportClient}
+        onOpenChange={(v) => { if (!v) setReportClient(null); }}
+        nome={reportClient?.nome ?? ""}
+        telefone={reportClient?.telefone}
+        orgao={reportClient?.orgao}
+        valorBruto={Number(reportClient?.valor_bruto ?? 0)}
+        taxaRps={Number(reportClient?.taxa_rps ?? 0)}
+        margem={Number(reportClient?.margem_disponivel ?? 0)}
+        fator={reportClient?.fator ? Number(reportClient.fator) : null}
+      />
     </div>
   );
 }
