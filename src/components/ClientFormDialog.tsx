@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, Calculator, RefreshCcw } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -84,13 +84,51 @@ const empty = {
   stage: "novo" as PipelineStage,
 };
 
+const draftKey = (id?: string | null) => `crm:client-draft:${id ?? "new"}`;
+
+const readDraft = (id?: string | null): typeof empty | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(draftKey(id));
+    return raw ? (JSON.parse(raw) as typeof empty) : null;
+  } catch {
+    return null;
+  }
+};
+
+const clearDraft = (id?: string | null) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(draftKey(id));
+  } catch {
+    /* ignore */
+  }
+};
+
 export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props) {
   const { user } = useAuth();
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
+  const [restored, setRestored] = useState(false);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const hydratedRef = useRef(false);
   const { data: ageFactors } = useAgeFactors();
+
+  // Autosave: grava rascunho no navegador enquanto o formulário está aberto
+  useEffect(() => {
+    if (!open || !hydratedRef.current) return;
+    const t = setTimeout(() => {
+      try {
+        window.localStorage.setItem(draftKey(client?.id), JSON.stringify(form));
+        setSavedAt(new Date());
+      } catch {
+        /* ignore */
+      }
+    }, 600);
+    return () => clearTimeout(t);
+  }, [form, open, client?.id]);
 
   // Auto-preenche fator a partir da idade (a menos que editado manualmente)
   useEffect(() => {
@@ -122,12 +160,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
 
   useEffect(() => {
+    if (!open) {
+      hydratedRef.current = false;
+      return;
+    }
+    const draft = readDraft(client?.id);
     if (client) {
       const pc = client.proximo_contato ? new Date(client.proximo_contato) : null;
       const pad = (n: number) => String(n).padStart(2, "0");
       const dateStr = pc ? `${pc.getFullYear()}-${pad(pc.getMonth() + 1)}-${pad(pc.getDate())}` : "";
       const timeStr = pc ? `${pad(pc.getHours())}:${pad(pc.getMinutes())}` : "";
-      setForm({
+      setForm(draft ?? {
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
         idade: client.idade?.toString() ?? "",
@@ -144,11 +187,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
-    } else setForm(empty);
-    setValorBrutoTouched(!!client?.valor_bruto);
+    } else setForm(draft ?? empty);
+    setRestored(!!draft);
+    setSavedAt(null);
+    setValorBrutoTouched(!!(draft?.valor_bruto || client?.valor_bruto));
     // Considera o fator existente como manual se já veio salvo (não sobrescreve ao trocar idade)
-    setFatorTouched(!!client?.fator);
+    setFatorTouched(!!(draft?.fator || client?.fator));
+    hydratedRef.current = true;
   }, [client, open]);
+
 
   const update = (k: keyof typeof form, v: string) => {
     if (k === "fator") setFatorTouched(true);
@@ -224,6 +271,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       }
 
       toast.success(client ? "Cliente atualizado" : "Cliente cadastrado");
+      hydratedRef.current = false;
+      clearDraft(client?.id);
+      setRestored(false);
+      setSavedAt(null);
       setForm(empty);
       onOpenChange(false);
       onSaved?.();
@@ -232,6 +283,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     } finally {
       setBusy(false);
     }
+  };
+
+  const discardDraft = () => {
+    hydratedRef.current = false;
+    clearDraft(client?.id);
+    setRestored(false);
+    setSavedAt(null);
+    onOpenChange(false);
   };
 
   return (
@@ -245,7 +304,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       >
         <DialogHeader>
           <DialogTitle>{client ? "Editar cliente" : "Novo cliente"}</DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            {restored
+              ? "Rascunho recuperado — suas alterações não salvas foram restauradas."
+              : savedAt
+                ? `Rascunho salvo automaticamente às ${savedAt.toLocaleTimeString("pt-BR")}`
+                : "As alterações são guardadas automaticamente neste navegador."}
+          </p>
         </DialogHeader>
+
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Nome *</Label>
@@ -548,7 +615,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
           )}
           <DialogFooter className="sm:col-span-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={discardDraft}>Cancelar</Button>
             <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
               {busy ? "Salvando..." : "Salvar"}
             </Button>
