@@ -9,10 +9,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CRM Consignado PRO" },
+      { title: "CRM-OSC - CONSIG" },
       { name: "description", content: "CRM SaaS para equipes de vendas de crédito consignado." },
-      { property: "og:title", content: "CRM Consignado PRO" },
-      { name: "twitter:title", content: "CRM Consignado PRO" },
+      { property: "og:title", content: "CRM-OSC - CONSIG" },
+      { name: "twitter:title", content: "CRM-OSC - CONSIG" },
       { property: "og:description", content: "CRM SaaS para equipes de vendas de crédito consignado." },
       { name: "twitter:description", content: "CRM SaaS para equipes de vendas de crédito consignado." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1fa9a16b-f486-4220-9bd1-88a99da304ba/id-preview-3c5da1fe--2826a3ca-55aa-4d94-85e6-1317d59f8cb2.lovable.app-1777685950975.png" },
