@@ -113,6 +113,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [openProposal, setOpenProposal] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
 
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
