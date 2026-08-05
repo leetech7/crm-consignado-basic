@@ -185,9 +185,9 @@ function ClientesPage() {
             {hasFilters && " (filtrado)"}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4 mr-2" />CSV</Button>
-          <Button onClick={() => { setEditing(null); setOpenForm(true); }} style={{ background: "var(--gradient-primary)" }}>
+        <div className="grid grid-cols-2 gap-2 sm:flex">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={exportCSV}><Download className="h-4 w-4 mr-2" />CSV</Button>
+          <Button className="w-full sm:w-auto" onClick={() => { setEditing(null); setOpenForm(true); }} style={{ background: "var(--gradient-primary)" }}>
             <Plus className="h-4 w-4 mr-2" />Novo
           </Button>
         </div>
@@ -294,7 +294,52 @@ function ClientesPage() {
       </Card>
 
       <Card className="overflow-hidden" style={{ background: "var(--gradient-card)" }}>
-        <div className="overflow-x-auto">
+        <div className="grid gap-3 p-3 md:hidden">
+          {loading ? (
+            <div className="py-8 text-center text-sm text-muted-foreground">Carregando...</div>
+          ) : paginated.length === 0 ? (
+            <div className="py-8 text-center text-sm text-muted-foreground">Nenhum cliente encontrado</div>
+          ) : paginated.map((c) => (
+            <article key={c.id} className="rounded-md border border-border/60 bg-card p-3">
+              <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 shrink-0"
+                  onClick={() => toggleFavorito(c)}
+                  title={c.favorito ? "Remover dos favoritos" : "Marcar como favorito"}
+                >
+                  <Heart className={c.favorito ? "h-4 w-4 text-destructive" : "h-4 w-4 text-muted-foreground"} fill={c.favorito ? "currentColor" : "none"} />
+                </Button>
+                <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
+                  <span className="block truncate font-semibold">{c.nome}</span>
+                  <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
+                </button>
+                <Badge variant="outline" className="max-w-28 truncate" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
+                  {stageLabel(c.stage as PipelineStage)}
+                </Badge>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/50 pt-3 text-xs">
+                <div><span className="block text-muted-foreground">Órgão</span><span className="block truncate">{c.orgao ?? "—"}</span></div>
+                <div><span className="block text-muted-foreground">Margem</span><span className="font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</span></div>
+              </div>
+              <div className="mt-3 grid grid-cols-4 gap-1">
+                <Button size="icon" variant="ghost" className="w-full" onClick={() => setReportClient(c)} title="Relatório em imagem"><ImageIcon className="h-4 w-4 text-primary" /></Button>
+                <Button size="icon" variant="ghost" className="w-full" onClick={() => openWhatsApp(c)} title="WhatsApp"><MessageCircle className="h-4 w-4 text-success" /></Button>
+                <Button size="icon" variant="ghost" className="w-full" onClick={() => { setEditing(c); setOpenForm(true); }} title="Editar"><Pencil className="h-4 w-4" /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild><Button size="icon" variant="ghost" className="w-full" title="Excluir"><Trash2 className="h-4 w-4 text-destructive" /></Button></AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader><AlertDialogTitle>Excluir cliente?</AlertDialogTitle><AlertDialogDescription>Esta ação não pode ser desfeita. {c.nome} será removido permanentemente.</AlertDialogDescription></AlertDialogHeader>
+                    <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => remove(c.id)}>Excluir</AlertDialogAction></AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
@@ -429,7 +474,7 @@ function ClientesPage() {
             </Select>
             <span>por página</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2 sm:justify-start">
             <Button size="sm" variant="outline" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
