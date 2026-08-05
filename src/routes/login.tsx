@@ -54,14 +54,14 @@ function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background p-4" style={{ backgroundImage: "var(--gradient-hero)" }}>
       <div className="w-full max-w-md">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2">
+        <Link to="/" className="mb-6 flex min-w-0 items-center justify-center gap-2 sm:mb-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
             <TrendingUp className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold tracking-tight">CRM-OSC - CONSIG</span>
+          <span className="truncate text-lg font-bold sm:text-xl">CRM-OSC - CONSIG</span>
         </Link>
 
-        <Card className="border-border/60 p-6" style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}>
+        <Card className="border-border/60 p-4 sm:p-6" style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}>
           <Tabs defaultValue="login">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Entrar</TabsTrigger>

@@ -156,7 +156,7 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Topbar mobile */}
-        <header className="flex h-14 items-center justify-between border-b border-border bg-card/40 px-4 backdrop-blur md:hidden">
+        <header className="grid h-14 grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] items-center gap-2 border-b border-border bg-card/40 px-3 backdrop-blur md:hidden">
           <Sheet open={openMobile} onOpenChange={setOpenMobile}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -164,14 +164,14 @@ export function AppShell() {
               </Button>
             </SheetTrigger>
           </Sheet>
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center justify-center gap-2">
             <div
               className="flex h-7 w-7 items-center justify-center rounded-md"
               style={{ background: "var(--gradient-primary)" }}
             >
               <TrendingUp className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
-            <span className="text-sm font-bold">CRM-OSC - CONSIG</span>
+            <span className="truncate text-sm font-bold">CRM-OSC - CONSIG</span>
           </div>
           <Button variant="ghost" size="icon" onClick={toggle}>
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

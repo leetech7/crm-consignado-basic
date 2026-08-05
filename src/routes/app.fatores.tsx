@@ -133,7 +133,7 @@ function FatoresPage() {
       </div>
 
       <Card className="p-4 md:p-6" style={{ background: "var(--gradient-card)" }}>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center">
           <input
             ref={fileRef}
             type="file"
@@ -144,16 +144,16 @@ function FatoresPage() {
               if (f) handleImport(f);
             }}
           />
-          <Button onClick={() => fileRef.current?.click()} disabled={busy} className="gap-2">
+          <Button onClick={() => fileRef.current?.click()} disabled={busy} className="w-full gap-2 sm:w-auto">
             <Upload className="h-4 w-4" /> Importar CSV
           </Button>
-          <Button variant="outline" onClick={downloadTemplate} className="gap-2">
+          <Button variant="outline" onClick={downloadTemplate} className="w-full gap-2 sm:w-auto">
             <FileText className="h-4 w-4" /> Modelo CSV
           </Button>
-          <Button variant="outline" onClick={exportCsv} disabled={!data.length} className="gap-2">
+          <Button variant="outline" onClick={exportCsv} disabled={!data.length} className="w-full gap-2 sm:w-auto">
             <Download className="h-4 w-4" /> Exportar atual
           </Button>
-          <label className="ml-auto flex items-center gap-2 text-sm">
+          <label className="flex items-start gap-2 text-sm sm:ml-auto sm:items-center">
             <Checkbox
               checked={replaceAll}
               onCheckedChange={(v) => setReplaceAll(v === true)}
@@ -169,23 +169,23 @@ function FatoresPage() {
 
       <Card className="p-4 md:p-6" style={{ background: "var(--gradient-card)" }}>
         <h2 className="mb-3 text-sm font-semibold">Adicionar / atualizar manualmente</h2>
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-end">
           <div className="space-y-1.5">
             <Label>Idade</Label>
             <Input
-              type="number" min="0" max="149" className="w-28"
+              type="number" min="0" max="149" className="w-full sm:w-28"
               value={newIdade} onChange={(e) => setNewIdade(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
             <Label>Fator</Label>
             <Input
-              type="number" step="0.00001" min="0.00001" className="w-40"
+              type="number" step="0.00001" min="0.00001" className="w-full sm:w-40"
               value={newFator} onChange={(e) => setNewFator(e.target.value)}
               placeholder="0,00000"
             />
           </div>
-          <Button onClick={addRow}>Salvar</Button>
+          <Button className="w-full sm:w-auto" onClick={addRow}>Salvar</Button>
         </div>
       </Card>
 
