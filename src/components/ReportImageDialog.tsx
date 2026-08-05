@@ -250,11 +250,11 @@ export function ReportImageDialog({
           </div>
         </div>
 
-        <DialogFooter className="flex-wrap gap-2">
-          <Button type="button" variant="outline" onClick={baixar}><Download className="mr-2 h-4 w-4" />Baixar</Button>
-          <Button type="button" variant="outline" onClick={copiar}><Copy className="mr-2 h-4 w-4" />Copiar imagem</Button>
-          <Button type="button" variant="secondary" onClick={abrirWhats}><MessageCircle className="mr-2 h-4 w-4" />Abrir WhatsApp</Button>
-          <Button type="button" onClick={compartilhar} style={{ background: "var(--gradient-primary)" }}>
+        <DialogFooter className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <Button type="button" variant="outline" className="w-full" onClick={baixar}><Download className="mr-2 h-4 w-4" />Baixar</Button>
+          <Button type="button" variant="outline" className="w-full" onClick={copiar}><Copy className="mr-2 h-4 w-4" />Copiar imagem</Button>
+          <Button type="button" variant="secondary" className="w-full" onClick={abrirWhats}><MessageCircle className="mr-2 h-4 w-4" />WhatsApp</Button>
+          <Button type="button" className="w-full" onClick={compartilhar} style={{ background: "var(--gradient-primary)" }}>
             <Share2 className="mr-2 h-4 w-4" />Enviar imagem
           </Button>
         </DialogFooter>

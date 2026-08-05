@@ -118,11 +118,11 @@ export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto,
           </div>
         </div>
 
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={copiar}>
+        <DialogFooter className="grid grid-cols-1 gap-2 sm:flex">
+          <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={copiar}>
             <Copy className="mr-2 h-4 w-4" />Copiar
           </Button>
-          <Button type="button" onClick={enviar} style={{ background: "var(--gradient-primary)" }}>
+          <Button type="button" className="w-full sm:w-auto" onClick={enviar} style={{ background: "var(--gradient-primary)" }}>
             <MessageCircle className="mr-2 h-4 w-4" />Enviar no WhatsApp
           </Button>
         </DialogFooter>

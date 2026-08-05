@@ -302,7 +302,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-h-[90vh] max-w-2xl overflow-y-auto"
+        className="max-w-2xl"
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
         onFocusOutside={(e) => e.preventDefault()}
@@ -326,7 +326,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="space-y-1.5">
             <Label>CPF</Label>
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
               <Input
                 value={form.cpf}
                 onChange={(e) => update("cpf", formatCPF(e.target.value))}
@@ -499,7 +499,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="outline"
                 size="sm"
-                className="shrink-0 gap-1"
+                className="shrink-0 gap-1 px-2 sm:px-3"
                 title="Recalcular: Margem ÷ Fator"
                 disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
                 onClick={() => {
@@ -508,7 +508,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 }}
               >
                 <RefreshCcw className="h-3.5 w-3.5" />
-                Recalcular
+                <span className="hidden sm:inline">Recalcular</span>
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -620,15 +620,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <ClientAttachments clientId={client.id} />
             </div>
           )}
-          <DialogFooter className="sm:col-span-2 flex-wrap gap-2">
-            <Button type="button" variant="secondary" onClick={() => setOpenProposal(true)}>
+          <DialogFooter className="sm:col-span-2 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+            <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenProposal(true)}>
               <FileText className="mr-2 h-4 w-4" />Gerar proposta
             </Button>
-            <Button type="button" variant="secondary" onClick={() => setOpenReport(true)}>
+            <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenReport(true)}>
               <ImageIcon className="mr-2 h-4 w-4" />Relatório (imagem)
             </Button>
-            <Button type="button" variant="outline" onClick={discardDraft}>Cancelar</Button>
-            <Button type="submit" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
+            <Button type="button" variant="outline" className="w-full" onClick={discardDraft}>Cancelar</Button>
+            <Button type="submit" className="w-full" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
               {busy ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>

@@ -81,7 +81,7 @@ function Dashboard() {
         <p className="text-sm text-muted-foreground">Visão geral da sua operação</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+       <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
         {kpis.map((k) => {
           const Icon = k.icon;
           return (
@@ -90,22 +90,22 @@ function Dashboard() {
               className="p-4 transition-all hover:-translate-y-0.5"
               style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{k.label}</span>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                <span className="min-w-0 text-xs font-medium uppercase text-muted-foreground">{k.label}</span>
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ backgroundColor: `color-mix(in oklab, ${k.color} 15%, transparent)` }}>
                   <Icon className="h-4 w-4" style={{ color: k.color }} />
                 </div>
               </div>
-              <p className="mt-2 text-xl font-bold tracking-tight md:text-2xl">{k.value}</p>
+              <p className="mt-2 break-words text-xl font-bold md:text-2xl">{k.value}</p>
             </Card>
           );
         })}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="p-5" style={{ background: "var(--gradient-card)" }}>
+         <Card className="min-w-0 p-3 sm:p-5" style={{ background: "var(--gradient-card)" }}>
           <h3 className="mb-4 text-sm font-semibold">Pipeline por estágio</h3>
-          <div className="h-72">
+          <div className="h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={pipelineData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -118,9 +118,9 @@ function Dashboard() {
           </div>
         </Card>
 
-        <Card className="p-5" style={{ background: "var(--gradient-card)" }}>
+         <Card className="min-w-0 p-3 sm:p-5" style={{ background: "var(--gradient-card)" }}>
           <h3 className="mb-4 text-sm font-semibold">Vendas pagas — últimos 14 dias</h3>
-          <div className="h-72">
+          <div className="h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={evolucao}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -133,7 +133,7 @@ function Dashboard() {
           </div>
         </Card>
 
-        <Card className="p-5 lg:col-span-2" style={{ background: "var(--gradient-card)" }}>
+         <Card className="min-w-0 p-3 sm:p-5 lg:col-span-2" style={{ background: "var(--gradient-card)" }}>
           <h3 className="mb-4 text-sm font-semibold">Distribuição do pipeline</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">

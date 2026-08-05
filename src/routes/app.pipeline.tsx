@@ -124,7 +124,7 @@ function Column({ stage, clients, onEdit, onMove }: { stage: typeof STAGES[numbe
   return (
     <div
       ref={setNodeRef}
-      className={`flex w-72 shrink-0 flex-col rounded-xl border p-3 transition-colors ${isOver ? "border-primary bg-primary/5" : "border-border bg-card/40"}`}
+      className={`flex w-[calc(100vw-2rem)] max-w-72 shrink-0 flex-col rounded-xl border p-3 transition-colors ${isOver ? "border-primary bg-primary/5" : "border-border bg-card/40"}`}
     >
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -185,13 +185,13 @@ function PipelinePage() {
 
   return (
     <div className="space-y-4 p-4 md:p-8">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Pipeline</h1>
-          <p className="text-sm text-muted-foreground">Arraste os cards para mover entre estágios. Duplo clique para editar.</p>
+          <p className="text-sm text-muted-foreground">Use as setas para mover. Toque no nome para editar.</p>
         </div>
-        <Button onClick={handleNew} style={{ background: "var(--gradient-primary)" }}>
-          <Plus className="h-4 w-4" /> Adicionar cliente
+        <Button size="sm" className="shrink-0" onClick={handleNew} style={{ background: "var(--gradient-primary)" }}>
+          <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Adicionar cliente</span><span className="sm:hidden">Novo</span>
         </Button>
       </div>
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
