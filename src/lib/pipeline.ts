@@ -51,6 +51,7 @@ export interface Client {
   data_nascimento: string | null;
   telefone: string | null;
   orgao: string | null;
+  origem: string | null;
   endereco: string | null;
   observacoes: string | null;
   proximo_contato: string | null;
