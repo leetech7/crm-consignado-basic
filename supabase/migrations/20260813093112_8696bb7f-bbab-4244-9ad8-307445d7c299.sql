@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.prevent_self_commission_change() FROM PUBLIC, anon, authenticated;
