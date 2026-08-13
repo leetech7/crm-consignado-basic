@@ -439,6 +439,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-1.5">
+            <Label>Origem do lead</Label>
+            <Select value={form.origem || undefined} onValueChange={(v) => update("origem", v)}>
+              <SelectTrigger><SelectValue placeholder="De onde veio..." /></SelectTrigger>
+              <SelectContent>
+                {ORIGENS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                {form.origem && !ORIGENS.includes(form.origem as typeof ORIGENS[number]) && (
+                  <SelectItem value={form.origem} disabled>(legado: {form.origem})</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Endereço</Label>
             <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
