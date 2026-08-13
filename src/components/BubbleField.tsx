@@ -179,27 +179,29 @@ export function BubbleField({ clients, onOpen, onPop, popping }: Props) {
             onClick={() => onOpen(client)}
             onDoubleClick={(e) => { e.stopPropagation(); handlePop(client); }}
             title={`${client.nome} • ${stageLabel(client.stage)} — clique para abrir, duplo clique para marcar como PAGO`}
-            className={`absolute left-0 top-0 z-10 flex cursor-pointer select-none flex-col items-center justify-center rounded-full text-center transition-[opacity,filter] ${
-              isPopping ? "bubble-pop" : "bubble-float"
-            }`}
-            style={{
-              width: r * 2,
-              height: r * 2,
-              background: `radial-gradient(circle at 32% 28%, color-mix(in oklab, ${color} 85%, white 25%), color-mix(in oklab, ${color} 70%, transparent))`,
-              border: `1px solid color-mix(in oklab, ${color} 70%, transparent)`,
-              boxShadow: `0 0 ${isHover ? 34 : 18}px color-mix(in oklab, ${color} 45%, transparent), inset 0 -6px 14px color-mix(in oklab, black 25%, transparent)`,
-              zIndex: isHover ? 20 : 10,
-            }}
+            className="absolute left-0 top-0 cursor-pointer select-none"
+            style={{ width: r * 2, height: r * 2, zIndex: isHover ? 20 : 10 }}
           >
-            <span className="px-2 text-[11px] font-semibold leading-tight text-white drop-shadow sm:text-xs">
-              {firstName(client.nome)}
-            </span>
-            {r > 34 && (
-              <span className="px-2 text-[10px] font-mono text-white/85">
-                {formatBRL(Number(client.valor_bruto ?? 0))}
+            <div
+              className={`flex h-full w-full flex-col items-center justify-center rounded-full text-center ${
+                isPopping ? "bubble-pop" : "bubble-float"
+              }`}
+              style={{
+                background: `radial-gradient(circle at 32% 28%, color-mix(in oklab, ${color} 85%, white 25%), color-mix(in oklab, ${color} 70%, transparent))`,
+                border: `1px solid color-mix(in oklab, ${color} 70%, transparent)`,
+                boxShadow: `0 0 ${isHover ? 34 : 18}px color-mix(in oklab, ${color} 45%, transparent), inset 0 -6px 14px color-mix(in oklab, black 25%, transparent)`,
+              }}
+            >
+              <span className="px-2 text-[11px] font-semibold leading-tight text-white drop-shadow sm:text-xs">
+                {firstName(client.nome)}
               </span>
-            )}
-            {isHover && (
+              {r > 34 && (
+                <span className="px-2 text-[10px] font-mono text-white/85">
+                  {formatBRL(Number(client.valor_bruto ?? 0))}
+                </span>
+              )}
+            </div>
+            {isHover && !isPopping && (
               <div className="pointer-events-none absolute -bottom-2 left-1/2 z-40 w-48 -translate-x-1/2 translate-y-full rounded-lg border border-border bg-popover p-2 text-left text-[11px] shadow-lg">
                 <div className="truncate font-semibold text-popover-foreground">{client.nome}</div>
                 <div className="text-muted-foreground">{stageLabel(client.stage)}</div>
@@ -209,6 +211,7 @@ export function BubbleField({ clients, onOpen, onPop, popping }: Props) {
               </div>
             )}
           </div>
+
         );
       })}
     </div>
