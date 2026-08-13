@@ -18,12 +18,14 @@ import {
   TrendingUp,
   Settings,
   Sigma,
+  Circle,
 } from "lucide-react";
 
 const NAV = [
   { to: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app/clientes", label: "Clientes", icon: Users },
   { to: "/app/pipeline", label: "Pipeline", icon: KanbanSquare },
+  { to: "/app/bolhas", label: "Bolhas", icon: Circle },
   { to: "/app/agenda", label: "Agenda", icon: CalendarClock },
   { to: "/app/comissoes", label: "Comissões", icon: Wallet },
 ];
