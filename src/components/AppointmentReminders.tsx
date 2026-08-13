@@ -1,12 +1,43 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, X } from "lucide-react";
 
 const STORAGE_KEY = "notified_appointments";
+
+function BlinkingReminder({ nome, orgao, when, onDismiss }: { nome: string; orgao?: string | null; when: Date; onDismiss: () => void }) {
+  const [blinking, setBlinking] = useState(true);
+  return (
+    <div
+      onClick={() => setBlinking(false)}
+      className={`pointer-events-auto flex w-full items-start gap-4 rounded-xl border border-warning/30 bg-card p-5 shadow-lg ${blinking ? "animate-toast-blink" : ""} cursor-pointer`}
+    >
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-warning/20">
+        <CalendarClock className="h-6 w-6 text-warning" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-lg font-bold leading-tight">Contato agendado: {nome}</div>
+        <div className="mt-1 text-base text-muted-foreground">
+          {orgao ? orgao + " • " : ""}
+          {format(when, "dd/MM 'às' HH:mm", { locale: ptBR })}
+        </div>
+        <div className="mt-2 text-xs text-muted-foreground">{blinking ? "Clique para parar o alerta" : "Alerta pausado"}</div>
+      </div>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onDismiss();
+        }}
+        className="ml-2 shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+      >
+        <X className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
 
 function getNotified(): Set<string> {
   try {
@@ -50,12 +81,17 @@ export function AppointmentReminders() {
           // só dispara se passou no máximo 24h da hora marcada para evitar floods de antigos
           const ageMs = now.getTime() - when.getTime();
           if (ageMs < 24 * 60 * 60 * 1000) {
-            toast(`Contato agendado: ${c.nome}`, {
-              description: `${c.orgao ? c.orgao + " • " : ""}${format(when, "dd/MM 'às' HH:mm", { locale: ptBR })}`,
-              icon: <CalendarClock className="h-4 w-4 text-primary" />,
-              duration: Infinity,
-              closeButton: true,
-            });
+            toast.custom(
+              (t) => (
+                <BlinkingReminder
+                  nome={c.nome}
+                  orgao={c.orgao}
+                  when={when}
+                  onDismiss={() => toast.dismiss(t)}
+                />
+              ),
+              { duration: Infinity }
+            );
           }
           notified.add(key);
           changed = true;
