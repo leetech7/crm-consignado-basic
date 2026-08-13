@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, ORGAOS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, ORIGENS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 
 // Formata o telefone progressivamente da esquerda para a direita.
@@ -76,6 +76,7 @@ const empty = {
   data_nascimento: "",
   telefone: "",
   orgao: "",
+  origem: "",
   endereco: "",
   observacoes: "",
   proximo_contato_data: "",
@@ -183,6 +184,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
+        origem: client.origem ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
         proximo_contato_data: dateStr,
@@ -251,6 +253,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
       orgao: form.orgao || null,
+      origem: form.origem || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
       proximo_contato: form.proximo_contato_data
@@ -432,6 +435,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                 {form.orgao && !ORGAOS.includes(form.orgao as typeof ORGAOS[number]) && (
                   <SelectItem value={form.orgao} disabled>(legado: {form.orgao})</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Origem do lead</Label>
+            <Select value={form.origem || undefined} onValueChange={(v) => update("origem", v)}>
+              <SelectTrigger><SelectValue placeholder="De onde veio..." /></SelectTrigger>
+              <SelectContent>
+                {ORIGENS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                {form.origem && !ORIGENS.includes(form.origem as typeof ORIGENS[number]) && (
+                  <SelectItem value={form.origem} disabled>(legado: {form.origem})</SelectItem>
                 )}
               </SelectContent>
             </Select>

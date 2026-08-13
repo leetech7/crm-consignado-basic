@@ -32,6 +32,13 @@ export const ORGAOS = [
   "GOVERNO (OUTROS)",
 ] as const;
 
+export const ORIGENS = [
+  "Manychat",
+  "Listagem Kamilly",
+  "Lista Thalis",
+  "Outros",
+] as const;
+
 export const stageLabel = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.label ?? s;
 export const stageColor = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.color ?? "oklch(0.6 0 0)";
 
@@ -44,6 +51,7 @@ export interface Client {
   data_nascimento: string | null;
   telefone: string | null;
   orgao: string | null;
+  origem: string | null;
   endereco: string | null;
   observacoes: string | null;
   proximo_contato: string | null;
