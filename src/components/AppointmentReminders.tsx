@@ -81,12 +81,17 @@ export function AppointmentReminders() {
           // só dispara se passou no máximo 24h da hora marcada para evitar floods de antigos
           const ageMs = now.getTime() - when.getTime();
           if (ageMs < 24 * 60 * 60 * 1000) {
-            toast(`Contato agendado: ${c.nome}`, {
-              description: `${c.orgao ? c.orgao + " • " : ""}${format(when, "dd/MM 'às' HH:mm", { locale: ptBR })}`,
-              icon: <CalendarClock className="h-4 w-4 text-primary" />,
-              duration: Infinity,
-              closeButton: true,
-            });
+            toast.custom(
+              (t) => (
+                <BlinkingReminder
+                  nome={c.nome}
+                  orgao={c.orgao}
+                  when={when}
+                  onDismiss={() => toast.dismiss(t)}
+                />
+              ),
+              { duration: Infinity }
+            );
           }
           notified.add(key);
           changed = true;
