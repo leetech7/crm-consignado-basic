@@ -18,6 +18,7 @@ import { Route as AppEquipeRouteImport } from './routes/app.equipe'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppComissoesRouteImport } from './routes/app.comissoes'
 import { Route as AppClientesRouteImport } from './routes/app.clientes'
+import { Route as AppBolhasRouteImport } from './routes/app.bolhas'
 import { Route as AppAgendaRouteImport } from './routes/app.agenda'
 
 const LoginRoute = LoginRouteImport.update({
@@ -65,6 +66,11 @@ const AppClientesRoute = AppClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBolhasRoute = AppBolhasRouteImport.update({
+  id: '/bolhas',
+  path: '/bolhas',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAgendaRoute = AppAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/bolhas': typeof AppBolhasRoute
   '/app/clientes': typeof AppClientesRoute
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/bolhas': typeof AppBolhasRoute
   '/app/clientes': typeof AppClientesRoute
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/bolhas': typeof AppBolhasRoute
   '/app/clientes': typeof AppClientesRoute
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/agenda'
+    | '/app/bolhas'
     | '/app/clientes'
     | '/app/comissoes'
     | '/app/dashboard'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/agenda'
+    | '/app/bolhas'
     | '/app/clientes'
     | '/app/comissoes'
     | '/app/dashboard'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/agenda'
+    | '/app/bolhas'
     | '/app/clientes'
     | '/app/comissoes'
     | '/app/dashboard'
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/bolhas': {
+      id: '/app/bolhas'
+      path: '/bolhas'
+      fullPath: '/app/bolhas'
+      preLoaderRoute: typeof AppBolhasRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/agenda': {
       id: '/app/agenda'
       path: '/agenda'
@@ -230,6 +249,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAgendaRoute: typeof AppAgendaRoute
+  AppBolhasRoute: typeof AppBolhasRoute
   AppClientesRoute: typeof AppClientesRoute
   AppComissoesRoute: typeof AppComissoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
@@ -240,6 +260,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAgendaRoute: AppAgendaRoute,
+  AppBolhasRoute: AppBolhasRoute,
   AppClientesRoute: AppClientesRoute,
   AppComissoesRoute: AppComissoesRoute,
   AppDashboardRoute: AppDashboardRoute,
