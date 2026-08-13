@@ -32,6 +32,13 @@ export const ORGAOS = [
   "GOVERNO (OUTROS)",
 ] as const;
 
+export const ORIGENS = [
+  "Manychat",
+  "Listagem Kamilly",
+  "Lista Thalis",
+  "Outros",
+] as const;
+
 export const stageLabel = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.label ?? s;
 export const stageColor = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.color ?? "oklch(0.6 0 0)";
 
