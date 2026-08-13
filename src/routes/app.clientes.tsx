@@ -142,9 +142,9 @@ function ClientesPage() {
   };
 
   const exportCSV = () => {
-    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Endereço", "Estágio", "Taxa RPS", "Próximo contato", "Observações"];
+    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Origem", "Endereço", "Estágio", "Taxa RPS", "Próximo contato", "Observações"];
     const rows = sorted.map((c) => [
-      c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.orgao ?? "", c.endereco ?? "",
+      c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.orgao ?? "", c.origem ?? "", c.endereco ?? "",
       stageLabel(c.stage), c.taxa_rps ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
     ]);
     const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
