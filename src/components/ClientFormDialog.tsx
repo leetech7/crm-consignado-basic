@@ -253,6 +253,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
       orgao: form.orgao || null,
+      origem: form.origem || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
       proximo_contato: form.proximo_contato_data
