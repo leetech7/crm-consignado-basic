@@ -76,6 +76,7 @@ const empty = {
   data_nascimento: "",
   telefone: "",
   orgao: "",
+  origem: "",
   endereco: "",
   observacoes: "",
   proximo_contato_data: "",
