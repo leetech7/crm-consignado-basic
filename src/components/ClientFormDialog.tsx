@@ -184,6 +184,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
+        origem: client.origem ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
         proximo_contato_data: dateStr,
