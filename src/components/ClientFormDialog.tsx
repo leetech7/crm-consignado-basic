@@ -671,6 +671,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           telefone={form.telefone}
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
+          compraDivida={parseFloat(form.compra_divida) || 0}
         />
         <ReportImageDialog
           open={openReport}
@@ -680,6 +681,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           orgao={form.orgao}
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
+          compraDivida={parseFloat(form.compra_divida) || 0}
           margem={parseFloat(form.margem_disponivel) || 0}
           fator={form.fator ? parseFloat(form.fator) : null}
         />
