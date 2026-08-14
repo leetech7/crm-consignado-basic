@@ -266,6 +266,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       valor_rps_total: form.valor_bruto && form.taxa_rps
         ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
+      compra_divida: form.compra_divida ? parseFloat(form.compra_divida) : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
