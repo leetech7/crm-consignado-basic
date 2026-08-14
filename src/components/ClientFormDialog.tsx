@@ -546,7 +546,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </p>
           </div>
           <div className="space-y-1.5">
-            <Label>Taxa RPS (%)</Label>
+            <Label>RPS Total (%)</Label>
             <Input
               type="number"
               step="0.01"
@@ -605,7 +605,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
-            <Label>Valor RPS total (R$)</Label>
+            <Label>Valor RPS (R$)</Label>
             <Input
               readOnly
               className="bg-muted font-mono"
@@ -615,7 +615,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   : "R$ 0,00"
               }
             />
-            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × Taxa RPS (%)</p>
+            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × RPS Total (%)</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Valor Líquido Cliente (R$)</Label>
@@ -629,7 +629,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 return (vb - rps).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
               })()}
             />
-            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS total</p>
+            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
             <Label>Estágio</Label>
