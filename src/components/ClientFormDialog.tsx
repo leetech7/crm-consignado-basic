@@ -479,6 +479,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
+            <Label>Compra de dívida — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.compra_divida}
+              onChange={(e) => update("compra_divida", e.target.value)}
+              placeholder="0,00"
+            />
+            <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
             <Label>Margem disponível (global) — R$</Label>
             <Input
               type="number"
