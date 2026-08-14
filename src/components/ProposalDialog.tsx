@@ -14,6 +14,7 @@ type Props = {
   telefone?: string | null;
   valorBruto: number;
   taxaRps: number; // %
+  compraDivida?: number;
 };
 
 const firstName = (n: string) => (n ?? "").trim().split(/\s+/)[0] ?? "";
