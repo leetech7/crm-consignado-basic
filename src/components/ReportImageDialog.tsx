@@ -15,6 +15,7 @@ type Props = {
   orgao?: string | null;
   valorBruto: number;
   taxaRps: number; // %
+  compraDivida?: number;
   margem: number;
   fator?: number | null;
 };
@@ -23,7 +24,7 @@ const firstName = (n: string) => (n ?? "").trim().split(/\s+/)[0] ?? "";
 const num = (v: string) => parseFloat(String(v).replace(/\./g, "").replace(",", ".")) || 0;
 
 export function ReportImageDialog({
-  open, onOpenChange, nome, telefone, orgao, valorBruto, taxaRps, margem, fator,
+  open, onOpenChange, nome, telefone, orgao, valorBruto, taxaRps, compraDivida: compraDividaProp = 0, margem, fator,
 }: Props) {
   const [bruto, setBruto] = useState("");
   const [compraDivida, setCompraDivida] = useState("");
@@ -38,10 +39,10 @@ export function ReportImageDialog({
     if (!open) return;
     setBruto(valorBruto ? String(valorBruto) : "");
     setTaxa(taxaRps ? String(taxaRps) : "");
-    setCompraDivida("");
+    setCompraDivida(compraDividaProp ? String(compraDividaProp) : "");
     setHonorarios("");
     setParcela(margem ? String(margem) : "");
-  }, [open, valorBruto, taxaRps, margem]);
+  }, [open, valorBruto, taxaRps, margem, compraDividaProp]);
 
   const calc = useMemo(() => {
     const vb = num(bruto);

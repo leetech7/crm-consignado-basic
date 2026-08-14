@@ -14,11 +14,12 @@ type Props = {
   telefone?: string | null;
   valorBruto: number;
   taxaRps: number; // %
+  compraDivida?: number;
 };
 
 const firstName = (n: string) => (n ?? "").trim().split(/\s+/)[0] ?? "";
 
-export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto, taxaRps }: Props) {
+export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto, taxaRps, compraDivida: compraDividaProp = 0 }: Props) {
   const [bruto, setBruto] = useState("");
   const [compraDivida, setCompraDivida] = useState("");
   const [taxa, setTaxa] = useState("");
@@ -28,9 +29,9 @@ export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto,
     if (!open) return;
     setBruto(valorBruto ? String(valorBruto) : "");
     setTaxa(taxaRps ? String(taxaRps) : "");
-    setCompraDivida("");
+    setCompraDivida(compraDividaProp ? String(compraDividaProp) : "");
     setHonorarios("");
-  }, [open, valorBruto, taxaRps]);
+  }, [open, valorBruto, taxaRps, compraDividaProp]);
 
   const n = (v: string) => parseFloat(String(v).replace(",", ".")) || 0;
 

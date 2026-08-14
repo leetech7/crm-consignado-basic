@@ -83,6 +83,7 @@ const empty = {
   proximo_contato_hora: "",
   taxa_rps: "",
   valor_bruto: "",
+  compra_divida: "",
   margem_disponivel: "",
   fator: "",
   stage: "novo" as PipelineStage,
@@ -191,6 +192,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
         valor_bruto: client.valor_bruto?.toString() ?? "",
+        compra_divida: client.compra_divida?.toString() ?? "",
         margem_disponivel: client.margem_disponivel?.toString() ?? "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
@@ -264,6 +266,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       valor_rps_total: form.valor_bruto && form.taxa_rps
         ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
+      compra_divida: form.compra_divida ? parseFloat(form.compra_divida) : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
@@ -476,6 +479,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
           <div className="sm:col-span-2 space-y-1.5">
+            <Label>Compra de dívida — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.compra_divida}
+              onChange={(e) => update("compra_divida", e.target.value)}
+              placeholder="0,00"
+            />
+            <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
+          </div>
+          <div className="sm:col-span-2 space-y-1.5">
             <Label>Margem disponível (global) — R$</Label>
             <Input
               type="number"
@@ -656,6 +671,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           telefone={form.telefone}
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
+          compraDivida={parseFloat(form.compra_divida) || 0}
         />
         <ReportImageDialog
           open={openReport}
@@ -665,6 +681,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           orgao={form.orgao}
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
+          compraDivida={parseFloat(form.compra_divida) || 0}
           margem={parseFloat(form.margem_disponivel) || 0}
           fator={form.fator ? parseFloat(form.fator) : null}
         />
