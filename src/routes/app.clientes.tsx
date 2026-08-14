@@ -142,10 +142,10 @@ function ClientesPage() {
   };
 
   const exportCSV = () => {
-    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Origem", "Endereço", "Estágio", "Taxa RPS", "Próximo contato", "Observações"];
+    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Origem", "Endereço", "Estágio", "Taxa RPS", "Valor bruto", "Compra de dívida", "Margem disponível", "Próximo contato", "Observações"];
     const rows = sorted.map((c) => [
       c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.orgao ?? "", c.origem ?? "", c.endereco ?? "",
-      stageLabel(c.stage), c.taxa_rps ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
+      stageLabel(c.stage), c.taxa_rps ?? 0, c.valor_bruto ?? 0, c.compra_divida ?? 0, c.margem_disponivel ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
     ]);
     const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
