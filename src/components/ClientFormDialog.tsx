@@ -83,6 +83,7 @@ const empty = {
   proximo_contato_hora: "",
   taxa_rps: "",
   valor_bruto: "",
+  compra_divida: "",
   margem_disponivel: "",
   fator: "",
   stage: "novo" as PipelineStage,
