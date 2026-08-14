@@ -192,6 +192,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         proximo_contato_hora: timeStr === "00:00" ? "" : timeStr,
         taxa_rps: client.taxa_rps?.toString() ?? "",
         valor_bruto: client.valor_bruto?.toString() ?? "",
+        compra_divida: client.compra_divida?.toString() ?? "",
         margem_disponivel: client.margem_disponivel?.toString() ?? "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
