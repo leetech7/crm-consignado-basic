@@ -15,6 +15,7 @@ type Props = {
   orgao?: string | null;
   valorBruto: number;
   taxaRps: number; // %
+  compraDivida?: number;
   margem: number;
   fator?: number | null;
 };
