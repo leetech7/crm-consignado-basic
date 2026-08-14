@@ -116,6 +116,7 @@ export type Database = {
       }
       clients: {
         Row: {
+          compra_divida: number | null
           cpf: string | null
           created_at: string
           data_nascimento: string | null
@@ -140,6 +141,7 @@ export type Database = {
           valor_rps_total: number | null
         }
         Insert: {
+          compra_divida?: number | null
           cpf?: string | null
           created_at?: string
           data_nascimento?: string | null
@@ -164,6 +166,7 @@ export type Database = {
           valor_rps_total?: number | null
         }
         Update: {
+          compra_divida?: number | null
           cpf?: string | null
           created_at?: string
           data_nascimento?: string | null
