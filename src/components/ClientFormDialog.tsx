@@ -478,7 +478,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="lg:col-span-3 space-y-1.5">
             <Label>Compra de dívida — R$</Label>
             <Input
               type="number"
@@ -490,7 +490,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="lg:col-span-3 space-y-1.5">
             <Label>Margem disponível (global) — R$</Label>
             <Input
               type="number"
@@ -604,7 +604,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </p>
             <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="lg:col-span-3 space-y-1.5">
             <Label>Valor RPS (R$)</Label>
             <Input
               readOnly
@@ -617,7 +617,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × RPS Total (%)</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="lg:col-span-3 space-y-1.5">
             <Label>Valor Líquido Cliente (R$)</Label>
             <Input
               readOnly
@@ -642,7 +642,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="col-span-2 lg:col-span-3 space-y-1.5">
             <Label>Observações</Label>
-            <Textarea rows={8} className="min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
+            <Textarea rows={5} className="min-h-[120px] sm:min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
           {client && (
             <div className="col-span-2 lg:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
