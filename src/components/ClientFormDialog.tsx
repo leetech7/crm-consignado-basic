@@ -308,7 +308,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-6xl w-[95vw] p-6"
+        className="max-w-6xl w-[96vw] sm:w-[95vw] p-4 sm:p-6 max-h-[92dvh] overflow-y-auto rounded-xl"
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
         onFocusOutside={(e) => e.preventDefault()}
@@ -325,7 +325,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </p>
         </DialogHeader>
 
-        <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <form onSubmit={submit} className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           <div className="sm:col-span-2 lg:col-span-3 space-y-1.5">
             <Label>Nome *</Label>
             <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
