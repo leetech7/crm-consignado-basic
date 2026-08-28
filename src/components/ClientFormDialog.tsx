@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon } from "lucide-react";
+import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2 } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
