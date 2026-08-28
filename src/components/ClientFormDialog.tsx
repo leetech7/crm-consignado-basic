@@ -368,7 +368,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 disabled={!form.cpf}
                 onClick={() => copyToClipboard(form.cpf)}
                 title="Copiar CPF"
@@ -393,7 +393,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 disabled={!form.data_nascimento}
                 onClick={() => copyToClipboard(form.data_nascimento)}
                 title="Copiar data de nascimento"
@@ -416,7 +416,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 disabled={!form.idade}
                 onClick={() => copyToClipboard(form.idade)}
                 title="Copiar idade"
@@ -439,7 +439,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 disabled={!form.telefone}
                 onClick={() => copyToClipboard(form.telefone)}
                 title="Copiar telefone"
@@ -552,7 +552,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 disabled={!form.fator}
                 onClick={() => copyToClipboard(formatFactorDisplay(form.fator))}
                 title="Copiar fator"
