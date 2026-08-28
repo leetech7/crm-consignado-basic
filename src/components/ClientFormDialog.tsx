@@ -340,6 +340,24 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   const v = e.target.value;
                   if (v && !isValidCPF(v)) toast.error("CPF inválido");
                 }}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const text = e.clipboardData.getData("text");
+                  update("cpf", formatCPF(text));
+                }}
+                onKeyDown={(e) => {
+                  // Permite teclas de controle/navegação; bloqueia letras e símbolos
+                  if (
+                    ["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Delete"].includes(e.key) ||
+                    e.ctrlKey ||
+                    e.metaKey
+                  ) {
+                    return;
+                  }
+                  if (!/^\d$/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="000.000.000-00"
                 inputMode="numeric"
                 maxLength={14}
