@@ -502,60 +502,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
           </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label className="flex items-center gap-1.5">
-                <Calculator className="h-3.5 w-3.5 text-muted-foreground" />
-                Valor bruto (a receber) — R$
-              </Label>
-              {valorBrutoTouched && (
-                <span className="text-[10px] text-amber-500 font-medium">Editado manualmente</span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Input
-                className="flex-1"
-                type="number"
-                step="0.01"
-                min="0"
-                value={form.valor_bruto}
-                onChange={(e) => {
-                  setValorBrutoTouched(true);
-                  update("valor_bruto", e.target.value);
-                }}
-                placeholder="0,00"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="shrink-0 gap-1 px-2 sm:px-3"
-                title="Recalcular: Margem ÷ Fator"
-                disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
-                onClick={() => {
-                  setValorBrutoTouched(false);
-                  update("valor_bruto", "");
-                }}
-              >
-                <RefreshCcw className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Recalcular</span>
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Calculado automaticamente: Margem ÷ Fator. Você pode editar manualmente e usar o botão para voltar ao cálculo automático.
-            </p>
-          </div>
-          <div className="space-y-1.5">
-            <Label>RPS Total (%)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              value={form.taxa_rps}
-              onChange={(e) => update("taxa_rps", e.target.value)}
-              placeholder="0,00"
-            />
-          </div>
           <div className="col-span-2 lg:col-span-3 space-y-1.5">
             <Label>Fator</Label>
             <div className="flex items-center gap-2">
@@ -603,6 +549,57 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
             </p>
             <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="flex items-center gap-1.5">
+                <Calculator className="h-3.5 w-3.5 text-muted-foreground" />
+                Valor bruto (a receber) — R$
+              </Label>
+              {valorBrutoTouched && (
+                <span className="text-[10px] text-amber-500 font-medium">Editado manualmente</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                className="flex-1"
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.valor_bruto}
+                onChange={(e) => {
+                  setValorBrutoTouched(true);
+                  update("valor_bruto", e.target.value);
+                }}
+                placeholder="0,00"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="shrink-0 gap-1 px-2 sm:px-3"
+                title="Recalcular: Margem ÷ Fator"
+                disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
+                onClick={() => {
+                  setValorBrutoTouched(false);
+                  update("valor_bruto", "");
+                }}
+              >
+                <RefreshCcw className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Recalcular</span>
+              </Button>
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>RPS Total (%)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.taxa_rps}
+              onChange={(e) => update("taxa_rps", e.target.value)}
+              placeholder="0,00"
+            />
           </div>
           <div className="lg:col-span-3 space-y-1.5">
             <Label>Valor RPS (R$)</Label>
