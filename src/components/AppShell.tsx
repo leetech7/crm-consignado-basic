@@ -19,6 +19,8 @@ import {
   Settings,
   Sigma,
   Circle,
+  Megaphone,
+
 } from "lucide-react";
 
 const NAV = [
@@ -28,7 +30,9 @@ const NAV = [
   { to: "/app/bolhas", label: "Bolhas", icon: Circle },
   { to: "/app/agenda", label: "Agenda", icon: CalendarClock },
   { to: "/app/comissoes", label: "Comissões", icon: Wallet },
+  { to: "/app/informativo", label: "Informativo", icon: Megaphone },
 ];
+
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
