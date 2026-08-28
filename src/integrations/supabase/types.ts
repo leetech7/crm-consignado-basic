@@ -233,6 +233,39 @@ export type Database = {
           },
         ]
       }
+      comunicados: {
+        Row: {
+          author_id: string
+          conteudo: string
+          created_at: string
+          data_comunicado: string
+          id: string
+          prioridade: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          conteudo?: string
+          created_at?: string
+          data_comunicado?: string
+          id?: string
+          prioridade?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          conteudo?: string
+          created_at?: string
+          data_comunicado?: string
+          id?: string
+          prioridade?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           commission_rate: number
