@@ -472,7 +472,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Endereço</Label>
             <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
           </div>
@@ -496,7 +496,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
-          <div className="lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Compra de dívida — R$</Label>
             <Input
               type="number"
@@ -508,7 +508,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
           </div>
-          <div className="lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Margem disponível (global) — R$</Label>
             <Input
               type="number"
@@ -520,7 +520,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Fator</Label>
             <div className="flex items-center gap-2">
               <Input
@@ -619,7 +619,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               placeholder="0,00"
             />
           </div>
-          <div className="lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Valor RPS (R$)</Label>
             <Input
               readOnly
@@ -632,7 +632,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × RPS Total (%)</p>
           </div>
-          <div className="lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Valor Líquido Cliente (R$)</Label>
             <Input
               readOnly
@@ -646,7 +646,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS</p>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Estágio</Label>
             <Select value={form.stage} onValueChange={(v) => update("stage", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -655,17 +655,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Observações</Label>
             <Textarea rows={5} className="min-h-[120px] sm:min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
           {client && (
-            <div className="col-span-2 lg:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
+            <div className="md:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
               <Label>Anexos (extratos, contracheques, etc.)</Label>
               <ClientAttachments clientId={client.id} />
             </div>
           )}
-          <DialogFooter className="col-span-2 lg:col-span-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <DialogFooter className="md:col-span-2 xl:col-span-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenProposal(true)}>
               <FileText className="mr-2 h-4 w-4" />Gerar proposta
             </Button>
