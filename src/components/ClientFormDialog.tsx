@@ -580,7 +580,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
             <div className="flex items-center gap-2">
               <Input
-                className="flex-1"
+                className="flex-1 min-w-[170px] text-base tracking-wide"
                 type="number"
                 step="0.01"
                 min="0"
