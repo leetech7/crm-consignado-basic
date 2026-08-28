@@ -311,8 +311,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       <DialogContent
         className={`overflow-y-auto rounded-xl p-4 sm:p-6 lg:p-8 transition-all duration-200 ${
           isFullscreen
-            ? "max-w-none w-screen h-screen max-h-screen rounded-none"
-            : "max-w-7xl w-[96vw] sm:w-[95vw] lg:w-[92vw] max-h-[92dvh]"
+            ? "!inset-0 !h-screen !max-h-screen !w-screen !max-w-none !translate-x-0 !translate-y-0 rounded-none"
+            : "!w-[calc(100vw-1rem)] !max-w-[calc(100vw-1rem)] sm:!w-[calc(100vw-2rem)] sm:!max-w-[1440px] max-h-[94dvh]"
         }`}
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
@@ -350,8 +350,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </Button>
         </DialogHeader>
 
-        <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+        <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Nome *</Label>
             <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
           </div>
@@ -497,7 +497,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </SelectContent>
             </Select>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Endereço</Label>
             <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
           </div>
@@ -521,7 +521,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Compra de dívida — R$</Label>
             <Input
               type="number"
@@ -533,7 +533,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Margem disponível (global) — R$</Label>
             <Input
               type="number"
@@ -545,7 +545,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Fator</Label>
             <div className="flex items-center gap-2">
               <Input
@@ -644,7 +644,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               placeholder="0,00"
             />
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Valor RPS (R$)</Label>
             <Input
               readOnly
@@ -657,7 +657,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × RPS Total (%)</p>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Valor Líquido Cliente (R$)</Label>
             <Input
               readOnly
@@ -671,7 +671,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS</p>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Estágio</Label>
             <Select value={form.stage} onValueChange={(v) => update("stage", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -680,17 +680,17 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </SelectContent>
             </Select>
           </div>
-          <div className="lg:col-span-2 2xl:col-span-3 space-y-1.5">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Observações</Label>
             <Textarea rows={5} className="min-h-[120px] sm:min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
           {client && (
-            <div className="lg:col-span-2 2xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
+            <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
               <Label>Anexos (extratos, contracheques, etc.)</Label>
               <ClientAttachments clientId={client.id} />
             </div>
           )}
-          <DialogFooter className="lg:col-span-2 2xl:col-span-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <DialogFooter className="lg:col-span-2 xl:col-span-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenProposal(true)}>
               <FileText className="mr-2 h-4 w-4" />Gerar proposta
             </Button>
