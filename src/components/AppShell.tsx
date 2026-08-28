@@ -19,6 +19,8 @@ import {
   Settings,
   Sigma,
   Circle,
+  Megaphone,
+
 } from "lucide-react";
 
 const NAV = [
