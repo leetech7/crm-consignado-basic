@@ -325,8 +325,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </p>
         </DialogHeader>
 
-        <form onSubmit={submit} className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+        <form onSubmit={submit} className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="md:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Nome *</Label>
             <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
           </div>
