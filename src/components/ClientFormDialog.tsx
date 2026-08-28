@@ -308,7 +308,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-2xl"
+        className="max-w-6xl w-[95vw] p-6"
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
         onFocusOutside={(e) => e.preventDefault()}
