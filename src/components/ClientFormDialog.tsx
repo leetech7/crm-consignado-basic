@@ -502,6 +502,54 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
           </div>
+          <div className="col-span-2 lg:col-span-3 space-y-1.5">
+            <Label>Fator</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                className={`flex-1 ${factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}`}
+                type="text"
+                inputMode="numeric"
+                value={formatFactorDisplay(form.fator)}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
+                  if (!digits) { update("fator", ""); return; }
+                  update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
+                }}
+                onFocus={(e) => {
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    const len = el.value.length;
+                    el.setSelectionRange(len, len);
+                  });
+                }}
+                onClick={(e) => {
+                  const el = e.currentTarget;
+                  const len = el.value.length;
+                  el.setSelectionRange(len, len);
+                }}
+                placeholder="0,00000"
+                aria-invalid={factorInvalid}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={!form.fator}
+                onClick={() => copyToClipboard(formatFactorDisplay(form.fator))}
+                title="Copiar fator"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
+            {factorInvalid && (
+              <p className="text-xs text-destructive">O fator deve ser um número válido.</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
+            </p>
+            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
+          </div>
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <Label className="flex items-center gap-1.5">
@@ -541,9 +589,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <span className="hidden sm:inline">Recalcular</span>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Calculado automaticamente: Margem ÷ Fator. Você pode editar manualmente e usar o botão para voltar ao cálculo automático.
-            </p>
           </div>
           <div className="space-y-1.5">
             <Label>RPS Total (%)</Label>
