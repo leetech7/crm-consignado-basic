@@ -309,21 +309,45 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-7xl w-[96vw] sm:w-[95vw] lg:w-[92vw] p-4 sm:p-6 lg:p-8 max-h-[92dvh] overflow-y-auto rounded-xl"
+        className={`overflow-y-auto rounded-xl p-4 sm:p-6 lg:p-8 transition-all duration-200 ${
+          isFullscreen
+            ? "max-w-none w-screen h-screen max-h-screen rounded-none"
+            : "max-w-7xl w-[96vw] sm:w-[95vw] lg:w-[92vw] max-h-[92dvh]"
+        }`}
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
         onFocusOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => {
+          if (isFullscreen) {
+            e.preventDefault();
+            setIsFullscreen(false);
+          } else {
+            e.preventDefault();
+          }
+        }}
       >
-        <DialogHeader>
-          <DialogTitle>{client ? "Editar cliente" : "Novo cliente"}</DialogTitle>
-          <p className="text-xs text-muted-foreground">
-            {restored
-              ? "Rascunho recuperado — suas alterações não salvas foram restauradas."
-              : savedAt
-                ? `Rascunho salvo automaticamente às ${savedAt.toLocaleTimeString("pt-BR")}`
-                : "As alterações são guardadas automaticamente neste navegador."}
-          </p>
+        <DialogHeader className="flex-row items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <DialogTitle>{client ? "Editar cliente" : "Novo cliente"}</DialogTitle>
+            <p className="text-xs text-muted-foreground">
+              {restored
+                ? "Rascunho recuperado — suas alterações não salvas foram restauradas."
+                : savedAt
+                  ? `Rascunho salvo automaticamente às ${savedAt.toLocaleTimeString("pt-BR")}`
+                  : "As alterações são guardadas automaticamente neste navegador."}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="shrink-0 gap-1.5"
+            onClick={() => setIsFullscreen((v) => !v)}
+            title={isFullscreen ? "Sair da tela cheia" : "Expandir para tela cheia"}
+          >
+            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            <span className="hidden sm:inline">{isFullscreen ? "Reduzir" : "Expandir"}</span>
+          </Button>
         </DialogHeader>
 
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-2 2xl:grid-cols-3">
