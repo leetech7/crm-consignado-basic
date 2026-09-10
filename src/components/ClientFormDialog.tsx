@@ -666,10 +666,11 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 const vb = parseFloat(form.valor_bruto) || 0;
                 const tx = parseFloat(form.taxa_rps) || 0;
                 const rps = vb * tx / 100;
-                return (vb - rps).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                const cd = parseFloat(form.compra_divida) || 0;
+                return (vb - rps - cd).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
               })()}
             />
-            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS</p>
+            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS − Compra de dívida</p>
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Estágio</Label>
