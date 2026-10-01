@@ -544,7 +544,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input
               type="number"
               step="0.01"
-              min="0"
               value={form.margem_disponivel}
               onChange={(e) => update("margem_disponivel", e.target.value)}
               placeholder="0,00"
@@ -556,7 +555,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input
               type="number"
               step="0.01"
-              min="0"
               value={form.margem_rcc}
               onChange={(e) => update("margem_rcc", e.target.value)}
               placeholder="0,00"
@@ -567,7 +565,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Input
               type="number"
               step="0.01"
-              min="0"
               value={form.margem_rmc}
               onChange={(e) => update("margem_rmc", e.target.value)}
               placeholder="0,00"
