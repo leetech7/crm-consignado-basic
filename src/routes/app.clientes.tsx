@@ -164,6 +164,15 @@ function ClientesPage() {
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener,noreferrer");
   };
 
+  // Data de inclusão ou, se editado depois de criado, data da última edição
+  const dateLabel = (c: Client) => {
+    const fmt = (iso: string) => new Date(iso).toLocaleDateString("pt-BR");
+    const created = c.created_at ? new Date(c.created_at).getTime() : 0;
+    const updated = c.updated_at ? new Date(c.updated_at).getTime() : 0;
+    if (updated && updated - created > 60_000) return `Editado em ${fmt(c.updated_at)}`;
+    return c.created_at ? `Incluído em ${fmt(c.created_at)}` : "";
+  };
+
 
   const clearFilters = () => {
     setSearch("");
