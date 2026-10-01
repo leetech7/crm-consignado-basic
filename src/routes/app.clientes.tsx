@@ -164,6 +164,15 @@ function ClientesPage() {
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener,noreferrer");
   };
 
+  // Data de inclusão ou, se editado depois de criado, data da última edição
+  const dateLabel = (c: Client) => {
+    const fmt = (iso: string) => new Date(iso).toLocaleDateString("pt-BR");
+    const created = c.created_at ? new Date(c.created_at).getTime() : 0;
+    const updated = c.updated_at ? new Date(c.updated_at).getTime() : 0;
+    if (updated && updated - created > 60_000) return `Editado em ${fmt(c.updated_at)}`;
+    return c.created_at ? `Incluído em ${fmt(c.created_at)}` : "";
+  };
+
 
   const clearFilters = () => {
     setSearch("");
@@ -315,6 +324,7 @@ function ClientesPage() {
                 <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
                   <span className="block truncate font-semibold">{c.nome}</span>
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
                 <Badge variant="outline" className="max-w-28 truncate" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
                   {stageLabel(c.stage as PipelineStage)}
@@ -407,6 +417,7 @@ function ClientesPage() {
                       {c.nome}
                     </button>
                     {c.cpf && <div className="text-xs text-muted-foreground">{c.cpf}</div>}
+                    <div className="text-[11px] text-muted-foreground">{dateLabel(c)}</div>
                   </td>
                   <td className="px-4 py-3">
                     {c.telefone ? (
