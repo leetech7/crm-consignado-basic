@@ -85,6 +85,8 @@ const empty = {
   valor_bruto: "",
   compra_divida: "",
   margem_disponivel: "",
+  margem_rcc: "",
+  margem_rmc: "",
   fator: "",
   stage: "novo" as PipelineStage,
 };
@@ -195,6 +197,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         valor_bruto: client.valor_bruto?.toString() ?? "",
         compra_divida: client.compra_divida?.toString() ?? "",
         margem_disponivel: client.margem_disponivel?.toString() ?? "",
+        margem_rcc: client.margem_rcc?.toString() ?? "",
+        margem_rmc: client.margem_rmc?.toString() ?? "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
@@ -269,6 +273,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         : 0,
       compra_divida: form.compra_divida ? parseFloat(form.compra_divida) : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
+      margem_rcc: form.margem_rcc ? parseFloat(form.margem_rcc) : 0,
+      margem_rmc: form.margem_rmc ? parseFloat(form.margem_rmc) : 0,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
     };
@@ -544,6 +550,28 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               placeholder="0,00"
             />
             <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Margem cartão RCC — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.margem_rcc}
+              onChange={(e) => update("margem_rcc", e.target.value)}
+              placeholder="0,00"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Margem cartão RMC — R$</Label>
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.margem_rmc}
+              onChange={(e) => update("margem_rmc", e.target.value)}
+              placeholder="0,00"
+            />
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Fator</Label>

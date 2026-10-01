@@ -60,6 +60,8 @@ export interface Client {
   valor_rps_total: number | null;
   compra_divida: number | null;
   margem_disponivel: number | null;
+  margem_rcc: number | null;
+  margem_rmc: number | null;
   fator: number | null;
   stage: PipelineStage;
   favorito: boolean;

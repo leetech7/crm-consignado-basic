@@ -126,6 +126,8 @@ export type Database = {
           id: string
           idade: number | null
           margem_disponivel: number | null
+          margem_rcc: number | null
+          margem_rmc: number | null
           nome: string
           observacoes: string | null
           orgao: string | null
@@ -151,6 +153,8 @@ export type Database = {
           id?: string
           idade?: number | null
           margem_disponivel?: number | null
+          margem_rcc?: number | null
+          margem_rmc?: number | null
           nome: string
           observacoes?: string | null
           orgao?: string | null
@@ -176,6 +180,8 @@ export type Database = {
           id?: string
           idade?: number | null
           margem_disponivel?: number | null
+          margem_rcc?: number | null
+          margem_rmc?: number | null
           nome?: string
           observacoes?: string | null
           orgao?: string | null

@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN margem_rcc numeric DEFAULT 0, ADD COLUMN margem_rmc numeric DEFAULT 0;
