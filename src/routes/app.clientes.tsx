@@ -324,6 +324,7 @@ function ClientesPage() {
                 <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
                   <span className="block truncate font-semibold">{c.nome}</span>
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
                 <Badge variant="outline" className="max-w-28 truncate" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
                   {stageLabel(c.stage as PipelineStage)}
@@ -416,6 +417,7 @@ function ClientesPage() {
                       {c.nome}
                     </button>
                     {c.cpf && <div className="text-xs text-muted-foreground">{c.cpf}</div>}
+                    <div className="text-[11px] text-muted-foreground">{dateLabel(c)}</div>
                   </td>
                   <td className="px-4 py-3">
                     {c.telefone ? (
