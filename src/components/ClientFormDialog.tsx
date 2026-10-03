@@ -527,175 +527,114 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Compra de dívida — R$</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              value={form.compra_divida}
-              onChange={(e) => update("compra_divida", e.target.value)}
-              placeholder="0,00"
-            />
-            <p className="text-xs text-muted-foreground">Valor destinado à quitação de dívidas anteriores do cliente.</p>
-          </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Margem disponível (global) — R$</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={form.margem_disponivel}
-              onChange={(e) => update("margem_disponivel", e.target.value)}
-              placeholder="0,00"
-            />
-            <p className="text-xs text-muted-foreground">Margem total disponível do cliente em todas as operações.</p>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Margem cartão RCC — R$</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={form.margem_rcc}
-              onChange={(e) => update("margem_rcc", e.target.value)}
-              placeholder="0,00"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Margem cartão RMC — R$</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={form.margem_rmc}
-              onChange={(e) => update("margem_rmc", e.target.value)}
-              placeholder="0,00"
-            />
-          </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Fator</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                className={`flex-1 ${factorInvalid ? "border-destructive focus-visible:ring-destructive text-right font-mono" : "text-right font-mono"}`}
-                type="text"
-                inputMode="numeric"
-                value={formatFactorDisplay(form.fator)}
-                onChange={(e) => {
-                  const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
-                  if (!digits) { update("fator", ""); return; }
-                  update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
-                }}
-                onFocus={(e) => {
-                  const el = e.currentTarget;
-                  requestAnimationFrame(() => {
-                    const len = el.value.length;
-                    el.setSelectionRange(len, len);
-                  });
-                }}
-                onClick={(e) => {
-                  const el = e.currentTarget;
-                  const len = el.value.length;
-                  el.setSelectionRange(len, len);
-                }}
-                placeholder="0,00000"
-                aria-invalid={factorInvalid}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="shrink-0 h-8 w-8"
-                disabled={!form.fator}
-                onClick={() => copyToClipboard(formatFactorDisplay(form.fator))}
-                title="Copiar fator"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+          <div className="col-span-full rounded-md border border-border/50 bg-muted/20 p-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Valores</div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [&_input]:h-9 [&_input]:text-sm [&_input]:text-right [&_input]:font-mono [&_label]:text-xs">
+              <div className="min-w-0 space-y-1">
+                <Label>Compra de dívida</Label>
+                <Input type="number" step="0.01" min="0" value={form.compra_divida} onChange={(e) => update("compra_divida", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Margem disponível</Label>
+                <Input type="number" step="0.01" value={form.margem_disponivel} onChange={(e) => update("margem_disponivel", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Margem RCC</Label>
+                <Input type="number" step="0.01" value={form.margem_rcc} onChange={(e) => update("margem_rcc", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Margem RMC</Label>
+                <Input type="number" step="0.01" value={form.margem_rmc} onChange={(e) => update("margem_rmc", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Fator</Label>
+                <div className="relative">
+                  <Input
+                    className={`pr-8 ${factorInvalid ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    type="text"
+                    inputMode="numeric"
+                    value={formatFactorDisplay(form.fator)}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 10);
+                      if (!digits) { update("fator", ""); return; }
+                      update("fator", (parseInt(digits, 10) / 100000).toFixed(5));
+                    }}
+                    onFocus={(e) => {
+                      const el = e.currentTarget;
+                      requestAnimationFrame(() => { const len = el.value.length; el.setSelectionRange(len, len); });
+                    }}
+                    onClick={(e) => { const el = e.currentTarget; const len = el.value.length; el.setSelectionRange(len, len); }}
+                    placeholder="0,00000"
+                    title="Opcional. Dígitos entram pela direita (234 → 0,00234)"
+                    aria-invalid={factorInvalid}
+                  />
+                  <Button type="button" variant="ghost" size="icon" className="absolute right-0.5 top-1 h-7 w-7" disabled={!form.fator} onClick={() => copyToClipboard(formatFactorDisplay(form.fator))} title="Copiar fator">
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                {factorInvalid && <p className="text-[11px] text-destructive">Fator inválido</p>}
+              </div>
+              <div className="min-w-0 space-y-1">
+                <div className="flex items-center justify-between gap-1">
+                  <Label className="truncate">Valor bruto</Label>
+                  {valorBrutoTouched && <span className="text-[10px] text-amber-500 font-medium">manual</span>}
+                </div>
+                <div className="relative">
+                  <Input
+                    className="pr-8"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.valor_bruto}
+                    onChange={(e) => { setValorBrutoTouched(true); update("valor_bruto", e.target.value); }}
+                    placeholder="0,00"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0.5 top-1 h-7 w-7"
+                    title="Recalcular: Margem ÷ Fator"
+                    disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
+                    onClick={() => { setValorBrutoTouched(false); update("valor_bruto", ""); }}
+                  >
+                    <RefreshCcw className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>RPS %</Label>
+                <Input type="number" step="0.01" min="0" value={form.taxa_rps} onChange={(e) => update("taxa_rps", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Valor RPS</Label>
+                <Input
+                  readOnly
+                  className="bg-muted"
+                  title="Valor bruto × RPS %"
+                  value={
+                    form.valor_bruto && form.taxa_rps
+                      ? (parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                      : "R$ 0,00"
+                  }
+                />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Líquido cliente</Label>
+                <Input
+                  readOnly
+                  className="bg-muted font-semibold"
+                  title="Valor bruto − Valor RPS − Compra de dívida"
+                  value={(() => {
+                    const vb = parseFloat(form.valor_bruto) || 0;
+                    const tx = parseFloat(form.taxa_rps) || 0;
+                    const rps = vb * tx / 100;
+                    const cd = parseFloat(form.compra_divida) || 0;
+                    return (vb - rps - cd).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                  })()}
+                />
+              </div>
             </div>
-            {factorInvalid && (
-              <p className="text-xs text-destructive">O fator deve ser um número válido.</p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              Opcional. Digite apenas números — os dígitos entram pela direita (ex.: 234 → 0,00234).
-            </p>
-            <p className="text-xs text-muted-foreground">Preenchido com 5 casas decimais.</p>
-          </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label className="flex items-center gap-1.5">
-                <Calculator className="h-3.5 w-3.5 text-muted-foreground" />
-                Valor bruto (a receber) — R$
-              </Label>
-              {valorBrutoTouched && (
-                <span className="text-[10px] text-amber-500 font-medium">Editado manualmente</span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Input
-                className="flex-1 min-w-[170px] text-base tracking-wide"
-                type="number"
-                step="0.01"
-                min="0"
-                value={form.valor_bruto}
-                onChange={(e) => {
-                  setValorBrutoTouched(true);
-                  update("valor_bruto", e.target.value);
-                }}
-                placeholder="0,00"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="shrink-0 gap-1 px-2 sm:px-3"
-                title="Recalcular: Margem ÷ Fator"
-                disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
-                onClick={() => {
-                  setValorBrutoTouched(false);
-                  update("valor_bruto", "");
-                }}
-              >
-                <RefreshCcw className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Recalcular</span>
-              </Button>
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label>RPS Total (%)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              value={form.taxa_rps}
-              onChange={(e) => update("taxa_rps", e.target.value)}
-              placeholder="0,00"
-            />
-          </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Valor RPS (R$)</Label>
-            <Input
-              readOnly
-              className="bg-muted font-mono"
-              value={
-                form.valor_bruto && form.taxa_rps
-                  ? (parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-                  : "R$ 0,00"
-              }
-            />
-            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto × RPS Total (%)</p>
-          </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Valor Líquido Cliente (R$)</Label>
-            <Input
-              readOnly
-              className="bg-muted font-mono"
-              value={(() => {
-                const vb = parseFloat(form.valor_bruto) || 0;
-                const tx = parseFloat(form.taxa_rps) || 0;
-                const rps = vb * tx / 100;
-                const cd = parseFloat(form.compra_divida) || 0;
-                return (vb - rps - cd).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-              })()}
-            />
-            <p className="text-xs text-muted-foreground">Calculado automaticamente: Valor bruto − Valor RPS − Compra de dívida</p>
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Estágio</Label>
