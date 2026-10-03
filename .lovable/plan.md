@@ -27,3 +27,13 @@
 
 ## Fora do escopo
 - Análise automática no momento do upload (fica manual pelo botão, para controlar custo).
+
+---
+
+# Ajuste extra: campos de valores mais compactos no cadastro do cliente
+
+- Agrupar os campos financeiros (Compra de dívida, Margem disponível, Margem RCC, Margem RMC, Fator, Valor bruto, RPS %, Valor RPS, Valor líquido) num bloco próprio "Valores", em grade compacta.
+- Grade: 2 colunas no celular, 3 no tablet, 4-5 no laptop/desktop; campos com altura menor, rótulos curtos ("Margem RCC", "RPS %") e números alinhados à direita.
+- Remover a largura mínima fixa do Valor bruto (causa sobreposição) e usar `min-w-0` em todos os campos, sem cortar valores de 8 dígitos.
+- Botões auxiliares (recalcular/copiar) menores, dentro do campo, sem empurrar o layout.
+- Conferir visualmente em 375px, 768px e 1280px.
