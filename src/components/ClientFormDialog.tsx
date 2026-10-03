@@ -357,60 +357,63 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         </DialogHeader>
 
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6 xl:grid-cols-3">
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Nome *</Label>
-            <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label>CPF</Label>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-              <Input
-                value={form.cpf}
-                onChange={(e) => update("cpf", formatCPF(e.target.value))}
-                onBlur={(e) => {
-                  const v = e.target.value;
-                  if (v && !isValidCPF(v)) toast.error("CPF inválido");
-                }}
-                onPaste={(e) => {
-                  e.preventDefault();
-                  const text = e.clipboardData.getData("text");
-                  update("cpf", formatCPF(text));
-                }}
-                onKeyDown={(e) => {
-                  // Permite teclas de controle/navegação; bloqueia letras e símbolos
-                  if (
-                    ["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Delete"].includes(e.key) ||
-                    e.ctrlKey ||
-                    e.metaKey
-                  ) {
-                    return;
-                  }
-                  if (!/^\d$/.test(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-                placeholder="000.000.000-00"
-                inputMode="numeric"
-                maxLength={14}
-                aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
-                className={`flex-1 ${form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}`}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="shrink-0 h-8 w-8"
-                disabled={!form.cpf}
-                onClick={() => copyToClipboard(form.cpf)}
-                title="Copiar CPF"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-5">
+            <div className="min-w-0 space-y-1.5">
+              <Label>Nome *</Label>
+              <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
             </div>
-            {form.cpf && !isValidCPF(form.cpf) && (
-              <p className="text-xs text-destructive">CPF inválido</p>
-            )}
+            <div className="min-w-0 space-y-1.5">
+              <Label>CPF</Label>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                <Input
+                  value={form.cpf}
+                  onChange={(e) => update("cpf", formatCPF(e.target.value))}
+                  onBlur={(e) => {
+                    const v = e.target.value;
+                    if (v && !isValidCPF(v)) toast.error("CPF inválido");
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const text = e.clipboardData.getData("text");
+                    update("cpf", formatCPF(text));
+                  }}
+                  onKeyDown={(e) => {
+                    // Permite teclas de controle/navegação; bloqueia letras e símbolos
+                    if (
+                      ["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Delete"].includes(e.key) ||
+                      e.ctrlKey ||
+                      e.metaKey
+                    ) {
+                      return;
+                    }
+                    if (!/^\d$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="000.000.000-00"
+                  inputMode="numeric"
+                  maxLength={14}
+                  aria-invalid={!!form.cpf && !isValidCPF(form.cpf)}
+                  className={`${form.cpf && !isValidCPF(form.cpf) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-8 w-8"
+                  disabled={!form.cpf}
+                  onClick={() => copyToClipboard(form.cpf)}
+                  title="Copiar CPF"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              {form.cpf && !isValidCPF(form.cpf) && (
+                <p className="text-xs text-destructive">CPF inválido</p>
+              )}
+            </div>
           </div>
+
           <div className="space-y-1.5">
             <Label>Data de nascimento</Label>
             <div className="flex items-center gap-2">
