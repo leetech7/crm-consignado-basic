@@ -9,22 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppRouteImport } from './routes/app'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AppAgendaRouteImport } from './routes/app.agenda'
-import { Route as AppBolhasRouteImport } from './routes/app.bolhas'
-import { Route as AppClientesRouteImport } from './routes/app.clientes'
-import { Route as AppComissoesRouteImport } from './routes/app.comissoes'
-import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
-import { Route as AppEquipeRouteImport } from './routes/app.equipe'
-import { Route as AppFatoresRouteImport } from './routes/app.fatores'
-import { Route as AppInformativoRouteImport } from './routes/app.informativo'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppPipelineRouteImport } from './routes/app.pipeline'
+import { Route as AppInformativoRouteImport } from './routes/app.informativo'
+import { Route as AppFatoresRouteImport } from './routes/app.fatores'
+import { Route as AppEquipeRouteImport } from './routes/app.equipe'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppComissoesRouteImport } from './routes/app.comissoes'
+import { Route as AppClientesRouteImport } from './routes/app.clientes'
+import { Route as AppBolhasRouteImport } from './routes/app.bolhas'
+import { Route as AppAgendaRouteImport } from './routes/app.agenda'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -32,44 +32,14 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAgendaRoute = AppAgendaRouteImport.update({
-  id: '/agenda',
-  path: '/agenda',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppBolhasRoute = AppBolhasRouteImport.update({
-  id: '/bolhas',
-  path: '/bolhas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppClientesRoute = AppClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppComissoesRoute = AppComissoesRouteImport.update({
-  id: '/comissoes',
-  path: '/comissoes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEquipeRoute = AppEquipeRouteImport.update({
-  id: '/equipe',
-  path: '/equipe',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFatoresRoute = AppFatoresRouteImport.update({
-  id: '/fatores',
-  path: '/fatores',
+const AppPipelineRoute = AppPipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInformativoRoute = AppInformativoRouteImport.update({
@@ -77,9 +47,39 @@ const AppInformativoRoute = AppInformativoRouteImport.update({
   path: '/informativo',
   getParentRoute: () => AppRoute,
 } as any)
-const AppPipelineRoute = AppPipelineRouteImport.update({
-  id: '/pipeline',
-  path: '/pipeline',
+const AppFatoresRoute = AppFatoresRouteImport.update({
+  id: '/fatores',
+  path: '/fatores',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEquipeRoute = AppEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppComissoesRoute = AppComissoesRouteImport.update({
+  id: '/comissoes',
+  path: '/comissoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesRoute = AppClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBolhasRoute = AppBolhasRouteImport.update({
+  id: '/bolhas',
+  path: '/bolhas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -179,11 +179,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -193,60 +193,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/agenda': {
-      id: '/app/agenda'
-      path: '/agenda'
-      fullPath: '/app/agenda'
-      preLoaderRoute: typeof AppAgendaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/bolhas': {
-      id: '/app/bolhas'
-      path: '/bolhas'
-      fullPath: '/app/bolhas'
-      preLoaderRoute: typeof AppBolhasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/clientes': {
-      id: '/app/clientes'
-      path: '/clientes'
-      fullPath: '/app/clientes'
-      preLoaderRoute: typeof AppClientesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/comissoes': {
-      id: '/app/comissoes'
-      path: '/comissoes'
-      fullPath: '/app/comissoes'
-      preLoaderRoute: typeof AppComissoesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/dashboard': {
-      id: '/app/dashboard'
-      path: '/dashboard'
-      fullPath: '/app/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/equipe': {
-      id: '/app/equipe'
-      path: '/equipe'
-      fullPath: '/app/equipe'
-      preLoaderRoute: typeof AppEquipeRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/fatores': {
-      id: '/app/fatores'
-      path: '/fatores'
-      fullPath: '/app/fatores'
-      preLoaderRoute: typeof AppFatoresRouteImport
+    '/app/pipeline': {
+      id: '/app/pipeline'
+      path: '/pipeline'
+      fullPath: '/app/pipeline'
+      preLoaderRoute: typeof AppPipelineRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/informativo': {
@@ -256,11 +214,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInformativoRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/pipeline': {
-      id: '/app/pipeline'
-      path: '/pipeline'
-      fullPath: '/app/pipeline'
-      preLoaderRoute: typeof AppPipelineRouteImport
+    '/app/fatores': {
+      id: '/app/fatores'
+      path: '/fatores'
+      fullPath: '/app/fatores'
+      preLoaderRoute: typeof AppFatoresRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/equipe': {
+      id: '/app/equipe'
+      path: '/equipe'
+      fullPath: '/app/equipe'
+      preLoaderRoute: typeof AppEquipeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/comissoes': {
+      id: '/app/comissoes'
+      path: '/comissoes'
+      fullPath: '/app/comissoes'
+      preLoaderRoute: typeof AppComissoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clientes': {
+      id: '/app/clientes'
+      path: '/clientes'
+      fullPath: '/app/clientes'
+      preLoaderRoute: typeof AppClientesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bolhas': {
+      id: '/app/bolhas'
+      path: '/bolhas'
+      fullPath: '/app/bolhas'
+      preLoaderRoute: typeof AppBolhasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/agenda': {
+      id: '/app/agenda'
+      path: '/agenda'
+      fullPath: '/app/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppRoute
     }
   }
