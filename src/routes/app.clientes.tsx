@@ -325,7 +325,7 @@ function ClientesPage() {
                   <Heart className={c.favorito ? "h-4 w-4 text-destructive" : "h-4 w-4 text-muted-foreground"} fill={c.favorito ? "currentColor" : "none"} />
                 </Button>
                 <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
-                  <span className={`block truncate font-semibold ${isScheduled(c) ? "rounded bg-warning/25 px-1.5 py-0.5 ring-1 ring-warning/40" : ""}`}>{c.nome}</span>
+                  <span className={`block truncate font-semibold ${isScheduled(c) ? "rounded bg-warning px-1.5 py-0.5 text-warning-foreground" : ""}`}>{c.nome}</span>
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
@@ -414,7 +414,7 @@ function ClientesPage() {
                     <button
                       type="button"
                       onClick={() => { setEditing(c); setOpenForm(true); }}
-                      className={`font-medium text-left cursor-pointer hover:underline hover:text-primary ${isScheduled(c) ? "rounded bg-warning/25 px-1.5 py-0.5 ring-1 ring-warning/40" : ""}`}
+                      className={`font-medium text-left cursor-pointer hover:underline ${isScheduled(c) ? "rounded bg-warning px-1.5 py-0.5 text-warning-foreground" : "hover:text-primary"}`}
                       title={isScheduled(c) ? "Editar cliente • contato agendado" : "Editar cliente"}
                     >
                       {c.nome}
