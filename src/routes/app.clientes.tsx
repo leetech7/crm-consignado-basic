@@ -173,6 +173,9 @@ function ClientesPage() {
     return c.created_at ? `Incluído em ${fmt(c.created_at)}` : "";
   };
 
+  const isScheduled = (c: Client) => !!c.proximo_contato;
+
+
 
   const clearFilters = () => {
     setSearch("");
@@ -322,7 +325,7 @@ function ClientesPage() {
                   <Heart className={c.favorito ? "h-4 w-4 text-destructive" : "h-4 w-4 text-muted-foreground"} fill={c.favorito ? "currentColor" : "none"} />
                 </Button>
                 <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
-                  <span className="block truncate font-semibold">{c.nome}</span>
+                  <span className={`block truncate font-semibold ${isScheduled(c) ? "rounded bg-warning/25 px-1.5 py-0.5 ring-1 ring-warning/40" : ""}`}>{c.nome}</span>
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
@@ -407,15 +410,16 @@ function ClientesPage() {
                       />
                     </button>
                   </td>
-                  <td className="px-4 py-3">
+                   <td className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => { setEditing(c); setOpenForm(true); }}
-                      className="font-medium text-left cursor-pointer hover:underline hover:text-primary"
-                      title="Editar cliente"
+                      className={`font-medium text-left cursor-pointer hover:underline hover:text-primary ${isScheduled(c) ? "rounded bg-warning/25 px-1.5 py-0.5 ring-1 ring-warning/40" : ""}`}
+                      title={isScheduled(c) ? "Editar cliente • contato agendado" : "Editar cliente"}
                     >
                       {c.nome}
                     </button>
+
                     {c.cpf && <div className="text-xs text-muted-foreground">{c.cpf}</div>}
                     <div className="text-[11px] text-muted-foreground">{dateLabel(c)}</div>
                   </td>
