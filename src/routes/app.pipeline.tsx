@@ -53,7 +53,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
                 e.stopPropagation();
                 onEdit(client);
               }}
-              className={`min-w-0 flex-1 truncate text-left font-semibold hover:underline ${client.proximo_contato ? "rounded bg-warning px-1.5 py-0.5 text-warning-foreground" : "hover:text-primary"}`}
+              className="min-w-0 flex-1 truncate text-left font-semibold hover:underline hover:text-primary"
             >
               {client.nome}
             </button>
