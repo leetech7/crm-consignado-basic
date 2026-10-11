@@ -414,97 +414,100 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Data de nascimento</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                className="flex-1"
-                type="date"
-                value={form.data_nascimento}
-                onChange={(e) => handleDobChange(e.target.value)}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="shrink-0 h-8 w-8"
-                disabled={!form.data_nascimento}
-                onClick={() => copyToClipboard(form.data_nascimento)}
-                title="Copiar data de nascimento"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+          {/* Linha 2: nascimento, idade, telefone, órgão e origem em grade compacta */}
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5 [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
+            <div className="min-w-0 space-y-1">
+              <Label>Nascimento</Label>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  className="min-w-0 flex-1"
+                  type="date"
+                  value={form.data_nascimento}
+                  onChange={(e) => handleDobChange(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-7 w-7"
+                  disabled={!form.data_nascimento}
+                  onClick={() => copyToClipboard(form.data_nascimento)}
+                  title="Copiar data de nascimento"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Idade</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                className="flex-1"
-                type="number"
-                value={form.idade}
-                onChange={(e) => update("idade", e.target.value)}
-                readOnly={!!form.data_nascimento}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="shrink-0 h-8 w-8"
-                disabled={!form.idade}
-                onClick={() => copyToClipboard(form.idade)}
-                title="Copiar idade"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+            <div className="min-w-0 space-y-1">
+              <Label>Idade</Label>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  className="min-w-0 flex-1"
+                  type="number"
+                  value={form.idade}
+                  onChange={(e) => update("idade", e.target.value)}
+                  readOnly={!!form.data_nascimento}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-7 w-7"
+                  disabled={!form.idade}
+                  onClick={() => copyToClipboard(form.idade)}
+                  title="Copiar idade"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Telefone</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                className="flex-1"
-                value={form.telefone}
-                onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
-                placeholder="+55 (11) 99999-9999"
-                inputMode="tel"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="shrink-0 h-8 w-8"
-                disabled={!form.telefone}
-                onClick={() => copyToClipboard(form.telefone)}
-                title="Copiar telefone"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+            <div className="min-w-0 space-y-1">
+              <Label>Telefone</Label>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  className="min-w-0 flex-1"
+                  value={form.telefone}
+                  onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+                  placeholder="+55 (11) 99999-9999"
+                  inputMode="tel"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-7 w-7"
+                  disabled={!form.telefone}
+                  onClick={() => copyToClipboard(form.telefone)}
+                  title="Copiar telefone"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Órgão</Label>
-            <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
-              <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
-              <SelectContent>
-                {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                {form.orgao && !ORGAOS.includes(form.orgao as typeof ORGAOS[number]) && (
-                  <SelectItem value={form.orgao} disabled>(legado: {form.orgao})</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Origem do lead</Label>
-            <Select value={form.origem || undefined} onValueChange={(v) => update("origem", v)}>
-              <SelectTrigger><SelectValue placeholder="De onde veio..." /></SelectTrigger>
-              <SelectContent>
-                {ORIGENS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                {form.origem && !ORIGENS.includes(form.origem as typeof ORIGENS[number]) && (
-                  <SelectItem value={form.origem} disabled>(legado: {form.origem})</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+            <div className="min-w-0 space-y-1">
+              <Label>Órgão</Label>
+              <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
+                <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                <SelectContent>
+                  {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {form.orgao && !ORGAOS.includes(form.orgao as typeof ORGAOS[number]) && (
+                    <SelectItem value={form.orgao} disabled>(legado: {form.orgao})</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="min-w-0 space-y-1 col-span-2 sm:col-span-1">
+              <Label>Origem</Label>
+              <Select value={form.origem || undefined} onValueChange={(v) => update("origem", v)}>
+                <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="De onde veio..." /></SelectTrigger>
+                <SelectContent>
+                  {ORIGENS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {form.origem && !ORIGENS.includes(form.origem as typeof ORIGENS[number]) && (
+                    <SelectItem value={form.origem} disabled>(legado: {form.origem})</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Endereço</Label>
