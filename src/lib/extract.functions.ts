@@ -87,7 +87,7 @@ function toBase64(buf: ArrayBuffer): string {
 
 export const extractFromAttachment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { attachmentId: string }) => {
+  .validator((input: { attachmentId: string }) => {
     if (!input?.attachmentId || typeof input.attachmentId !== "string") throw new Error("Anexo inválido");
     return input;
   })
