@@ -20,6 +20,7 @@ import {
   Sigma,
   Circle,
   Megaphone,
+  FileScan,
 
 } from "lucide-react";
 
@@ -31,6 +32,7 @@ const NAV = [
   { to: "/app/agenda", label: "Agenda", icon: CalendarClock },
   { to: "/app/comissoes", label: "Comissões", icon: Wallet },
   { to: "/app/informativo", label: "Informativo", icon: Megaphone },
+  { to: "/app/extratos", label: "Extratos", icon: FileScan },
 ];
 
 
