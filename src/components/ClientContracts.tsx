@@ -54,7 +54,7 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
     const col = COLS.find((c) => c.k === k)!;
     const v = raw === "" ? null : col.type === "number" ? Number(raw) : raw;
     setItems((xs) => xs.map((x) => (x.id === id ? { ...x, [k]: v } : x)));
-    const { error } = await supabase.from("client_contracts").update({ [k]: v }).eq("id", id);
+    const { error } = await supabase.from("client_contracts").update({ [k]: v } as never).eq("id", id);
     if (error) toast.error(error.message);
   };
 
