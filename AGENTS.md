@@ -1,0 +1,1 @@
+- Authenticated server functions attach the bearer token per function via `.middleware([attachSupabaseAuth, requireSupabaseAuth])` — there is no src/start.ts global middleware.
