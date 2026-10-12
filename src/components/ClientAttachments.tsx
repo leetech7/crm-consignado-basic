@@ -11,6 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { Upload, FileText, Download, Trash2, Loader2, CalendarIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { extractFromAttachment, type ExtractedData } from "@/lib/extract.functions";
+import { ExtractReviewDialog, type AppliedFields } from "@/components/ExtractReviewDialog";
 
 interface Attachment {
   id: string;
@@ -43,7 +47,28 @@ function fmtSize(b: number | null) {
   return `${(b / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export function ClientAttachments({ clientId }: { clientId: string }) {
+interface CAProps {
+  clientId: string;
+  current?: AppliedFields;
+  onApply?: (f: AppliedFields) => void;
+  onContractsSaved?: () => void;
+}
+
+export function ClientAttachments({ clientId, current = {}, onApply, onContractsSaved }: CAProps) {
+  const extractFn = useServerFn(extractFromAttachment);
+  const [reading, setReading] = useState<string | null>(null);
+  const [review, setReview] = useState<{ name: string; data: ExtractedData } | null>(null);
+  const readWithAI = async (a: Attachment) => {
+    setReading(a.id);
+    try {
+      const data = await extractFn({ data: { attachmentId: a.id } });
+      setReview({ name: a.file_name, data });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha na leitura");
+    } finally {
+      setReading(null);
+    }
+  };
   const { user } = useAuth();
   const [items, setItems] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,10 +267,16 @@ export function ClientAttachments({ clientId }: { clientId: string }) {
                     <span>{new Date(a.created_at).toLocaleString("pt-BR")}</span>
                   </div>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => download(a)} title="Baixar">
+                {onApply && (a.mime_type === "application/pdf" || a.mime_type?.startsWith("image/") || a.file_name.toLowerCase().endsWith(".pdf")) && (
+                  <Button type="button" size="sm" variant="secondary" disabled={!!reading} onClick={() => readWithAI(a)} title="Ler extrato com IA">
+                    {reading === a.id ? <Loader2 className="h-4 w-4 animate-spin sm:mr-1" /> : <Sparkles className="h-4 w-4 sm:mr-1" />}
+                    <span className="hidden sm:inline">{reading === a.id ? "Lendo..." : "Ler com IA"}</span>
+                  </Button>
+                )}
+                <Button type="button" size="icon" variant="ghost" onClick={() => download(a)} title="Baixar">
                   <Download className="h-4 w-4" />
                 </Button>
-                <Button size="icon" variant="ghost" onClick={() => remove(a)} title="Excluir">
+                <Button type="button" size="icon" variant="ghost" onClick={() => remove(a)} title="Excluir">
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
               </li>
@@ -278,6 +309,16 @@ export function ClientAttachments({ clientId }: { clientId: string }) {
           </div>
         )}
       </div>
+      <ExtractReviewDialog
+        open={!!review}
+        onOpenChange={(o) => { if (!o) setReview(null); }}
+        clientId={clientId}
+        fileName={review?.name ?? ""}
+        data={review?.data ?? null}
+        current={current}
+        onApply={(f) => onApply?.(f)}
+        onContractsSaved={onContractsSaved}
+      />
     </div>
   );
 }

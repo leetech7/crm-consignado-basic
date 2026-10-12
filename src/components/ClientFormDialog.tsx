@@ -49,6 +49,7 @@ const formatPhoneInput = (raw: string): string => {
 };
 import { ProposalDialog } from "@/components/ProposalDialog";
 import { ClientAttachments } from "@/components/ClientAttachments";
+import { ClientContracts } from "@/components/ClientContracts";
 
 import { toast } from "sonner";
 
@@ -119,6 +120,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [openProposal, setOpenProposal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [contractsKey, setContractsKey] = useState(0);
 
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
@@ -658,7 +660,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           {client && (
             <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
               <Label>Anexos (extratos, contracheques, etc.)</Label>
-              <ClientAttachments clientId={client.id} />
+              <ClientAttachments
+                clientId={client.id}
+                current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
+                onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
+                onContractsSaved={() => setContractsKey((k) => k + 1)}
+              />
+            </div>
+          )}
+          {client && (
+            <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
+              <Label>Contratos consignados vigentes</Label>
+              <ClientContracts clientId={client.id} reloadKey={contractsKey} />
             </div>
           )}
           <DialogFooter className="lg:col-span-2 xl:col-span-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
