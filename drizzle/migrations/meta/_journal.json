@@ -8,6 +8,20 @@
       "when": 1791807116589,
       "tag": "0000_client_contracts",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791809092551,
+      "tag": "0001_storage_uploads_pendentes_de_cliente_novo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791809576431,
+      "tag": "0002_mover_anexos_pendentes_para_cliente",
+      "breakpoints": true
     }
   ]
 }
