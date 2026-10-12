@@ -13,7 +13,7 @@ import { Upload, FileText, Download, Trash2, Loader2, CalendarIcon, X, ChevronLe
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { extractFromAttachment, type ExtractedData } from "@/lib/extract.functions";
+import { extractFromAttachment, extractFromUpload, type ExtractedData, type ExtractedContract } from "@/lib/extract.functions";
 import { ExtractReviewDialog, type AppliedFields } from "@/components/ExtractReviewDialog";
 
 interface Attachment {
@@ -26,6 +26,14 @@ interface Attachment {
   size_bytes: number | null;
   categoria: string;
   created_at: string;
+}
+
+export interface PendingFile {
+  storage_path: string;
+  file_name: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  categoria: string;
 }
 
 const CATEGORIAS = [
@@ -48,20 +56,26 @@ function fmtSize(b: number | null) {
 }
 
 interface CAProps {
-  clientId: string;
+  clientId?: string;
+  pending?: boolean;
   current?: AppliedFields;
   onApply?: (f: AppliedFields) => void;
   onContractsSaved?: () => void;
+  onPendingContracts?: (contracts: ExtractedContract[]) => void;
+  onPendingFilesChange?: (files: PendingFile[]) => void;
 }
 
-export function ClientAttachments({ clientId, current = {}, onApply, onContractsSaved }: CAProps) {
+export function ClientAttachments({ clientId, pending = false, current = {}, onApply, onContractsSaved, onPendingContracts, onPendingFilesChange }: CAProps) {
   const extractFn = useServerFn(extractFromAttachment);
+  const extractUploadFn = useServerFn(extractFromUpload);
   const [reading, setReading] = useState<string | null>(null);
-  const [review, setReview] = useState<{ name: string; data: ExtractedData; analysisId: string } | null>(null);
+  const [review, setReview] = useState<{ name: string; data: ExtractedData; analysisId: string | null } | null>(null);
   const readWithAI = async (a: Attachment) => {
     setReading(a.id);
     try {
-      const res = await extractFn({ data: { attachmentId: a.id } });
+      const res = pending
+        ? await extractUploadFn({ data: { path: a.storage_path, fileName: a.file_name, mimeType: a.mime_type } })
+        : await extractFn({ data: { attachmentId: a.id } });
       setReview({ name: a.file_name, data: res.data, analysisId: res.analysisId });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Falha na leitura");
@@ -71,7 +85,7 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
   };
   const { user } = useAuth();
   const [items, setItems] = useState<Attachment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [categoria, setCategoria] = useState("extrato");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,6 +100,7 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
   const [pageSize, setPageSize] = useState(5);
 
   const load = async () => {
+    if (!clientId) return;
     setLoading(true);
     const { data, error } = await supabase
       .from("client_attachments")
@@ -98,8 +113,16 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
   };
 
   useEffect(() => {
-    if (clientId) load();
-  }, [clientId]);
+    if (clientId && !pending) load();
+  }, [clientId, pending]);
+
+  // Em modo pendente, informa ao formulário os arquivos aguardando vínculo.
+  useEffect(() => {
+    if (!pending || !onPendingFilesChange) return;
+    onPendingFilesChange(
+      items.map((a) => ({ storage_path: a.storage_path, file_name: a.file_name, mime_type: a.mime_type, size_bytes: a.size_bytes, categoria: a.categoria })),
+    );
+  }, [items, pending, onPendingFilesChange]);
 
   useEffect(() => { setPage(1); }, [filterCategoria, dateFrom, dateTo, pageSize]);
 
@@ -129,12 +152,43 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file || !user) return;
+    if (!pending && !clientId) return;
     if (file.size > MAX_MB * 1024 * 1024) {
       return toast.error(`Arquivo maior que ${MAX_MB}MB`);
     }
     setUploading(true);
     const safeName = file.name.replace(/[^\w.\-]+/g, "_");
-    const path = `${clientId}/${crypto.randomUUID()}-${safeName}`;
+    if (pending) {
+      const path = `pending/${user.id}/${crypto.randomUUID()}-${safeName}`;
+      const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, file, {
+        contentType: file.type || "application/octet-stream",
+        upsert: false,
+      });
+      if (upErr) {
+        setUploading(false);
+        return toast.error(upErr.message);
+      }
+      setItems((prev) => [
+        {
+          id: path,
+          client_id: "",
+          uploaded_by: user.id,
+          storage_path: path,
+          file_name: file.name,
+          mime_type: file.type || null,
+          size_bytes: file.size,
+          categoria,
+          created_at: new Date().toISOString(),
+        },
+        ...prev,
+      ]);
+      setUploading(false);
+      toast.success("Arquivo anexado — será vinculado ao cliente ao salvar");
+      return;
+    }
+    if (!clientId) return;
+    const cid: string = clientId;
+    const path = `${cid}/${crypto.randomUUID()}-${safeName}`;
     const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, file, {
       contentType: file.type || "application/octet-stream",
       upsert: false,
@@ -144,7 +198,7 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
       return toast.error(upErr.message);
     }
     const { error: insErr } = await supabase.from("client_attachments").insert({
-      client_id: clientId,
+      client_id: cid,
       uploaded_by: user.id,
       storage_path: path,
       file_name: file.name,
@@ -169,11 +223,14 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
 
   const remove = async (a: Attachment) => {
     if (!confirm(`Excluir "${a.file_name}"?`)) return;
-    const { error: dbErr } = await supabase.from("client_attachments").delete().eq("id", a.id);
-    if (dbErr) return toast.error(dbErr.message);
+    if (!pending) {
+      const { error: dbErr } = await supabase.from("client_attachments").delete().eq("id", a.id);
+      if (dbErr) return toast.error(dbErr.message);
+    }
     await supabase.storage.from(BUCKET).remove([a.storage_path]);
+    if (pending) setItems((prev) => prev.filter((x) => x.storage_path !== a.storage_path));
     toast.success("Arquivo removido");
-    load();
+    if (!pending) load();
   };
 
   const startIdx = filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
@@ -312,13 +369,15 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
       <ExtractReviewDialog
         open={!!review}
         onOpenChange={(o) => { if (!o) setReview(null); }}
-        clientId={clientId}
-        analysisId={review?.analysisId}
+        clientId={clientId ?? ""}
+        pending={pending}
+        analysisId={review?.analysisId ?? undefined}
         fileName={review?.name ?? ""}
         data={review?.data ?? null}
         current={current}
         onApply={(f) => onApply?.(f)}
         onContractsSaved={onContractsSaved}
+        onPendingContracts={onPendingContracts}
       />
     </div>
   );

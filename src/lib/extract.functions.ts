@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+import type { Database } from "@/integrations/supabase/types";
 
 export interface ExtractedContract {
   banco: string | null;
@@ -14,7 +16,7 @@ export interface ExtractedContract {
 }
 
 export interface ExtractResult {
-  analysisId: string;
+  analysisId: string | null;
   data: ExtractedData;
 }
 
@@ -91,6 +93,117 @@ function toBase64(buf: ArrayBuffer): string {
   return btoa(bin);
 }
 
+type ExtractCtx = {
+  supabase: SupabaseClient<Database>;
+  userId: string;
+  clientId: string | null;
+  attachmentId: string | null;
+  fileName: string;
+  mime: string;
+  storagePath: string;
+};
+
+// Lê o documento com IA e extrai os dados. clientId/attachmentId nulos = leitura
+// de arquivo pendente (cliente ainda não salvo): nada é registrado em client_ai_analyses.
+async function runExtraction(ctx: ExtractCtx): Promise<ExtractResult> {
+  const { supabase, userId, clientId, attachmentId, fileName } = ctx;
+  let analysisId: string | null = null;
+  if (clientId && attachmentId) {
+    const { data: analysis, error: aErr } = await supabase
+      .from("client_ai_analyses")
+      .insert({ client_id: clientId, attachment_id: attachmentId, user_id: userId, file_name: fileName, status: "processando" })
+      .select("id")
+      .single();
+    if (aErr || !analysis) throw new Error("Não foi possível registrar a leitura.");
+    analysisId = analysis.id;
+  }
+  const fail = async (msg: string): Promise<never> => {
+    if (analysisId) await supabase.from("client_ai_analyses").update({ status: "erro", erro: msg }).eq("id", analysisId);
+    throw new Error(msg);
+  };
+
+  const mime = ctx.mime || (fileName.toLowerCase().endsWith(".pdf") ? "application/pdf" : "");
+  if (mime !== "application/pdf" && !mime.startsWith("image/")) {
+    return fail("Só é possível ler PDF ou imagem.");
+  }
+
+  const { data: blob, error: dlErr } = await supabase.storage.from("client-attachments").download(ctx.storagePath);
+  if (dlErr || !blob) return fail("Não foi possível abrir o arquivo.");
+  const b64 = toBase64(await blob.arrayBuffer());
+  const dataUrl = `data:${mime};base64,${b64}`;
+
+  const apiKey = process.env.LOVABLE_API_KEY;
+  if (!apiKey) return fail("IA não configurada.");
+
+  const filePart = mime === "application/pdf"
+    ? { type: "input_file", filename: fileName, file_data: dataUrl }
+    : { type: "input_image", image_url: dataUrl };
+
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Lovable-API-Key": apiKey,
+      Authorization: `Bearer ${apiKey}`,
+      "X-Lovable-AIG-SDK": "fetch",
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-6-astra",
+      instructions: INSTRUCTIONS,
+      input: [{ role: "user", content: [filePart, { type: "input_text", text: "Extraia os dados deste documento." }] }],
+      reasoning: { effort: "low" },
+      store: false,
+      stream: true,
+      text: { format: { type: "json_schema", name: "extrato", strict: true, schema: SCHEMA } },
+    }),
+  });
+
+  if (!res.ok || !res.body) {
+    const body = await res.text().catch(() => "");
+    console.error(`AI gateway [${res.status}]: ${body}`);
+    if (res.status === 402) return fail("Créditos de IA esgotados. Adicione créditos no workspace.");
+    if (res.status === 429) return fail("Muitas solicitações. Aguarde um instante e tente de novo.");
+    if (res.status === 403) return fail("Acesso à IA bloqueado para este workspace.");
+    return fail(`Falha na leitura pela IA (${res.status}).`);
+  }
+
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  let text = "";
+  let failure: string | null = null;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let idx;
+    while ((idx = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, idx).trim();
+      buf = buf.slice(idx + 1);
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const ev = JSON.parse(payload);
+        if (ev.type === "response.output_text.delta") text += ev.delta ?? "";
+        else if (ev.type === "response.refusal.delta") failure = "A IA recusou ler este documento.";
+        else if (ev.type === "response.failed" || ev.type === "error") {
+          failure = ev.response?.error?.message || ev.message || "Falha na leitura pela IA.";
+        }
+      } catch { /* ignore */ }
+    }
+  }
+  if (failure) return fail(failure);
+  try {
+    const parsed = JSON.parse(text) as ExtractedData;
+    parsed.contratos = parsed.contratos ?? [];
+    if (analysisId) await supabase.from("client_ai_analyses").update({ status: "lido" }).eq("id", analysisId);
+    return { analysisId, data: parsed };
+  } catch {
+    return fail("A IA não retornou dados legíveis deste documento.");
+  }
+}
+
 export const extractFromAttachment = createServerFn({ method: "POST" })
   .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .validator((input: { attachmentId: string }) => {
@@ -105,97 +218,38 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
       .eq("id", data.attachmentId)
       .maybeSingle();
     if (error || !att) throw new Error("Anexo não encontrado ou sem permissão.");
-
-    const { data: analysis, error: aErr } = await supabase
-      .from("client_ai_analyses")
-      .insert({ client_id: att.client_id, attachment_id: data.attachmentId, user_id: userId, file_name: att.file_name, status: "processando" })
-      .select("id")
-      .single();
-    if (aErr || !analysis) throw new Error("Não foi possível registrar a leitura.");
-    const analysisId = analysis.id;
-    const fail = async (msg: string): Promise<never> => {
-      await supabase.from("client_ai_analyses").update({ status: "erro", erro: msg }).eq("id", analysisId);
-      throw new Error(msg);
-    };
-
-    const mime = att.mime_type || (att.file_name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "");
-    if (mime !== "application/pdf" && !mime.startsWith("image/")) {
-      return fail("Só é possível ler PDF ou imagem.");
-    }
-
-    const { data: blob, error: dlErr } = await supabase.storage.from("client-attachments").download(att.storage_path);
-    if (dlErr || !blob) return fail("Não foi possível abrir o arquivo.");
-    const b64 = toBase64(await blob.arrayBuffer());
-    const dataUrl = `data:${mime};base64,${b64}`;
-
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) return fail("IA não configurada.");
-
-    const filePart = mime === "application/pdf"
-      ? { type: "input_file", filename: att.file_name, file_data: dataUrl }
-      : { type: "input_image", image_url: dataUrl };
-
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": apiKey,
-        Authorization: `Bearer ${apiKey}`,
-        "X-Lovable-AIG-SDK": "fetch",
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-6-astra",
-        instructions: INSTRUCTIONS,
-        input: [{ role: "user", content: [filePart, { type: "input_text", text: "Extraia os dados deste documento." }] }],
-        reasoning: { effort: "low" },
-        store: false,
-        stream: true,
-        text: { format: { type: "json_schema", name: "extrato", strict: true, schema: SCHEMA } },
-      }),
+    return runExtraction({
+      supabase,
+      userId,
+      clientId: att.client_id,
+      attachmentId: data.attachmentId,
+      fileName: att.file_name,
+      mime: att.mime_type ?? "",
+      storagePath: att.storage_path,
     });
+  });
 
-    if (!res.ok || !res.body) {
-      const body = await res.text().catch(() => "");
-      console.error(`AI gateway [${res.status}]: ${body}`);
-      if (res.status === 402) return fail("Créditos de IA esgotados. Adicione créditos no workspace.");
-      if (res.status === 429) return fail("Muitas solicitações. Aguarde um instante e tente de novo.");
-      if (res.status === 403) return fail("Acesso à IA bloqueado para este workspace.");
-      return fail(`Falha na leitura pela IA (${res.status}).`);
+// Leitura de arquivo enviado antes de salvar o cliente (caminho pending/{userId}/...)
+export const extractFromUpload = createServerFn({ method: "POST" })
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
+  .validator((input: { path: string; fileName: string; mimeType?: string | null }) => {
+    if (!input?.path || typeof input.path !== "string") throw new Error("Arquivo inválido");
+    if (!input?.fileName || typeof input.fileName !== "string") throw new Error("Arquivo inválido");
+    return input;
+  })
+  .handler(async ({ data, context }): Promise<ExtractResult> => {
+    const { supabase, userId } = context;
+    const prefix = `pending/${userId}/`;
+    if (!data.path.startsWith(prefix) || data.path.split("/").some((p) => p === "..")) {
+      throw new Error("Arquivo não autorizado.");
     }
-
-    const reader = res.body.getReader();
-    const dec = new TextDecoder();
-    let buf = "";
-    let text = "";
-    let failure: string | null = null;
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let idx;
-      while ((idx = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, idx).trim();
-        buf = buf.slice(idx + 1);
-        if (!line.startsWith("data:")) continue;
-        const payload = line.slice(5).trim();
-        if (!payload || payload === "[DONE]") continue;
-        try {
-          const ev = JSON.parse(payload);
-          if (ev.type === "response.output_text.delta") text += ev.delta ?? "";
-          else if (ev.type === "response.refusal.delta") failure = "A IA recusou ler este documento.";
-          else if (ev.type === "response.failed" || ev.type === "error") {
-            failure = ev.response?.error?.message || ev.message || "Falha na leitura pela IA.";
-          }
-        } catch { /* ignore */ }
-      }
-    }
-    if (failure) return fail(failure);
-    try {
-      const parsed = JSON.parse(text) as ExtractedData;
-      parsed.contratos = parsed.contratos ?? [];
-      await supabase.from("client_ai_analyses").update({ status: "lido" }).eq("id", analysisId);
-      return { analysisId, data: parsed };
-    } catch {
-      return fail("A IA não retornou dados legíveis deste documento.");
-    }
+    return runExtraction({
+      supabase,
+      userId,
+      clientId: null,
+      attachmentId: null,
+      fileName: data.fileName,
+      mime: data.mimeType ?? "",
+      storagePath: data.path,
+    });
   });

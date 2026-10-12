@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { formatBRL, formatCPF, isValidCPF } from "@/lib/pipeline";
-import type { ExtractedData } from "@/lib/extract.functions";
+import type { ExtractedData, ExtractedContract } from "@/lib/extract.functions";
 import { toast } from "sonner";
 
 export type AppliedFields = Partial<Record<"nome" | "cpf" | "data_nascimento" | "orgao" | "margem_disponivel" | "margem_rcc" | "margem_rmc", string>>;
@@ -14,12 +14,14 @@ interface Props {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   clientId: string;
+  pending?: boolean;
   analysisId?: string;
   fileName: string;
   data: ExtractedData | null;
   current: AppliedFields;
   onApply: (fields: AppliedFields) => void;
   onContractsSaved?: () => void;
+  onPendingContracts?: (contracts: ExtractedContract[]) => void;
 }
 
 const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
@@ -34,7 +36,7 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
 
 const fmtDate = (s?: string | null) => (s && /^\d{4}-\d{2}-\d{2}/.test(s) ? s.slice(0, 10).split("-").reverse().join("/") : s || "—");
 
-export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, fileName, data, current, onApply, onContractsSaved }: Props) {
+export function ExtractReviewDialog({ open, onOpenChange, clientId, pending = false, analysisId, fileName, data, current, onApply, onContractsSaved, onPendingContracts }: Props) {
   const { user } = useAuth();
   const [sel, setSel] = useState<Record<string, boolean>>({});
   const [selC, setSelC] = useState<boolean[]>([]);
@@ -73,6 +75,23 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, 
     const fields: AppliedFields = {};
     FIELDS.forEach((f) => { const v = suggested(f.k); if (sel[f.k] && v != null) fields[f.k] = v; });
     const contracts = data.contratos.filter((_, i) => selC[i]);
+
+    // Cliente novo ainda não salvo: devolve os contratos ao formulário; nada é gravado.
+    if (pending) {
+      if (contracts.length) onPendingContracts?.(contracts);
+      onApply(fields);
+      setBusy(false);
+      onOpenChange(false);
+      toast.success(
+        fields.nome || fields.cpf || fields.orgao || fields.margem_disponivel || fields.margem_rcc || fields.margem_rmc || fields.data_nascimento
+          ? "Dados aplicados ao formulário. Revise e clique em Salvar."
+          : contracts.length
+            ? "Contratos marcados — serão salvos junto com o cliente."
+            : "Nada foi selecionado.",
+      );
+      return;
+    }
+
     if (contracts.length) {
       const { error } = await supabase.from("client_contracts").insert(
         contracts.map((c) => ({ ...c, client_id: clientId, created_by: user.id, origem: "ia" })),

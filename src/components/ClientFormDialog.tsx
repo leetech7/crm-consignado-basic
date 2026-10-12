@@ -49,6 +49,8 @@ const formatPhoneInput = (raw: string): string => {
 };
 import { ProposalDialog } from "@/components/ProposalDialog";
 import { ClientAttachments } from "@/components/ClientAttachments";
+import type { ExtractedContract } from "@/lib/extract.functions";
+import type { PendingFile } from "@/components/ClientAttachments";
 import { ClientContracts } from "@/components/ClientContracts";
 
 import { toast } from "sonner";
@@ -121,6 +123,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [openReport, setOpenReport] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [contractsKey, setContractsKey] = useState(0);
+  const [pendingContracts, setPendingContracts] = useState<ExtractedContract[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
 
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
@@ -177,6 +181,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       hydratedRef.current = false;
       return;
     }
+    setPendingContracts([]);
+    setPendingFiles([]);
     const draft = readDraft(client?.id);
     if (client) {
       const pc = client.proximo_contato ? new Date(client.proximo_contato) : null;
@@ -282,14 +288,46 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     };
 
     try {
-      const { error } = client
-        ? await supabase.from("clients").update(payload).eq("id", client.id)
-        : await supabase.from("clients").insert(payload);
+      const { data: saved, error } = client
+        ? await supabase.from("clients").update(payload).eq("id", client.id).select("id").single()
+        : await supabase.from("clients").insert(payload).select("id").single();
 
       if (error) {
         toast.error(error.message);
         return;
       }
+
+      // Contratos extraídos da IA em cliente novo: grava agora que existe o id.
+      if (!client && saved?.id && pendingContracts.length) {
+        const { error: cErr } = await supabase.from("client_contracts").insert(
+          pendingContracts.map((c) => ({ ...c, client_id: saved.id, created_by: user.id, origem: "ia" })),
+        );
+        if (cErr) toast.error(`Cliente salvo, mas os contratos não puderam ser gravados: ${cErr.message}`);
+      }
+
+      // Anexos enviados antes de salvar o cliente: move do rascunho para a pasta do cliente.
+      if (!client && saved?.id) {
+        for (const f of pendingFiles) {
+          const newName = `${saved.id}/${crypto.randomUUID()}-${f.file_name.replace(/[^\w.\-]+/g, "_")}`;
+          const { error: mvErr } = await supabase.storage.from("client-attachments").move(f.storage_path, newName);
+          if (mvErr) {
+            toast.error(`Anexo "${f.file_name}" não pôde ser vinculado: ${mvErr.message}`);
+            continue;
+          }
+          const { error: aErr } = await supabase.from("client_attachments").insert({
+            client_id: saved.id,
+            uploaded_by: user.id,
+            storage_path: newName,
+            file_name: f.file_name,
+            mime_type: f.mime_type,
+            size_bytes: f.size_bytes,
+            categoria: f.categoria,
+          });
+          if (aErr) toast.error(`Anexo "${f.file_name}" não pôde ser registrado: ${aErr.message}`);
+        }
+      }
+      setPendingContracts([]);
+      setPendingFiles([]);
 
       toast.success(client ? "Cliente atualizado" : "Cliente cadastrado");
       hydratedRef.current = false;
@@ -311,6 +349,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     clearDraft(client?.id);
     setRestored(false);
     setSavedAt(null);
+    setPendingContracts([]);
+    setPendingFiles([]);
     onOpenChange(false);
   };
 
@@ -657,17 +697,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Label>Observações</Label>
             <Textarea rows={5} className="min-h-[120px] sm:min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
-          {client && (
-            <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
-              <Label>Anexos (extratos, contracheques, etc.)</Label>
-              <ClientAttachments
-                clientId={client.id}
-                current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
-                onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
-                onContractsSaved={() => setContractsKey((k) => k + 1)}
-              />
-            </div>
-          )}
+          <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
+            <Label>Anexos (extratos, contracheques, etc.)</Label>
+            <ClientAttachments
+              clientId={client?.id}
+              pending={!client}
+              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
+              onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
+              onContractsSaved={() => setContractsKey((k) => k + 1)}
+              onPendingContracts={setPendingContracts}
+              onPendingFilesChange={setPendingFiles}
+            />
+          </div>
           {client && (
             <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
               <Label>Contratos consignados vigentes</Label>
