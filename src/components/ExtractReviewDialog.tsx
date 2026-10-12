@@ -84,6 +84,14 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, 
       client_id: clientId, user_id: user.id, tipo: "ia",
       descricao: `Dados importados do extrato "${fileName}" (${Object.keys(fields).length} campos, ${contracts.length} contratos)`,
     });
+    if (analysisId) {
+      await supabase.from("client_ai_analyses").update({
+        status: "aplicado",
+        campos_aplicados: Object.keys(fields).length,
+        contratos_aplicados: contracts.length,
+        applied_at: new Date().toISOString(),
+      }).eq("id", analysisId);
+    }
     onApply(fields);
     setBusy(false);
     onOpenChange(false);
@@ -144,6 +152,21 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, 
         )}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          {analysisId && (
+            <Button
+              variant="ghost"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                await supabase.from("client_ai_analyses").update({ status: "descartado" }).eq("id", analysisId);
+                setBusy(false);
+                onOpenChange(false);
+                toast.info("Leitura descartada. Nada foi alterado.");
+              }}
+            >
+              Descartar
+            </Button>
+          )}
           <Button onClick={apply} disabled={busy}>{busy ? "Aplicando..." : "Aplicar selecionados"}</Button>
         </DialogFooter>
       </DialogContent>
