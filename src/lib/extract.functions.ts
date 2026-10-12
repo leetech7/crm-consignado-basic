@@ -13,6 +13,11 @@ export interface ExtractedContract {
   data_inicio: string | null;
 }
 
+export interface ExtractResult {
+  analysisId: string;
+  data: ExtractedData;
+}
+
 export interface ExtractedData {
   nome: string | null;
   cpf: string | null;
@@ -92,14 +97,26 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
     if (!input?.attachmentId || typeof input.attachmentId !== "string") throw new Error("Anexo inválido");
     return input;
   })
-  .handler(async ({ data, context }): Promise<ExtractedData> => {
-    const { supabase } = context;
+  .handler(async ({ data, context }): Promise<ExtractResult> => {
+    const { supabase, userId } = context;
     const { data: att, error } = await supabase
       .from("client_attachments")
-      .select("storage_path, file_name, mime_type")
+      .select("storage_path, file_name, mime_type, client_id")
       .eq("id", data.attachmentId)
       .maybeSingle();
     if (error || !att) throw new Error("Anexo não encontrado ou sem permissão.");
+
+    const { data: analysis, error: aErr } = await supabase
+      .from("client_ai_analyses")
+      .insert({ client_id: att.client_id, attachment_id: data.attachmentId, user_id: userId, file_name: att.file_name, status: "processando" })
+      .select("id")
+      .single();
+    if (aErr || !analysis) throw new Error("Não foi possível registrar a leitura.");
+    const analysisId = analysis.id;
+    const fail = async (msg: string): Promise<never> => {
+      await supabase.from("client_ai_analyses").update({ status: "erro", erro: msg }).eq("id", analysisId);
+      throw new Error(msg);
+    };
 
     const mime = att.mime_type || (att.file_name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "");
     if (mime !== "application/pdf" && !mime.startsWith("image/")) {
