@@ -52,7 +52,7 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, fileName, da
     const s: Record<string, boolean> = {};
     FIELDS.forEach((f) => {
       const v = suggested(f.k);
-      s[f.k] = v != null && v !== (current[f.k] ?? "") && !(f.k === "cpf" && !isValidCPF(v));
+      s[f.k] = v != null && v.toLowerCase() !== (current[f.k] ?? "").toLowerCase() && !(f.k === "cpf" && !isValidCPF(v));
     });
     setSel(s);
     setSelC(data.contratos.map(() => true));
