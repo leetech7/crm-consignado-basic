@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 
 export interface ExtractedContract {
   banco: string | null;
@@ -86,7 +87,7 @@ function toBase64(buf: ArrayBuffer): string {
 }
 
 export const extractFromAttachment = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .validator((input: { attachmentId: string }) => {
     if (!input?.attachmentId || typeof input.attachmentId !== "string") throw new Error("Anexo inválido");
     return input;
