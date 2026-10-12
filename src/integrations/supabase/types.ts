@@ -114,6 +114,62 @@ export type Database = {
           },
         ]
       }
+      client_contracts: {
+        Row: {
+          banco: string | null
+          client_id: string
+          created_at: string
+          created_by: string
+          data_inicio: string | null
+          id: string
+          numero_contrato: string | null
+          origem: string
+          parcelas_pagas: number | null
+          parcelas_restantes: number | null
+          prazo_total: number | null
+          saldo_devedor: number | null
+          valor_parcela: number | null
+        }
+        Insert: {
+          banco?: string | null
+          client_id: string
+          created_at?: string
+          created_by: string
+          data_inicio?: string | null
+          id?: string
+          numero_contrato?: string | null
+          origem?: string
+          parcelas_pagas?: number | null
+          parcelas_restantes?: number | null
+          prazo_total?: number | null
+          saldo_devedor?: number | null
+          valor_parcela?: number | null
+        }
+        Update: {
+          banco?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string
+          data_inicio?: string | null
+          id?: string
+          numero_contrato?: string | null
+          origem?: string
+          parcelas_pagas?: number | null
+          parcelas_restantes?: number | null
+          prazo_total?: number | null
+          saldo_devedor?: number | null
+          valor_parcela?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_contracts_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           compra_divida: number | null
