@@ -70,6 +70,63 @@ export type Database = {
         }
         Relationships: []
       }
+      client_ai_analyses: {
+        Row: {
+          applied_at: string | null
+          attachment_id: string | null
+          campos_aplicados: number
+          client_id: string
+          contratos_aplicados: number
+          created_at: string
+          erro: string | null
+          file_name: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          attachment_id?: string | null
+          campos_aplicados?: number
+          client_id: string
+          contratos_aplicados?: number
+          created_at?: string
+          erro?: string | null
+          file_name: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          applied_at?: string | null
+          attachment_id?: string | null
+          campos_aplicados?: number
+          client_id?: string
+          contratos_aplicados?: number
+          created_at?: string
+          erro?: string | null
+          file_name?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_ai_analyses_attachment_id_fkey"
+            columns: ["attachment_id"]
+            isOneToOne: false
+            referencedRelation: "client_attachments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_ai_analyses_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_attachments: {
         Row: {
           categoria: string
