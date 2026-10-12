@@ -120,16 +120,16 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
 
     const mime = att.mime_type || (att.file_name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "");
     if (mime !== "application/pdf" && !mime.startsWith("image/")) {
-      throw new Error("Só é possível ler PDF ou imagem.");
+      return fail("Só é possível ler PDF ou imagem.");
     }
 
     const { data: blob, error: dlErr } = await supabase.storage.from("client-attachments").download(att.storage_path);
-    if (dlErr || !blob) throw new Error("Não foi possível abrir o arquivo.");
+    if (dlErr || !blob) return fail("Não foi possível abrir o arquivo.");
     const b64 = toBase64(await blob.arrayBuffer());
     const dataUrl = `data:${mime};base64,${b64}`;
 
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("IA não configurada.");
+    if (!apiKey) return fail("IA não configurada.");
 
     const filePart = mime === "application/pdf"
       ? { type: "input_file", filename: att.file_name, file_data: dataUrl }
@@ -157,10 +157,10 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
     if (!res.ok || !res.body) {
       const body = await res.text().catch(() => "");
       console.error(`AI gateway [${res.status}]: ${body}`);
-      if (res.status === 402) throw new Error("Créditos de IA esgotados. Adicione créditos no workspace.");
-      if (res.status === 429) throw new Error("Muitas solicitações. Aguarde um instante e tente de novo.");
-      if (res.status === 403) throw new Error("Acesso à IA bloqueado para este workspace.");
-      throw new Error(`Falha na leitura pela IA (${res.status}).`);
+      if (res.status === 402) return fail("Créditos de IA esgotados. Adicione créditos no workspace.");
+      if (res.status === 429) return fail("Muitas solicitações. Aguarde um instante e tente de novo.");
+      if (res.status === 403) return fail("Acesso à IA bloqueado para este workspace.");
+      return fail(`Falha na leitura pela IA (${res.status}).`);
     }
 
     const reader = res.body.getReader();
@@ -189,12 +189,13 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
         } catch { /* ignore */ }
       }
     }
-    if (failure) throw new Error(failure);
+    if (failure) return fail(failure);
     try {
       const parsed = JSON.parse(text) as ExtractedData;
       parsed.contratos = parsed.contratos ?? [];
-      return parsed;
+      await supabase.from("client_ai_analyses").update({ status: "lido" }).eq("id", analysisId);
+      return { analysisId, data: parsed };
     } catch {
-      throw new Error("A IA não retornou dados legíveis deste documento.");
+      return fail("A IA não retornou dados legíveis deste documento.");
     }
   });
