@@ -14,6 +14,7 @@ interface Props {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   clientId: string;
+  analysisId?: string;
   fileName: string;
   data: ExtractedData | null;
   current: AppliedFields;
@@ -33,7 +34,7 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
 
 const fmtDate = (s?: string | null) => (s && /^\d{4}-\d{2}-\d{2}/.test(s) ? s.slice(0, 10).split("-").reverse().join("/") : s || "—");
 
-export function ExtractReviewDialog({ open, onOpenChange, clientId, fileName, data, current, onApply, onContractsSaved }: Props) {
+export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, fileName, data, current, onApply, onContractsSaved }: Props) {
   const { user } = useAuth();
   const [sel, setSel] = useState<Record<string, boolean>>({});
   const [selC, setSelC] = useState<boolean[]>([]);
