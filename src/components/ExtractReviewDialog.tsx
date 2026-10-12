@@ -14,6 +14,7 @@ interface Props {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   clientId: string;
+  analysisId?: string;
   fileName: string;
   data: ExtractedData | null;
   current: AppliedFields;
@@ -33,7 +34,7 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
 
 const fmtDate = (s?: string | null) => (s && /^\d{4}-\d{2}-\d{2}/.test(s) ? s.slice(0, 10).split("-").reverse().join("/") : s || "—");
 
-export function ExtractReviewDialog({ open, onOpenChange, clientId, fileName, data, current, onApply, onContractsSaved }: Props) {
+export function ExtractReviewDialog({ open, onOpenChange, clientId, analysisId, fileName, data, current, onApply, onContractsSaved }: Props) {
   const { user } = useAuth();
   const [sel, setSel] = useState<Record<string, boolean>>({});
   const [selC, setSelC] = useState<boolean[]>([]);
@@ -83,6 +84,14 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, fileName, da
       client_id: clientId, user_id: user.id, tipo: "ia",
       descricao: `Dados importados do extrato "${fileName}" (${Object.keys(fields).length} campos, ${contracts.length} contratos)`,
     });
+    if (analysisId) {
+      await supabase.from("client_ai_analyses").update({
+        status: "aplicado",
+        campos_aplicados: Object.keys(fields).length,
+        contratos_aplicados: contracts.length,
+        applied_at: new Date().toISOString(),
+      }).eq("id", analysisId);
+    }
     onApply(fields);
     setBusy(false);
     onOpenChange(false);
@@ -143,6 +152,21 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, fileName, da
         )}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          {analysisId && (
+            <Button
+              variant="ghost"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                await supabase.from("client_ai_analyses").update({ status: "descartado" }).eq("id", analysisId);
+                setBusy(false);
+                onOpenChange(false);
+                toast.info("Leitura descartada. Nada foi alterado.");
+              }}
+            >
+              Descartar
+            </Button>
+          )}
           <Button onClick={apply} disabled={busy}>{busy ? "Aplicando..." : "Aplicar selecionados"}</Button>
         </DialogFooter>
       </DialogContent>

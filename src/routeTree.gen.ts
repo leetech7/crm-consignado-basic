@@ -18,6 +18,7 @@ import { Route as AppClientesRouteImport } from './routes/app.clientes'
 import { Route as AppComissoesRouteImport } from './routes/app.comissoes'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppEquipeRouteImport } from './routes/app.equipe'
+import { Route as AppExtratosRouteImport } from './routes/app.extratos'
 import { Route as AppFatoresRouteImport } from './routes/app.fatores'
 import { Route as AppInformativoRouteImport } from './routes/app.informativo'
 import { Route as AppPipelineRouteImport } from './routes/app.pipeline'
@@ -67,6 +68,11 @@ const AppEquipeRoute = AppEquipeRouteImport.update({
   path: '/equipe',
   getParentRoute: () => AppRoute,
 } as any)
+const AppExtratosRoute = AppExtratosRouteImport.update({
+  id: '/extratos',
+  path: '/extratos',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFatoresRoute = AppFatoresRouteImport.update({
   id: '/fatores',
   path: '/fatores',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/equipe': typeof AppEquipeRoute
+  '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
   '/app/pipeline': typeof AppPipelineRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/equipe': typeof AppEquipeRoute
+  '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
   '/app/pipeline': typeof AppPipelineRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/app/comissoes': typeof AppComissoesRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/equipe': typeof AppEquipeRoute
+  '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
   '/app/pipeline': typeof AppPipelineRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/app/comissoes'
     | '/app/dashboard'
     | '/app/equipe'
+    | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
     | '/app/pipeline'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/app/comissoes'
     | '/app/dashboard'
     | '/app/equipe'
+    | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
     | '/app/pipeline'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/app/comissoes'
     | '/app/dashboard'
     | '/app/equipe'
+    | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
     | '/app/pipeline'
@@ -242,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEquipeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/extratos': {
+      id: '/app/extratos'
+      path: '/extratos'
+      fullPath: '/app/extratos'
+      preLoaderRoute: typeof AppExtratosRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/fatores': {
       id: '/app/fatores'
       path: '/fatores'
@@ -273,6 +292,7 @@ interface AppRouteChildren {
   AppComissoesRoute: typeof AppComissoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEquipeRoute: typeof AppEquipeRoute
+  AppExtratosRoute: typeof AppExtratosRoute
   AppFatoresRoute: typeof AppFatoresRoute
   AppInformativoRoute: typeof AppInformativoRoute
   AppPipelineRoute: typeof AppPipelineRoute
@@ -285,6 +305,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppComissoesRoute: AppComissoesRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEquipeRoute: AppEquipeRoute,
+  AppExtratosRoute: AppExtratosRoute,
   AppFatoresRoute: AppFatoresRoute,
   AppInformativoRoute: AppInformativoRoute,
   AppPipelineRoute: AppPipelineRoute,

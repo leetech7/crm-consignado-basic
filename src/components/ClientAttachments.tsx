@@ -57,12 +57,12 @@ interface CAProps {
 export function ClientAttachments({ clientId, current = {}, onApply, onContractsSaved }: CAProps) {
   const extractFn = useServerFn(extractFromAttachment);
   const [reading, setReading] = useState<string | null>(null);
-  const [review, setReview] = useState<{ name: string; data: ExtractedData } | null>(null);
+  const [review, setReview] = useState<{ name: string; data: ExtractedData; analysisId: string } | null>(null);
   const readWithAI = async (a: Attachment) => {
     setReading(a.id);
     try {
-      const data = await extractFn({ data: { attachmentId: a.id } });
-      setReview({ name: a.file_name, data });
+      const res = await extractFn({ data: { attachmentId: a.id } });
+      setReview({ name: a.file_name, data: res.data, analysisId: res.analysisId });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Falha na leitura");
     } finally {
@@ -313,6 +313,7 @@ export function ClientAttachments({ clientId, current = {}, onApply, onContracts
         open={!!review}
         onOpenChange={(o) => { if (!o) setReview(null); }}
         clientId={clientId}
+        analysisId={review?.analysisId}
         fileName={review?.name ?? ""}
         data={review?.data ?? null}
         current={current}
