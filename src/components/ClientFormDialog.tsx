@@ -697,18 +697,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Label>Observações</Label>
             <Textarea rows={5} className="min-h-[120px] sm:min-h-[180px]" value={form.observacoes} onChange={(e) => update("observacoes", e.target.value)} />
           </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
-            <Label>Anexos (extratos, contracheques, etc.)</Label>
-            <ClientAttachments
-              clientId={client?.id}
-              pending={!client}
-              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
-              onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
-              onContractsSaved={() => setContractsKey((k) => k + 1)}
-              onPendingContracts={setPendingContracts}
-              onPendingFilesChange={setPendingFiles}
-            />
-          </div>
           {client && (
             <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
               <Label>Contratos consignados vigentes</Label>
