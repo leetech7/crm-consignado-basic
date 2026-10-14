@@ -399,6 +399,19 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         </DialogHeader>
 
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+          <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
+            <Label>Anexos (extrato de consignados, contracheque, RG, etc.)</Label>
+            <ClientAttachments
+              clientId={client?.id}
+              pending={!client}
+              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
+              onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
+              onContractsSaved={() => setContractsKey((k) => k + 1)}
+              onPendingContracts={setPendingContracts}
+              onPendingFilesChange={setPendingFiles}
+            />
+          </div>
+
           <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-5">
             <div className="min-w-0 space-y-1.5">
               <Label>Nome *</Label>
