@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { STAGES, formatBRL, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, formatBRL, formatPct, type Client, type PipelineStage } from "@/lib/pipeline";
 import { Button } from "@/components/ui/button";
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
 import { toast } from "sonner";
@@ -120,7 +120,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
 
 function Column({ stage, clients, onEdit, onMove }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void; onMove: (c: Client, s: PipelineStage) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
-  const total = clients.reduce((s, c) => s + Number(c.taxa_rps ?? 0), 0);
+  const total = clients.reduce((s, c) => s + Number(c.valor_rps_total ?? 0), 0);
 
   return (
     <div

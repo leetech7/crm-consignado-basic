@@ -11,7 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, ORGAOS, formatBRL, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Heart, Image as ImageIcon } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { toast } from "sonner";
@@ -142,7 +142,7 @@ function ClientesPage() {
   };
 
   const exportCSV = () => {
-    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Origem", "Endereço", "Estágio", "Taxa RPS", "Valor bruto", "Compra de dívida", "Margem disponível", "Próximo contato", "Observações"];
+    const headers = ["Nome", "CPF", "Idade", "Telefone", "Órgão", "Origem", "Endereço", "Estágio", "Taxa RPS (%)", "Valor bruto", "Compra de dívida", "Margem disponível", "Próximo contato", "Observações"];
     const rows = sorted.map((c) => [
       c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.orgao ?? "", c.origem ?? "", c.endereco ?? "",
       stageLabel(c.stage), c.taxa_rps ?? 0, c.valor_bruto ?? 0, c.compra_divida ?? 0, c.margem_disponivel ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
