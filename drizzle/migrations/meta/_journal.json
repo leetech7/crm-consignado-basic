@@ -29,6 +29,13 @@
       "when": 1792608435177,
       "tag": "0003_add_stages_rejeitou_reprovado",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792608988612,
+      "tag": "0004_add_tipo_contrato",
+      "breakpoints": true
     }
   ]
 }
