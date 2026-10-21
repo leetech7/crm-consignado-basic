@@ -6,15 +6,19 @@ export type PipelineStage =
   | "em_negociacao"
   | "digitado"
   | "pago"
-  | "remarketing";
+  | "remarketing"
+  | "cliente_rejeitou"
+  | "reprovado";
 
 export const STAGES: { id: PipelineStage; label: string; color: string }[] = [
-  { id: "novo", label: "Novos", color: "oklch(0.7 0.16 240)" },
+  { id: "novo", label: "NOVO", color: "oklch(0.7 0.16 240)" },
   { id: "quente", label: "Quentes", color: "oklch(0.7 0.2 35)" },
   { id: "frio", label: "Frios", color: "oklch(0.65 0.12 220)" },
-  { id: "em_negociacao", label: "Em negociação", color: "oklch(0.78 0.16 75)" },
-  { id: "digitado", label: "Digitado", color: "oklch(0.7 0.18 300)" },
-  { id: "pago", label: "PAGO!", color: "oklch(0.74 0.18 158)" },
+  { id: "em_negociacao", label: "EM NEGOCIAÇÃO", color: "oklch(0.78 0.16 75)" },
+  { id: "digitado", label: "CONTRATO DIGITADO", color: "oklch(0.7 0.18 300)" },
+  { id: "pago", label: "PAGO (FINALIZADO)", color: "oklch(0.74 0.18 158)" },
+  { id: "cliente_rejeitou", label: "C.REJEITOU", color: "oklch(0.72 0.18 50)" },
+  { id: "reprovado", label: "REPROVADO", color: "oklch(0.62 0.22 25)" },
   { id: "remarketing", label: "Remarketing", color: "oklch(0.7 0.15 320)" },
   { id: "descartado", label: "Descartados", color: "oklch(0.55 0.02 250)" },
 ];

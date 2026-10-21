@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
 import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { StageFlag } from "@/components/StageFlag";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Heart, Image as ImageIcon } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { toast } from "sonner";
@@ -328,9 +329,7 @@ function ClientesPage() {
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
-                <Badge variant="outline" className="max-w-28 truncate" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
-                  {stageLabel(c.stage as PipelineStage)}
-                </Badge>
+                <StageFlag stage={c.stage as PipelineStage} className="shrink-0" />
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/50 pt-3 text-xs">
                 <div><span className="block text-muted-foreground">Órgão</span><span className="block truncate">{c.orgao ?? "—"}</span></div>
@@ -437,9 +436,7 @@ function ClientesPage() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{c.orgao ?? "-"}</td>
                   <td className="px-4 py-3">
-                    <Badge variant="outline" style={{ borderColor: stageColor(c.stage as PipelineStage), color: stageColor(c.stage as PipelineStage) }}>
-                      {stageLabel(c.stage as PipelineStage)}
-                    </Badge>
+                    <StageFlag stage={c.stage as PipelineStage} />
                   </td>
                   <td className="px-4 py-3 text-right font-mono">{formatPct(Number(c.taxa_rps ?? 0))}</td>
                   <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</td>

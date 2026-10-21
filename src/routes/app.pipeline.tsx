@@ -7,6 +7,7 @@ import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, us
 import { toast } from "sonner";
 import { GripVertical, Plus, ChevronLeft, ChevronRight, MoveRight } from "lucide-react";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
+import { StageFlag } from "@/components/StageFlag";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
       className="cursor-grab rounded-lg border border-border bg-card p-3 text-sm shadow-sm transition-all hover:border-primary/50 active:cursor-grabbing"
       title="Clique no nome para editar • use as setas ou arraste para mover"
     >
+      <StageFlag stage={client.stage} className="mb-2" />
       <div className="flex items-start gap-2">
         <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">

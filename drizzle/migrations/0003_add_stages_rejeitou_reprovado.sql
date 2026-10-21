@@ -1,0 +1,1 @@
+ALTER TYPE public.pipeline_stage ADD VALUE IF NOT EXISTS 'cliente_rejeitou'; ALTER TYPE public.pipeline_stage ADD VALUE IF NOT EXISTS 'reprovado';

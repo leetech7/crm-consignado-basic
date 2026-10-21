@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { STAGES, ORGAOS, ORIGENS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { StageFlag } from "@/components/StageFlag";
 import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 
 // Formata o telefone progressivamente da esquerda para a direita.
@@ -702,12 +703,13 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Estágio</Label>
-            <Select value={form.stage} onValueChange={(v) => update("stage", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {STAGES.map((s) => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <div className="flex flex-wrap gap-1.5">
+              {STAGES.map((s) => (
+                <button key={s.id} type="button" onClick={() => update("stage", s.id)} title={s.label} className="transition-transform hover:scale-105">
+                  <StageFlag stage={s.id} active={form.stage === s.id} />
+                </button>
+              ))}
+            </div>
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
             <Label>Observações</Label>
