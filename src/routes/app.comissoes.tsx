@@ -84,7 +84,7 @@ function ComissoesPage() {
                 <th className="px-4 py-3 text-left">Data</th>
                 <th className="px-4 py-3 text-left">Cliente</th>
                 {isManager && <th className="px-4 py-3 text-left">Vendedor</th>}
-                <th className="px-4 py-3 text-right">Taxa RPS</th>
+                <th className="px-4 py-3 text-right">Honorários RPS</th>
                 <th className="px-4 py-3 text-right">%</th>
                 <th className="px-4 py-3 text-right">Comissão</th>
                 <th className="px-4 py-3 text-center">Status</th>

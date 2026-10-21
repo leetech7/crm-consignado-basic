@@ -73,6 +73,10 @@ export interface Client {
 export const formatBRL = (n: number | null | undefined) =>
   (n ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+/** Formata uma taxa em porcentagem: 3.5 -> "3,50%" */
+export const formatPct = (n: number | null | undefined) =>
+  `${(n ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+
 export const onlyDigits = (s: string) => s.replace(/\D/g, "");
 
 export const isValidCPF = (input: string): boolean => {

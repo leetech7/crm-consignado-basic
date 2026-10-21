@@ -23,7 +23,7 @@ function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      const { data: clients } = await supabase.from("clients").select("stage, taxa_rps, paid_at, proximo_contato");
+      const { data: clients } = await supabase.from("clients").select("stage, taxa_rps, valor_rps_total, paid_at, proximo_contato");
       const c = clients ?? [];
       const stageCounts: any = {};
       STAGES.forEach((s) => (stageCounts[s.id] = 0));
@@ -34,7 +34,7 @@ function Dashboard() {
         stageCounts[cli.stage] = (stageCounts[cli.stage] ?? 0) + 1;
         if (cli.stage === "pago") {
           pagos++;
-          valor += Number(cli.taxa_rps ?? 0);
+          valor += Number(cli.valor_rps_total ?? 0);
         }
         if (cli.proximo_contato && new Date(cli.proximo_contato) <= in7 && new Date(cli.proximo_contato) >= now) prox++;
       });
