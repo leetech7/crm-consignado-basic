@@ -441,7 +441,7 @@ function ClientesPage() {
                       {stageLabel(c.stage as PipelineStage)}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.taxa_rps ?? 0))}</td>
+                  <td className="px-4 py-3 text-right font-mono">{formatPct(Number(c.taxa_rps ?? 0))}</td>
                   <td className="px-4 py-3 text-right font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">

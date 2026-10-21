@@ -110,7 +110,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
             </div>
           )}
           {!!client.taxa_rps && (
-            <div className="mt-1 text-xs font-mono text-primary">{formatBRL(Number(client.taxa_rps))}</div>
+            <div className="mt-1 text-xs font-mono text-primary">RPS {formatPct(Number(client.taxa_rps))}</div>
           )}
         </div>
       </div>
