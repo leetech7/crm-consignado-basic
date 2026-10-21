@@ -43,6 +43,12 @@ export const ORIGENS = [
   "Outros",
 ] as const;
 
+export const TIPO_CONTRATOS = [
+  "NOVO",
+  "REFIN",
+  "PORT. C/ REFIN",
+] as const;
+
 export const stageLabel = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.label ?? s;
 export const stageColor = (s: PipelineStage) => STAGES.find((x) => x.id === s)?.color ?? "oklch(0.6 0 0)";
 
@@ -56,6 +62,7 @@ export interface Client {
   telefone: string | null;
   orgao: string | null;
   origem: string | null;
+  tipo_contrato: string | null;
   endereco: string | null;
   observacoes: string | null;
   proximo_contato: string | null;

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, ORGAOS, ORIGENS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
 import { StageFlag } from "@/components/StageFlag";
 import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 
@@ -81,6 +81,7 @@ const empty = {
   telefone: "",
   orgao: "",
   origem: "",
+  tipo_contrato: "",
   endereco: "",
   observacoes: "",
   proximo_contato_data: "",
@@ -198,6 +199,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
         origem: client.origem ?? "",
+        tipo_contrato: client.tipo_contrato ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
         proximo_contato_data: dateStr,
@@ -270,6 +272,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       telefone: form.telefone || null,
       orgao: form.orgao || null,
       origem: form.origem || null,
+      tipo_contrato: form.tipo_contrato || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
       proximo_contato: form.proximo_contato_data
@@ -701,14 +704,28 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
             </div>
           </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Estágio</Label>
-            <div className="flex flex-wrap gap-1.5">
-              {STAGES.map((s) => (
-                <button key={s.id} type="button" onClick={() => update("stage", s.id)} title={s.label} className="transition-transform hover:scale-105">
-                  <StageFlag stage={s.id} active={form.stage === s.id} />
-                </button>
-              ))}
+          <div className="lg:col-span-2 xl:col-span-3 flex flex-wrap items-end gap-x-3 gap-y-2">
+            <div className="min-w-0 flex-1 space-y-1.5">
+              <Label>Estágio</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {STAGES.map((s) => (
+                  <button key={s.id} type="button" onClick={() => update("stage", s.id)} title={s.label} className="transition-transform hover:scale-105">
+                    <StageFlag stage={s.id} active={form.stage === s.id} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="w-full shrink-0 space-y-1.5 sm:w-56">
+              <Label>Tipo de contrato</Label>
+              <Select value={form.tipo_contrato || undefined} onValueChange={(v) => update("tipo_contrato", v)}>
+                <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                <SelectContent>
+                  {TIPO_CONTRATOS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  {form.tipo_contrato && !TIPO_CONTRATOS.includes(form.tipo_contrato as typeof TIPO_CONTRATOS[number]) && (
+                    <SelectItem value={form.tipo_contrato} disabled>(legado: {form.tipo_contrato})</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">

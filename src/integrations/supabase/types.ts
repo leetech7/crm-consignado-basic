@@ -251,6 +251,7 @@ export type Database = {
           stage: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps: number | null
           telefone: string | null
+          tipo_contrato: string | null
           updated_at: string
           valor_bruto: number | null
           valor_rps_total: number | null
@@ -278,6 +279,7 @@ export type Database = {
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps?: number | null
           telefone?: string | null
+          tipo_contrato?: string | null
           updated_at?: string
           valor_bruto?: number | null
           valor_rps_total?: number | null
@@ -305,6 +307,7 @@ export type Database = {
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps?: number | null
           telefone?: string | null
+          tipo_contrato?: string | null
           updated_at?: string
           valor_bruto?: number | null
           valor_rps_total?: number | null
