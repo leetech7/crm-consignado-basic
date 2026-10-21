@@ -665,7 +665,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>RPS %</Label>
-                <Input type="number" step="0.01" min="0" value={form.taxa_rps} onChange={(e) => update("taxa_rps", e.target.value)} placeholder="0,00" />
+                <div className="relative">
+                  <Input type="number" step="0.01" min="0" className="pr-5" value={form.taxa_rps} onChange={(e) => update("taxa_rps", e.target.value)} placeholder="0,00" />
+                  <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">%</span>
+                </div>
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Valor RPS</Label>
