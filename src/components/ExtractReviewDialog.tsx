@@ -5,8 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { formatBRL, formatCPF, isValidCPF } from "@/lib/pipeline";
+import { checkReceivingBank } from "@/lib/receivingBank";
 import type { ExtractedData, ExtractedContract } from "@/lib/extract.functions";
 import { toast } from "sonner";
+import { AlertTriangle, CheckCircle2, Landmark } from "lucide-react";
 
 export type AppliedFields = Partial<Record<"nome" | "cpf" | "data_nascimento" | "orgao" | "margem_disponivel" | "margem_rcc" | "margem_rmc" | "banco_recebimento" | "agencia_recebimento" | "conta_recebimento", string>>;
 
