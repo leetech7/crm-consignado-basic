@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 import type { Database } from "@/integrations/supabase/types";
+import { receivingBankSchema, normalizeReceivingBank } from "@/lib/receivingBank";
 
 export interface ExtractedContract {
   banco: string | null;
@@ -28,6 +29,9 @@ export interface ExtractedData {
   margem_disponivel: number | null;
   margem_rcc: number | null;
   margem_rmc: number | null;
+  banco_recebimento: string | null;
+  agencia_recebimento: string | null;
+  conta_recebimento: string | null;
   contratos: ExtractedContract[];
   observacao: string | null;
 }
@@ -41,7 +45,7 @@ const int = { type: ["integer", "null"] };
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["nome", "cpf", "data_nascimento", "orgao", "margem_disponivel", "margem_rcc", "margem_rmc", "contratos", "observacao"],
+  required: ["nome", "cpf", "data_nascimento", "orgao", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
   properties: {
     nome: str,
     cpf: str,
@@ -50,6 +54,7 @@ const SCHEMA = {
     margem_disponivel: num,
     margem_rcc: num,
     margem_rmc: num,
+    ...receivingBankSchema,
     observacao: str,
     contratos: {
       type: "array",
@@ -80,6 +85,7 @@ Regras:
 - Valores em reais como número (ex.: 1234.56). Margens podem ser negativas.
 - margem_disponivel = margem consignável de empréstimo disponível; margem_rcc = margem de cartão benefício (RCC); margem_rmc = margem de cartão consignado (RMC).
 - orgao: escolha o mais adequado da lista ou null.
+- banco_recebimento, agencia_recebimento e conta_recebimento: extraia somente os dados bancários explicitamente indicados para o crédito do salário/benefício do titular na folha de pagamento ou contracheque. Não confunda com os bancos dos empréstimos consignados. Preserve zeros à esquerda, dígitos verificadores e operação da conta como texto. Se ausentes, ilegíveis ou ambíguos, use null; nunca deduza pelo banco dos contratos.
 - contratos: apenas empréstimos consignados ATIVOS/vigentes (ignore excluídos/encerrados). Calcule parcelas_restantes = prazo_total - parcelas_pagas quando possível. saldo_devedor: use o valor do documento ou estime como valor_parcela × parcelas_restantes.
 - observacao: uma frase curta com qualquer alerta relevante (ou null).`;
 
@@ -196,6 +202,7 @@ async function runExtraction(ctx: ExtractCtx): Promise<ExtractResult> {
   if (failure) return fail(failure);
   try {
     const parsed = JSON.parse(text) as ExtractedData;
+    Object.assign(parsed, normalizeReceivingBank(parsed));
     parsed.contratos = parsed.contratos ?? [];
     if (analysisId) await supabase.from("client_ai_analyses").update({ status: "lido" }).eq("id", analysisId);
     return { analysisId, data: parsed };

@@ -8,7 +8,7 @@ import { formatBRL, formatCPF, isValidCPF } from "@/lib/pipeline";
 import type { ExtractedData, ExtractedContract } from "@/lib/extract.functions";
 import { toast } from "sonner";
 
-export type AppliedFields = Partial<Record<"nome" | "cpf" | "data_nascimento" | "orgao" | "margem_disponivel" | "margem_rcc" | "margem_rmc", string>>;
+export type AppliedFields = Partial<Record<"nome" | "cpf" | "data_nascimento" | "orgao" | "margem_disponivel" | "margem_rcc" | "margem_rmc" | "banco_recebimento" | "agencia_recebimento" | "conta_recebimento", string>>;
 
 interface Props {
   open: boolean;
@@ -29,6 +29,9 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
   { k: "cpf", label: "CPF" },
   { k: "data_nascimento", label: "Data de nascimento" },
   { k: "orgao", label: "Órgão" },
+  { k: "banco_recebimento", label: "Banco de recebimento" },
+  { k: "agencia_recebimento", label: "Agência" },
+  { k: "conta_recebimento", label: "Conta de recebimento" },
   { k: "margem_disponivel", label: "Margem disponível", money: true },
   { k: "margem_rcc", label: "Margem RCC", money: true },
   { k: "margem_rmc", label: "Margem RMC", money: true },
@@ -83,7 +86,7 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, pending = fa
       setBusy(false);
       onOpenChange(false);
       toast.success(
-        fields.nome || fields.cpf || fields.orgao || fields.margem_disponivel || fields.margem_rcc || fields.margem_rmc || fields.data_nascimento
+        Object.keys(fields).length > 0
           ? "Dados aplicados ao formulário. Revise e clique em Salvar."
           : contracts.length
             ? "Contratos marcados — serão salvos junto com o cliente."

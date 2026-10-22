@@ -1,1 +1,2 @@
 - Authenticated server functions attach the bearer token per function via `.middleware([attachSupabaseAuth, requireSupabaseAuth])` — there is no src/start.ts global middleware.
+- Receiving-bank fields use a shared schema and text normalization so document extraction preserves leading zeros and account check digits.
