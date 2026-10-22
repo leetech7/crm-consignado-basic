@@ -10,6 +10,14 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/agenda")({
+  head: () => ({ meta: [
+    { title: "Agenda — CRM-OSC - CONSIG" },
+    { name: "description", content: "Acompanhe os retornos agendados dos clientes." },
+    { property: "og:title", content: "Agenda — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Acompanhe os retornos agendados dos clientes." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AgendaPage,
 });
 

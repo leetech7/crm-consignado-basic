@@ -18,6 +18,14 @@ import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/clientes")({
+  head: () => ({ meta: [
+    { title: "Clientes — CRM-OSC - CONSIG" },
+    { name: "description", content: "Cadastro e acompanhamento dos clientes de crédito consignado." },
+    { property: "og:title", content: "Clientes — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Cadastro e acompanhamento dos clientes de crédito consignado." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ClientesPage,
 });
 

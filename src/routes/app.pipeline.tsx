@@ -18,6 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/app/pipeline")({
+  head: () => ({ meta: [
+    { title: "Pipeline — CRM-OSC - CONSIG" },
+    { name: "description", content: "Acompanhe os clientes por estágio de negociação." },
+    { property: "og:title", content: "Pipeline — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Acompanhe os clientes por estágio de negociação." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: PipelinePage,
 });
 

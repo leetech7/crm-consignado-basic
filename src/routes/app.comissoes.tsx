@@ -12,6 +12,14 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/comissoes")({
+  head: () => ({ meta: [
+    { title: "Comissões — CRM-OSC - CONSIG" },
+    { name: "description", content: "Acompanhe os honorários e comissões da equipe." },
+    { property: "og:title", content: "Comissões — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Acompanhe os honorários e comissões da equipe." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ComissoesPage,
 });
 
