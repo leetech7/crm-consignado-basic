@@ -5,8 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { formatBRL, formatCPF, isValidCPF } from "@/lib/pipeline";
+import { checkReceivingBank } from "@/lib/receivingBank";
 import type { ExtractedData, ExtractedContract } from "@/lib/extract.functions";
 import { toast } from "sonner";
+import { AlertTriangle, CheckCircle2, Landmark } from "lucide-react";
 
 export type AppliedFields = Partial<Record<"nome" | "cpf" | "data_nascimento" | "orgao" | "margem_disponivel" | "margem_rcc" | "margem_rmc" | "banco_recebimento" | "agencia_recebimento" | "conta_recebimento", string>>;
 
@@ -72,6 +74,14 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, pending = fa
     return v;
   };
 
+  // Conferência do banco que recebe o salário contra o que consta no documento.
+  const bankCheck = data
+    ? checkReceivingBank(
+        { banco_recebimento: current.banco_recebimento ?? null, agencia_recebimento: current.agencia_recebimento ?? null, conta_recebimento: current.conta_recebimento ?? null },
+        { banco_recebimento: data.banco_recebimento, agencia_recebimento: data.agencia_recebimento, conta_recebimento: data.conta_recebimento },
+      )
+    : null;
+
   const apply = async () => {
     if (!data || !user) return;
     setBusy(true);
@@ -130,6 +140,44 @@ export function ExtractReviewDialog({ open, onOpenChange, clientId, pending = fa
         {data && (
           <div className="space-y-4">
             {data.observacao && <p className="rounded-md border border-warning/50 bg-warning/10 p-2 text-sm">{data.observacao}</p>}
+            {bankCheck && (
+              <div
+                className={`flex items-start gap-2 rounded-md border p-3 text-sm ${
+                  bankCheck === "diferente"
+                    ? "border-destructive/50 bg-destructive/10 text-destructive"
+                    : bankCheck === "ok"
+                      ? "border-success/50 bg-success/10"
+                      : "border-warning/50 bg-warning/10 text-warning-foreground"
+                }`}
+              >
+                {bankCheck === "diferente" ? (
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                ) : bankCheck === "ok" ? (
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                ) : (
+                  <Landmark className="mt-0.5 h-4 w-4 shrink-0" />
+                )}
+                <div>
+                  {bankCheck === "diferente" ? (
+                    <>
+                      <span className="font-semibold">Conferir: o banco que recebe o salário é diferente do cadastrado.</span>
+                      <div>Documento: {data.banco_recebimento ?? "—"} — Ag. {data.agencia_recebimento ?? "—"} — Conta {data.conta_recebimento ?? "—"}</div>
+                      <div>Cadastrado: {current.banco_recebimento || "—"} — Ag. {current.agencia_recebimento || "—"} — Conta {current.conta_recebimento || "—"}</div>
+                    </>
+                  ) : bankCheck === "ok" ? (
+                    <>
+                      <span className="font-semibold">Banco de recebimento confere com o cadastrado.</span>
+                      <div>{data.banco_recebimento ?? "—"} — Ag. {data.agencia_recebimento ?? "—"} — Conta {data.conta_recebimento ?? "—"}</div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold">Conferir se o banco que recebe o salário é o mesmo que consta no contracheque.</span>
+                      <div>Documento: {data.banco_recebimento ?? "—"} — Ag. {data.agencia_recebimento ?? "—"} — Conta {data.conta_recebimento ?? "—"}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="rounded-md border border-border/50">
               <div className="grid grid-cols-[auto_1fr_1fr_1fr] gap-x-3 border-b border-border/50 p-2 text-xs font-medium text-muted-foreground">
                 <span /> <span>Campo</span><span>Atual</span><span>Encontrado</span>
