@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2 } from "lucide-react";
+import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, ListChecks } from "lucide-react";
+import { DocsSiapeBaneseDialog } from "@/components/DocsSiapeBaneseDialog";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [busy, setBusy] = useState(false);
   const [openProposal, setOpenProposal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [contractsKey, setContractsKey] = useState(0);
   const [pendingContracts, setPendingContracts] = useState<ExtractedContract[]>([]);
@@ -413,7 +415,12 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6 xl:grid-cols-3">
           <div className="lg:col-span-2 xl:col-span-3 space-y-2 rounded-md border border-border/50 p-3">
-            <Label>Anexos (extrato de consignados, contracheque, RG, etc.)</Label>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Label>Anexos (extrato de consignados, contracheque, RG, etc.)</Label>
+              <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5" onClick={() => setDocsOpen(true)}>
+                <ListChecks className="h-4 w-4" />Docs para Siape - Banese
+              </Button>
+            </div>
             <ClientAttachments
               clientId={client?.id}
               pending={!client}
@@ -423,7 +430,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               onPendingContracts={setPendingContracts}
               onPendingFilesChange={setPendingFiles}
             />
-          </div>
+          <DocsSiapeBaneseDialog open={docsOpen} onOpenChange={setDocsOpen} />
+        </div>
 
           <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-5">
             <div className="min-w-0 space-y-1.5">
