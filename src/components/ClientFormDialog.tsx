@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, FileList } from "lucide-react";
+import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, ListChecks } from "lucide-react";
 import { DocsSiapeBaneseDialog } from "@/components/DocsSiapeBaneseDialog";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -418,7 +418,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Label>Anexos (extrato de consignados, contracheque, RG, etc.)</Label>
               <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5" onClick={() => setDocsOpen(true)}>
-                <FileList className="h-4 w-4" />Docs para Siape - Banese
+                <ListChecks className="h-4 w-4" />Docs para Siape - Banese
               </Button>
             </div>
             <ClientAttachments
