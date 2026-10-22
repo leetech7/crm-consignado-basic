@@ -229,7 +229,10 @@ export type Database = {
       }
       clients: {
         Row: {
+          agencia_recebimento: string | null
+          banco_recebimento: string | null
           compra_divida: number | null
+          conta_recebimento: string | null
           cpf: string | null
           created_at: string
           data_nascimento: string | null
@@ -257,7 +260,10 @@ export type Database = {
           valor_rps_total: number | null
         }
         Insert: {
+          agencia_recebimento?: string | null
+          banco_recebimento?: string | null
           compra_divida?: number | null
+          conta_recebimento?: string | null
           cpf?: string | null
           created_at?: string
           data_nascimento?: string | null
@@ -285,7 +291,10 @@ export type Database = {
           valor_rps_total?: number | null
         }
         Update: {
+          agencia_recebimento?: string | null
+          banco_recebimento?: string | null
           compra_divida?: number | null
+          conta_recebimento?: string | null
           cpf?: string | null
           created_at?: string
           data_nascimento?: string | null
