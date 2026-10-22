@@ -1,0 +1,2 @@
+- [x] Adicionar banco, agência e conta de recebimento ao cadastro e à revisão da IA.
+- [x] Testar leitura de contracheque, aplicação e persistência dos dados bancários.

@@ -25,6 +25,14 @@ import { toast } from "sonner";
 import { Megaphone, Plus, Pencil, Trash2, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/app/informativo")({
+  head: () => ({ meta: [
+    { title: "Comunicados — CRM-OSC - CONSIG" },
+    { name: "description", content: "Comunicados importantes para a equipe." },
+    { property: "og:title", content: "Comunicados — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Comunicados importantes para a equipe." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: InformativoPage,
 });
 

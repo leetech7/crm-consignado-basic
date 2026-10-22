@@ -9,6 +9,14 @@ import { format, subDays, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/app/dashboard")({
+  head: () => ({ meta: [
+    { title: "Dashboard — CRM-OSC - CONSIG" },
+    { name: "description", content: "Indicadores de vendas e resultados de crédito consignado." },
+    { property: "og:title", content: "Dashboard — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Indicadores de vendas e resultados de crédito consignado." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Dashboard,
 });
 

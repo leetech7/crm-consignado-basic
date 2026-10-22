@@ -10,6 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/equipe")({
+  head: () => ({ meta: [
+    { title: "Equipe — CRM-OSC - CONSIG" },
+    { name: "description", content: "Gestão dos membros da equipe de vendas." },
+    { property: "og:title", content: "Equipe — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Gestão dos membros da equipe de vendas." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: EquipePage,
 });
 

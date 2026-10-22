@@ -11,6 +11,14 @@ import { TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
+  head: () => ({ meta: [
+    { title: "Entrar — CRM-OSC - CONSIG" },
+    { name: "description", content: "Acesso seguro ao CRM de crédito consignado." },
+    { property: "og:title", content: "Entrar — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Acesso seguro ao CRM de crédito consignado." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: LoginPage,
 });
 

@@ -63,6 +63,9 @@ export interface Client {
   orgao: string | null;
   origem: string | null;
   tipo_contrato: string | null;
+  banco_recebimento: string | null;
+  agencia_recebimento: string | null;
+  conta_recebimento: string | null;
   endereco: string | null;
   observacoes: string | null;
   proximo_contato: string | null;

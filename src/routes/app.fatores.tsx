@@ -12,6 +12,14 @@ import { toast } from "sonner";
 import { Upload, Download, FileText, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/app/fatores")({
+  head: () => ({ meta: [
+    { title: "Fatores — CRM-OSC - CONSIG" },
+    { name: "description", content: "Consulta e gestão dos fatores por idade." },
+    { property: "og:title", content: "Fatores — CRM-OSC - CONSIG" },
+    { property: "og:description", content: "Consulta e gestão dos fatores por idade." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: FatoresPage,
 });
 

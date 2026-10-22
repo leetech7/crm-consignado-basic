@@ -82,6 +82,9 @@ const empty = {
   orgao: "",
   origem: "",
   tipo_contrato: "",
+  banco_recebimento: "",
+  agencia_recebimento: "",
+  conta_recebimento: "",
   endereco: "",
   observacoes: "",
   proximo_contato_data: "",
@@ -191,7 +194,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       const pad = (n: number) => String(n).padStart(2, "0");
       const dateStr = pc ? `${pc.getFullYear()}-${pad(pc.getMonth() + 1)}-${pad(pc.getDate())}` : "";
       const timeStr = pc ? `${pad(pc.getHours())}:${pad(pc.getMinutes())}` : "";
-      setForm(draft ?? {
+      setForm(draft ? { ...empty, ...draft } : {
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
         idade: client.idade?.toString() ?? "",
@@ -200,6 +203,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         orgao: client.orgao ?? "",
         origem: client.origem ?? "",
         tipo_contrato: client.tipo_contrato ?? "",
+        banco_recebimento: client.banco_recebimento ?? "",
+        agencia_recebimento: client.agencia_recebimento ?? "",
+        conta_recebimento: client.conta_recebimento ?? "",
         endereco: client.endereco ?? "",
         observacoes: client.observacoes ?? "",
         proximo_contato_data: dateStr,
@@ -213,7 +219,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
-    } else setForm(draft ?? empty);
+    } else setForm(draft ? { ...empty, ...draft } : empty);
     setRestored(!!draft);
     setSavedAt(null);
     setValorBrutoTouched(!!(draft?.valor_bruto || client?.valor_bruto));
@@ -273,6 +279,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       orgao: form.orgao || null,
       origem: form.origem || null,
       tipo_contrato: form.tipo_contrato || null,
+      banco_recebimento: form.banco_recebimento.trim() || null,
+      agencia_recebimento: form.agencia_recebimento.trim() || null,
+      conta_recebimento: form.conta_recebimento.trim() || null,
       endereco: form.endereco || null,
       observacoes: form.observacoes || null,
       proximo_contato: form.proximo_contato_data
@@ -408,7 +417,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <ClientAttachments
               clientId={client?.id}
               pending={!client}
-              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc }}
+              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
               onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
               onContractsSaved={() => setContractsKey((k) => k + 1)}
               onPendingContracts={setPendingContracts}
@@ -572,6 +581,23 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <Label>Endereço</Label>
             <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
           </div>
+          <fieldset className="col-span-full min-w-0">
+            <legend className="mb-2 text-xs font-semibold text-muted-foreground">Recebimento do salário / benefício</legend>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,2fr)]">
+              <div className="col-span-2 min-w-0 space-y-1 sm:col-span-1">
+                <Label htmlFor="banco-recebimento" className="text-xs">Banco de recebimento</Label>
+                <Input id="banco-recebimento" className="h-9 text-sm" value={form.banco_recebimento} onChange={(e) => update("banco_recebimento", e.target.value)} />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label htmlFor="agencia-recebimento" className="text-xs">Agência</Label>
+                <Input id="agencia-recebimento" className="h-9 text-sm" value={form.agencia_recebimento} onChange={(e) => update("agencia_recebimento", e.target.value)} />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label htmlFor="conta-recebimento" className="text-xs">Conta de recebimento</Label>
+                <Input id="conta-recebimento" className="h-9 text-sm" value={form.conta_recebimento} onChange={(e) => update("conta_recebimento", e.target.value)} />
+              </div>
+            </div>
+          </fieldset>
           <div className="space-y-1.5">
             <Label>Agendado para</Label>
             <Input
