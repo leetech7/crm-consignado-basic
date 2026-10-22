@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2 } from "lucide-react";
+import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, FileList } from "lucide-react";
+import { DocsSiapeBaneseDialog } from "@/components/DocsSiapeBaneseDialog";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [busy, setBusy] = useState(false);
   const [openProposal, setOpenProposal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [contractsKey, setContractsKey] = useState(0);
   const [pendingContracts, setPendingContracts] = useState<ExtractedContract[]>([]);
