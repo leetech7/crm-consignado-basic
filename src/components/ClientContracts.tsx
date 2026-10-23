@@ -92,7 +92,15 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
               />
             </div>
           ))}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5" title="Marcar para portabilidade">
+              <Checkbox
+                checked={c.portar}
+                onCheckedChange={(v) => togglePortar(c.id, v === true)}
+                aria-label="Portar contrato"
+              />
+              <span className="text-[10px] uppercase text-muted-foreground">Portar</span>
+            </label>
             {c.origem === "ia" && <Sparkles className="h-3.5 w-3.5 text-primary" aria-label="Importado pela IA" />}
             <Button type="button" size="icon" variant="ghost" onClick={() => remove(c.id)} title="Remover"><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>
