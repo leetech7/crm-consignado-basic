@@ -35,6 +35,30 @@ export function portabilityTotals(group: PortabilityGroup) {
   return { bruto: money(bruto), rps: money(rps), liquido: money(liquido), complete };
 }
 
+export function portabilityReportData(group: PortabilityGroup) {
+  const contracts = group.contracts.filter(contract => contract.portar);
+  if (contracts.length === 0 || contracts.some(contract => contract.valor_troco === null || !Number.isFinite(contract.valor_troco) || contract.valor_troco < 0)) return null;
+  return { clientName: group.client.nome, contracts, totalTroco: money(contracts.reduce((total, contract) => total + money(contract.valor_troco ?? 0), 0)) };
+}
+
+export function buildPortabilityReport(group: PortabilityGroup): string | null {
+  const report = portabilityReportData(group);
+  if (!report) return null;
+  return [
+    "*RELATÓRIO DE CONTRATOS PARA PORTABILIDADE*", "",
+    `*Cliente: ${report.clientName}*`, "",
+    ...report.contracts.flatMap((contract, index) => [
+      `*${index + 1}. ${contract.banco || "Banco não informado"}*`,
+      `Contrato: ${contract.numero_contrato || "Não informado"}`,
+      ...(contract.valor_parcela === null ? [] : [`Parcela atual: ${formatBRL(contract.valor_parcela)}`]),
+      `Troco: ${formatBRL(contract.valor_troco)}`, "",
+    ]),
+    `Contratos para portar: ${report.contracts.length}`,
+    `*TOTAL DOS TROCOS: ${formatBRL(report.totalTroco)}*`, "",
+    "Trocos brutos, antes do desconto de RPS. Valores sujeitos à aprovação do banco.",
+  ].join("\n");
+}
+
 export function buildPortabilityProposal(group: PortabilityGroup): string | null {
   const totals = portabilityTotals(group);
   if (!totals.complete) return null;
