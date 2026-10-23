@@ -6,11 +6,20 @@ const client = { id: "cliente-a", nome: "Cliente A", cpf: null, telefone: null, 
 const contract: PortabilityContract = { id: "contrato-a", client_id: client.id, created_by: "vendedor", created_at: "2026-10-23", banco: "Banco A", numero_contrato: "123", valor_parcela: 200, prazo_total: 84, parcelas_pagas: 12, parcelas_restantes: 72, saldo_devedor: 10000, data_inicio: null, portar: true, valor_troco: 1000, origem: "manual", clients: client };
 
 describe("Portabilidade", () => {
-  test("relatório inclui cliente e soma apenas trocos dos contratos marcados, sem exigir RPS", () => {
-    const report = portabilityReportData({ client: { ...client, taxa_rps: null }, contracts: [contract, { ...contract, id: "segundo", valor_troco: 500 }, { ...contract, id: "excluido", portar: false, valor_troco: 9000 }] });
+  test("relatório inclui cliente e soma apenas trocos líquidos dos contratos marcados", () => {
+    const report = portabilityReportData({ client, contracts: [contract, { ...contract, id: "segundo", valor_troco: 500 }, { ...contract, id: "excluido", portar: false, valor_troco: 9000 }] });
     strictEqual(report?.clientName, "Cliente A");
-    strictEqual(report?.totalTroco, 1500);
+    strictEqual(report?.totalTroco, 1200);
     deepStrictEqual(report?.contracts.map(c => c.id), ["contrato-a", "segundo"]);
+  });
+  test("prazo preenchido por contrato não altera o prazo do contrato original", () => {
+    const report = portabilityReportData({ client, contracts: [contract] }, { "contrato-a": 96 });
+    strictEqual(report?.contracts[0]?.prazo_portabilidade, 96);
+    strictEqual(report?.contracts[0]?.prazo_total, 84);
+    strictEqual(report?.contracts[0]?.troco_liquido, 800);
+  });
+  test("não inventa troco líquido quando RPS está ausente", () => {
+    strictEqual(portabilityReportData({ client: { ...client, taxa_rps: null }, contracts: [contract] }), null);
   });
   test("relatório não apresenta total incompleto quando falta troco", () => {
     strictEqual(portabilityReportData({ client, contracts: [{ ...contract, valor_troco: null }] }), null);

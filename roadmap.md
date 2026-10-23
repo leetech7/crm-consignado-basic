@@ -5,3 +5,4 @@
 - [x] Testar cálculos e conferir a proposta na tela com sessão autenticada.
 - [x] Adicionar relatório por cliente com contratos marcados, total dos trocos e compartilhamento no WhatsApp.
 - [x] Adicionar downloads JPG/PDF e conferir os arquivos gerados.
+- [x] Conferir relatório compartilhado com troco líquido e prazo por contrato na tela e nos arquivos.
