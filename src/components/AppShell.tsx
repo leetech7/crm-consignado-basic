@@ -21,6 +21,7 @@ import {
   Circle,
   Megaphone,
   FileScan,
+  ArrowRightLeft,
 
 } from "lucide-react";
 
@@ -33,6 +34,7 @@ const NAV = [
   { to: "/app/comissoes", label: "Comissões", icon: Wallet },
   { to: "/app/informativo", label: "Informativo", icon: Megaphone },
   { to: "/app/extratos", label: "Extratos", icon: FileScan },
+  { to: "/app/portabilidade", label: "Portabilidade", icon: ArrowRightLeft },
 ];
 
 
