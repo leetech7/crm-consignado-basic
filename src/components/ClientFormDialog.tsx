@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, ListChecks } from "lucide-react";
 import { DocsSiapeBaneseDialog } from "@/components/DocsSiapeBaneseDialog";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
+import { PortabilityReportDialog } from "@/components/PortabilityReportDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -127,6 +128,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const [busy, setBusy] = useState(false);
   const [openProposal, setOpenProposal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
+  const [openPortabilityReport, setOpenPortabilityReport] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [contractsKey, setContractsKey] = useState(0);
@@ -777,8 +779,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <FileText className="mr-2 h-4 w-4" />Gerar proposta
             </Button>
             <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenReport(true)}>
-              <ImageIcon className="mr-2 h-4 w-4" />Relatório (imagem)
+              <ImageIcon className="mr-2 h-4 w-4" />Simulação (imagem)
             </Button>
+            {client && <Button type="button" variant="secondary" className="w-full" onClick={() => setOpenPortabilityReport(true)}><FileText className="mr-2 h-4 w-4" />Relatório dos contratos</Button>}
             <Button type="button" variant="outline" className="w-full" onClick={discardDraft}>Cancelar</Button>
             <Button type="submit" className="w-full" disabled={busy} style={{ background: "var(--gradient-primary)" }}>
               {busy ? "Salvando..." : "Salvar"}
@@ -807,6 +810,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           margem={parseFloat(form.margem_disponivel) || 0}
           fator={form.fator ? parseFloat(form.fator) : null}
         />
+        {client && <PortabilityReportDialog open={openPortabilityReport} onOpenChange={setOpenPortabilityReport} client={client} />}
       </DialogContent>
     </Dialog>
 

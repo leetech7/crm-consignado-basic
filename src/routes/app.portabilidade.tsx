@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { formatBRL, formatCPF, formatPhoneForWhatsApp } from "@/lib/pipeline";
 import { buildPortabilityProposal, buildPortabilityReport, groupPortabilityContracts, portabilityTotals, portabilityValues, type PortabilityGroup } from "@/lib/portabilidade";
 import { Button } from "@/components/ui/button";
+import { PortabilityReportContent } from "@/components/PortabilityReportDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -120,7 +121,7 @@ function PortabilidadePage() {
               <div className="min-w-0"><h2 className="break-words font-semibold">{group.client.nome}</h2><p className="text-xs text-muted-foreground">{group.client.cpf ? formatCPF(group.client.cpf) : "CPF não informado"}{group.client.orgao ? ` · ${group.client.orgao}` : ""}</p></div>
               <div className="flex flex-wrap items-end gap-3">
                 <div className="space-y-1"><Label htmlFor={`rps-${group.client.id}`} className="text-xs">RPS do cliente (%)</Label><div className="relative w-28"><Input id={`rps-${group.client.id}`} key={`${group.client.id}-${group.client.taxa_rps}`} type="number" min="0" max="100" step="0.01" placeholder="—" defaultValue={group.client.taxa_rps ?? ""} className="h-8 pr-7 font-mono" disabled={saving} onBlur={e => saveValue("rps", group.client.id, e.target.value, group.client.taxa_rps)} /><span className="pointer-events-none absolute right-2 top-1.5 text-sm text-muted-foreground">%</span></div></div>
-                <Button variant="outline" size="sm" disabled={!buildPortabilityReport(group) || saving || query.isFetching} onClick={() => { setDocumentMode("report"); setProposal(group); }}><FileText className="mr-2 h-4 w-4" />Relatório dos contratos</Button>
+                <Button variant="outline" size="sm" disabled={saving || query.isFetching} onClick={() => { setDocumentMode("report"); setProposal(group); }}><FileText className="mr-2 h-4 w-4" />Relatório dos contratos</Button>
                 <Button size="sm" disabled={!totals.complete || saving || query.isFetching} onClick={() => { setDocumentMode("proposal"); setProposal(group); }}><FileText className="mr-2 h-4 w-4" />Gerar proposta</Button>
               </div>
             </div>
@@ -145,10 +146,12 @@ function PortabilidadePage() {
       <Dialog open={Boolean(proposal)} onOpenChange={open => { if (!open) setProposal(null); }}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader><DialogTitle>{isReport ? "Relatório dos contratos para portar" : "Proposta de portabilidade"}</DialogTitle><DialogDescription>{proposal?.client.nome}</DialogDescription></DialogHeader>
+          {isReport && proposal ? <PortabilityReportContent group={proposal} /> : <>
           <pre className="max-h-[55vh] overflow-y-auto whitespace-pre-wrap break-words rounded-md border border-border bg-muted/30 p-4 font-mono text-sm leading-relaxed">{text}</pre>
           {isReport && <div className="grid grid-cols-2 gap-2"><Button variant="outline" disabled={exporting} onClick={() => downloadReport("jpg")}><Download className="mr-2 h-4 w-4" />Baixar JPG</Button><Button variant="outline" disabled={exporting} onClick={() => downloadReport("pdf")}><Download className="mr-2 h-4 w-4" />Baixar PDF</Button></div>}
           {!phone && <p className="text-xs text-warning">Telefone de contato ausente ou inválido.</p>}
           <DialogFooter className="gap-2"><Button variant="outline" onClick={copy}><Copy className="mr-2 h-4 w-4" />{isReport ? "Copiar relatório" : "Copiar proposta"}</Button><Button disabled={!phone || !text} onClick={() => { if (phone && text) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer"); }}><MessageCircle className="mr-2 h-4 w-4" />Enviar no WhatsApp</Button></DialogFooter>
+          </>}
         </DialogContent>
       </Dialog>
     </div>
