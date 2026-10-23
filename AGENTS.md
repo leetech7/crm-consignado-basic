@@ -2,3 +2,4 @@
 - Receiving-bank fields use a shared schema and text normalization so document extraction preserves leading zeros and account check digits.
 - Portability lists reuse RLS-scoped client contracts and client rates; shared pure helpers own grouping, monetary calculations, reports and proposal generation to keep shared documents consistent. Contract reports total marked contracts independently of RPS so missing rates do not block a gross-troco report.
 - Portability owns a route-local QueryClientProvider because the existing app shell does not provide a query client; isolate this cache by user identity.
+- Portability JPG and PDF exports share paginated browser canvas rendering and report data; dynamically load jsPDF in the download handler to preserve identical accented text and avoid SSR browser dependencies.

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ArrowRightLeft, Copy, FileText, MessageCircle, RefreshCw, Search } from "lucide-react";
+import { ArrowRightLeft, Copy, Download, FileText, MessageCircle, RefreshCw, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -35,6 +35,7 @@ function PortabilidadePage() {
   const [saving, setSaving] = useState(false);
   const [proposal, setProposal] = useState<PortabilityGroup | null>(null);
   const [documentMode, setDocumentMode] = useState<"proposal" | "report">("proposal");
+  const [exporting, setExporting] = useState(false);
   const query = useQuery({
     queryKey: ["portabilidade", user?.id],
     enabled: Boolean(user),
@@ -89,6 +90,16 @@ function PortabilidadePage() {
     try { await navigator.clipboard.writeText(text); toast.success(isReport ? "Relatório copiado" : "Proposta copiada"); }
     catch { toast.error("Não foi possível copiar"); }
   };
+  const downloadReport = async (format: "jpg" | "pdf") => {
+    if (!proposal || exporting) return;
+    setExporting(true);
+    try {
+      const { downloadPortabilityReport } = await import("@/lib/portabilityExport");
+      await downloadPortabilityReport(proposal, format);
+      toast.success(`Relatório ${format.toUpperCase()} baixado`);
+    } catch { toast.error("Não foi possível gerar o arquivo. Tente novamente."); }
+    finally { setExporting(false); }
+  };
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5 p-4 sm:p-6">
@@ -135,6 +146,7 @@ function PortabilidadePage() {
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader><DialogTitle>{isReport ? "Relatório dos contratos para portar" : "Proposta de portabilidade"}</DialogTitle><DialogDescription>{proposal?.client.nome}</DialogDescription></DialogHeader>
           <pre className="max-h-[55vh] overflow-y-auto whitespace-pre-wrap break-words rounded-md border border-border bg-muted/30 p-4 font-mono text-sm leading-relaxed">{text}</pre>
+          {isReport && <div className="grid grid-cols-2 gap-2"><Button variant="outline" disabled={exporting} onClick={() => downloadReport("jpg")}><Download className="mr-2 h-4 w-4" />Baixar JPG</Button><Button variant="outline" disabled={exporting} onClick={() => downloadReport("pdf")}><Download className="mr-2 h-4 w-4" />Baixar PDF</Button></div>}
           {!phone && <p className="text-xs text-warning">Telefone de contato ausente ou inválido.</p>}
           <DialogFooter className="gap-2"><Button variant="outline" onClick={copy}><Copy className="mr-2 h-4 w-4" />{isReport ? "Copiar relatório" : "Copiar proposta"}</Button><Button disabled={!phone || !text} onClick={() => { if (phone && text) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer"); }}><MessageCircle className="mr-2 h-4 w-4" />Enviar no WhatsApp</Button></DialogFooter>
         </DialogContent>
