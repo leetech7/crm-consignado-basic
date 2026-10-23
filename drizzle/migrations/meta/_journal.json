@@ -50,6 +50,13 @@
       "when": 1792785250734,
       "tag": "0006_add_portar_to_client_contracts",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792785314960,
+      "tag": "0007_add_valor_troco_to_client_contracts",
+      "breakpoints": true
     }
   ]
 }

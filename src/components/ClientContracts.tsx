@@ -19,10 +19,11 @@ interface Contract {
   saldo_devedor: number | null;
   data_inicio: string | null;
   portar: boolean;
+  valor_troco: number | null;
   origem: string;
 }
 
-type Field = keyof Omit<Contract, "id" | "origem" | "portar">;
+type Field = keyof Omit<Contract, "id" | "origem" | "portar" | "valor_troco">;
 const COLS: { k: Field; label: string; type: string }[] = [
   { k: "banco", label: "Banco", type: "text" },
   { k: "numero_contrato", label: "Contrato", type: "text" },
@@ -101,6 +102,25 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
               />
               <span className="text-[10px] uppercase text-muted-foreground">Portar</span>
             </label>
+            {c.portar && (
+              <div className="flex items-center gap-1" title="Valor de troco">
+                <span className="text-[10px] uppercase text-muted-foreground">Troco</span>
+                <Input
+                  className="h-8 w-24 text-sm"
+                  type="number"
+                  step="0.01"
+                  defaultValue={c.valor_troco ?? ""}
+                  onBlur={(e) => {
+                    if (e.target.value === String(c.valor_troco ?? "")) return;
+                    const v = e.target.value === "" ? null : Number(e.target.value);
+                    setItems((xs) => xs.map((x) => (x.id === c.id ? { ...x, valor_troco: v } : x)));
+                    supabase.from("client_contracts").update({ valor_troco: v }).eq("id", c.id).then(({ error }) => {
+                      if (error) toast.error(error.message);
+                    });
+                  }}
+                />
+              </div>
+            )}
             {c.origem === "ia" && <Sparkles className="h-3.5 w-3.5 text-primary" aria-label="Importado pela IA" />}
             <Button type="button" size="icon" variant="ghost" onClick={() => remove(c.id)} title="Remover"><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>

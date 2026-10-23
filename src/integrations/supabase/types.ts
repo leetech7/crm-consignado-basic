@@ -187,6 +187,7 @@ export type Database = {
           prazo_total: number | null
           saldo_devedor: number | null
           valor_parcela: number | null
+          valor_troco: number | null
         }
         Insert: {
           banco?: string | null
@@ -203,6 +204,7 @@ export type Database = {
           prazo_total?: number | null
           saldo_devedor?: number | null
           valor_parcela?: number | null
+          valor_troco?: number | null
         }
         Update: {
           banco?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           prazo_total?: number | null
           saldo_devedor?: number | null
           valor_parcela?: number | null
+          valor_troco?: number | null
         }
         Relationships: [
           {
