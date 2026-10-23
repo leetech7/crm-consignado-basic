@@ -183,6 +183,7 @@ export type Database = {
           origem: string
           parcelas_pagas: number | null
           parcelas_restantes: number | null
+          portar: boolean
           prazo_total: number | null
           saldo_devedor: number | null
           valor_parcela: number | null
@@ -198,6 +199,7 @@ export type Database = {
           origem?: string
           parcelas_pagas?: number | null
           parcelas_restantes?: number | null
+          portar?: boolean
           prazo_total?: number | null
           saldo_devedor?: number | null
           valor_parcela?: number | null
@@ -213,6 +215,7 @@ export type Database = {
           origem?: string
           parcelas_pagas?: number | null
           parcelas_restantes?: number | null
+          portar?: boolean
           prazo_total?: number | null
           saldo_devedor?: number | null
           valor_parcela?: number | null

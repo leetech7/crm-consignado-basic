@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { formatBRL } from "@/lib/pipeline";
 import { toast } from "sonner";
@@ -17,10 +18,11 @@ interface Contract {
   parcelas_restantes: number | null;
   saldo_devedor: number | null;
   data_inicio: string | null;
+  portar: boolean;
   origem: string;
 }
 
-type Field = keyof Omit<Contract, "id" | "origem">;
+type Field = keyof Omit<Contract, "id" | "origem" | "portar">;
 const COLS: { k: Field; label: string; type: string }[] = [
   { k: "banco", label: "Banco", type: "text" },
   { k: "numero_contrato", label: "Contrato", type: "text" },
@@ -57,6 +59,12 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
     if (error) toast.error(error.message);
   };
 
+  const togglePortar = async (id: string, value: boolean) => {
+    setItems((xs) => xs.map((x) => (x.id === id ? { ...x, portar: value } : x)));
+    const { error } = await supabase.from("client_contracts").update({ portar: value }).eq("id", id);
+    if (error) toast.error(error.message);
+  };
+
   const remove = async (id: string) => {
     if (!confirm("Remover este contrato?")) return;
     const { error } = await supabase.from("client_contracts").delete().eq("id", id);
@@ -84,7 +92,15 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
               />
             </div>
           ))}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5" title="Marcar para portabilidade">
+              <Checkbox
+                checked={c.portar}
+                onCheckedChange={(v) => togglePortar(c.id, v === true)}
+                aria-label="Portar contrato"
+              />
+              <span className="text-[10px] uppercase text-muted-foreground">Portar</span>
+            </label>
             {c.origem === "ia" && <Sparkles className="h-3.5 w-3.5 text-primary" aria-label="Importado pela IA" />}
             <Button type="button" size="icon" variant="ghost" onClick={() => remove(c.id)} title="Remover"><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>

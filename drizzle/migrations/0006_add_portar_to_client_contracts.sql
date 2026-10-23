@@ -1,0 +1,1 @@
+ALTER TABLE public.client_contracts ADD COLUMN portar boolean NOT NULL DEFAULT false;
