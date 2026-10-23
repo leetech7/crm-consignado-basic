@@ -29,7 +29,6 @@ const COLS: { k: Field; label: string; type: string }[] = [
   { k: "parcelas_pagas", label: "Pagas", type: "number" },
   { k: "parcelas_restantes", label: "Restam", type: "number" },
   { k: "saldo_devedor", label: "Saldo", type: "number" },
-  { k: "data_inicio", label: "Início", type: "date" },
 ];
 
 export function ClientContracts({ clientId, reloadKey }: { clientId: string; reloadKey: number }) {
@@ -72,7 +71,7 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
     <div className="space-y-2">
       {items.length === 0 && <p className="text-sm text-muted-foreground">Nenhum contrato cadastrado.</p>}
       {items.map((c) => (
-        <div key={c.id} className="grid grid-cols-2 items-end gap-2 rounded-md border border-border/40 p-2 sm:grid-cols-4 lg:grid-cols-[1.4fr_1fr_1fr_.6fr_.6fr_.6fr_1fr_1.1fr_auto]">
+        <div key={c.id} className="grid grid-cols-2 items-end gap-2 rounded-md border border-border/40 p-2 sm:grid-cols-4 lg:grid-cols-[1.4fr_1fr_1fr_.6fr_.6fr_.6fr_1fr_auto]">
           {COLS.map((col) => (
             <div key={col.k} className="min-w-0 space-y-0.5">
               <span className="text-[10px] uppercase text-muted-foreground">{col.label}</span>
