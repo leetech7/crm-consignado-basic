@@ -1,2 +1,5 @@
 - [x] Adicionar banco, agência e conta de recebimento ao cadastro e à revisão da IA.
 - [x] Testar leitura de contracheque, aplicação e persistência dos dados bancários.
+- [ ] Criar tela de portabilidade com contratos marcados, troco e RPS.
+- [ ] Gerar proposta por cliente com cópia e envio por WhatsApp.
+- [ ] Testar cálculos e conferir a proposta na tela com sessão autenticada.
