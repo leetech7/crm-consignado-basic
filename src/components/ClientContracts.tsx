@@ -29,7 +29,6 @@ const COLS: { k: Field; label: string; type: string }[] = [
   { k: "parcelas_pagas", label: "Pagas", type: "number" },
   { k: "parcelas_restantes", label: "Restam", type: "number" },
   { k: "saldo_devedor", label: "Saldo", type: "number" },
-  { k: "data_inicio", label: "Início", type: "date" },
 ];
 
 export function ClientContracts({ clientId, reloadKey }: { clientId: string; reloadKey: number }) {
