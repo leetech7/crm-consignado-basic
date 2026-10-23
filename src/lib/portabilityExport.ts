@@ -9,8 +9,9 @@ export async function createPortabilityReportPages(group: PortabilityGroup) {
   const styles = getComputedStyle(document.documentElement);
   const color = (role: string) => styles.getPropertyValue(`--report-${role}`).trim();
   const pages: HTMLCanvasElement[] = [];
-  let canvas: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
+  const initialContext = document.createElement("canvas").getContext("2d");
+  if (!initialContext) throw new Error("Não foi possível gerar o relatório.");
+  let ctx: CanvasRenderingContext2D = initialContext;
   let y = 0;
   const font = (size: number, bold = false) => { ctx.font = `${bold ? 700 : 400} ${size}px Arial, sans-serif`; };
   const lines = (text: string, width: number) => {
@@ -28,8 +29,8 @@ export async function createPortabilityReportPages(group: PortabilityGroup) {
     next.width = 1240; next.height = 1754;
     const context = next.getContext("2d");
     if (!context) throw new Error("Não foi possível gerar o relatório.");
-    canvas = next; ctx = context; pages.push(canvas);
-    ctx.fillStyle = color("paper"); ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx = context; pages.push(next);
+    ctx.fillStyle = color("paper"); ctx.fillRect(0, 0, next.width, next.height);
     ctx.fillStyle = color("accent"); ctx.fillRect(72, 72, 8, 108);
     font(26, true); ctx.fillText("CRM-OSC - CONSIG", 104, 104);
     ctx.fillStyle = color("ink"); font(38, true); ctx.fillText("Relatório de portabilidade", 104, 157);
