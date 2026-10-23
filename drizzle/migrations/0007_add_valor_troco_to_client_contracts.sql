@@ -1,0 +1,1 @@
+ALTER TABLE public.client_contracts ADD COLUMN valor_troco numeric;
