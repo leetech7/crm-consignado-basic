@@ -4,4 +4,4 @@
 - [x] Gerar proposta por cliente com cópia e envio por WhatsApp.
 - [x] Testar cálculos e conferir a proposta na tela com sessão autenticada.
 - [x] Adicionar relatório por cliente com contratos marcados, total dos trocos e compartilhamento no WhatsApp.
-- [ ] Adicionar downloads JPG/PDF e conferir os arquivos gerados.
+- [x] Adicionar downloads JPG/PDF e conferir os arquivos gerados.
