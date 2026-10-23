@@ -53,6 +53,12 @@
 /* Tema escuro (padrão) — fintech grafite + verde-esmeralda + azul elétrico */
 :root {
   --radius: 0.75rem;
+  --report-paper: #ffffff;
+  --report-ink: #18252b;
+  --report-muted: #52636b;
+  --report-accent: #087f65;
+  --report-band: #eef6f3;
+  --report-border: #d4e1dc;
 
   --background: oklch(0.18 0.012 250);
   --foreground: oklch(0.97 0.005 250);
