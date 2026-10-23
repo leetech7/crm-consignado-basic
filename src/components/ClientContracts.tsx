@@ -59,6 +59,12 @@ export function ClientContracts({ clientId, reloadKey }: { clientId: string; rel
     if (error) toast.error(error.message);
   };
 
+  const togglePortar = async (id: string, value: boolean) => {
+    setItems((xs) => xs.map((x) => (x.id === id ? { ...x, portar: value } : x)));
+    const { error } = await supabase.from("client_contracts").update({ portar: value }).eq("id", id);
+    if (error) toast.error(error.message);
+  };
+
   const remove = async (id: string) => {
     if (!confirm("Remover este contrato?")) return;
     const { error } = await supabase.from("client_contracts").delete().eq("id", id);
