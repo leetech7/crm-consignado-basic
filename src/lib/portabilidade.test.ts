@@ -3,7 +3,7 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 import { groupPortabilityContracts, portabilityValues, portabilityTotals, buildPortabilityProposal, type PortabilityContract } from "./portabilidade";
 
 const client = { id: "cliente-a", nome: "Cliente A", cpf: null, telefone: null, orgao: "SIAPE", taxa_rps: 20 };
-const contract: PortabilityContract = { id: "contrato-a", client_id: client.id, created_by: "vendedor", created_at: "2026-10-23", updated_at: "2026-10-23", banco: "Banco A", numero_contrato: "123", valor_parcela: 200, prazo_total: 84, parcelas_pagas: 12, parcelas_restantes: 72, saldo_devedor: 10000, data_inicio: null, portar: true, valor_troco: 1000, origem: "manual", clients: client };
+const contract: PortabilityContract = { id: "contrato-a", client_id: client.id, created_by: "vendedor", created_at: "2026-10-23", banco: "Banco A", numero_contrato: "123", valor_parcela: 200, prazo_total: 84, parcelas_pagas: 12, parcelas_restantes: 72, saldo_devedor: 10000, data_inicio: null, portar: true, valor_troco: 1000, origem: "manual", clients: client };
 
 describe("Portabilidade", () => {
   test("lista somente os contratos marcados para portar", () => {
