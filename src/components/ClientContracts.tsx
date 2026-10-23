@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { formatBRL } from "@/lib/pipeline";
 import { toast } from "sonner";
