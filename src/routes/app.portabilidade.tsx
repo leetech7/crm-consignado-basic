@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ArrowRightLeft, Copy, FileText, MessageCircle, RefreshCw, Search } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/app/portabilidade")({
-  component: PortabilidadePage,
+  component: PortabilidadeScreen,
   head: () => ({ meta: [
     { title: "Portabilidade — CRM-OSC - CONSIG" },
     { name: "description", content: "Contratos para portabilidade, troco, RPS e propostas de refinanciamento por cliente." },
@@ -23,6 +23,11 @@ export const Route = createFileRoute("/app/portabilidade")({
     { name: "twitter:card", content: "summary" },
   ] }),
 });
+
+function PortabilidadeScreen() {
+  const [queryClient] = useState(() => new QueryClient());
+  return <QueryClientProvider client={queryClient}><PortabilidadePage /></QueryClientProvider>;
+}
 
 function PortabilidadePage() {
   const { user } = useAuth();
@@ -59,9 +64,15 @@ function PortabilidadePage() {
     }
     setSaving(true);
     try {
+      let clientRpsTotal: number | null = null;
+      if (kind === "rps") {
+        const { data, error } = await supabase.from("clients").select("valor_bruto").eq("id", id).single();
+        if (error) throw error;
+        clientRpsTotal = data.valor_bruto !== null && value !== null ? Number((data.valor_bruto * value / 100).toFixed(2)) : null;
+      }
       const result = kind === "troco"
         ? await supabase.from("client_contracts").update({ valor_troco: value }).eq("id", id).select("id").single()
-        : await supabase.from("clients").update({ taxa_rps: value }).eq("id", id).select("id").single();
+        : await supabase.from("clients").update({ taxa_rps: value, valor_rps_total: clientRpsTotal }).eq("id", id).select("id").single();
       if (result.error) throw result.error;
       await query.refetch();
       toast.success("Valor salvo");
