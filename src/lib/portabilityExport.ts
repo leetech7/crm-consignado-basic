@@ -1,9 +1,9 @@
-import { portabilityReportData, type PortabilityGroup } from "./portabilidade";
+import { portabilityReportData, type PortabilityGroup, type PortabilityReportTerms } from "./portabilidade";
 import { formatBRL } from "./pipeline";
 
 // Canvas pages preserve Portuguese accents identically in JPG and PDF.
-export async function createPortabilityReportPages(group: PortabilityGroup) {
-  const report = portabilityReportData(group);
+export async function createPortabilityReportPages(group: PortabilityGroup, terms: PortabilityReportTerms = {}) {
+  const report = portabilityReportData(group, terms);
   if (!report) throw new Error("Preencha os trocos dos contratos antes de gerar o relatório.");
   await document.fonts.ready;
   const styles = getComputedStyle(document.documentElement);
@@ -44,7 +44,7 @@ export async function createPortabilityReportPages(group: PortabilityGroup) {
     ctx.fillStyle = color("muted"); font(22, true);
     ctx.fillText("BANCO / CONTRATO", 92, y + 35);
     ctx.fillText("PARCELA ATUAL", 700, y + 35);
-    ctx.textAlign = "right"; ctx.fillText("TROCO", 1148, y + 35); ctx.textAlign = "left";
+    ctx.textAlign = "right"; ctx.fillText("TROCO LÍQUIDO", 1148, y + 35); ctx.textAlign = "left";
     y += 76;
   };
   startPage();
@@ -53,16 +53,17 @@ export async function createPortabilityReportPages(group: PortabilityGroup) {
     const bank = lines(`${index + 1}. ${contract.banco || "Banco não informado"}`, 550);
     font(22);
     const number = lines(`Contrato: ${contract.numero_contrato || "Não informado"}`, 550);
-    const height = bank.length * 32 + number.length * 29 + 35;
+    const height = bank.length * 32 + number.length * 29 + 67;
     if (y + height > 1420) startPage();
     const top = y;
     ctx.fillStyle = color("ink"); font(25, true);
     for (const line of bank) { ctx.fillText(line, 92, y); y += 32; }
     ctx.fillStyle = color("muted"); font(22);
     for (const line of number) { ctx.fillText(line, 92, y); y += 29; }
+    ctx.fillText(`Prazo: ${contract.prazo_portabilidade === null ? "Não informado" : `${contract.prazo_portabilidade} meses`}`, 92, y); y += 32;
     font(24); ctx.fillStyle = color("ink");
     ctx.fillText(contract.valor_parcela === null ? "—" : formatBRL(contract.valor_parcela), 700, top);
-    ctx.textAlign = "right"; font(25, true); ctx.fillText(formatBRL(contract.valor_troco), 1148, top); ctx.textAlign = "left";
+    ctx.textAlign = "right"; font(25, true); ctx.fillText(formatBRL(contract.troco_liquido), 1148, top); ctx.textAlign = "left";
     y = top + height;
     ctx.strokeStyle = color("border"); ctx.beginPath(); ctx.moveTo(72, y - 18); ctx.lineTo(1168, y - 18); ctx.stroke();
   }
@@ -70,21 +71,21 @@ export async function createPortabilityReportPages(group: PortabilityGroup) {
   y += 20;
   ctx.fillStyle = color("band"); ctx.fillRect(72, y, 1096, 128);
   ctx.fillStyle = color("muted"); font(23); ctx.fillText(`${report.contracts.length} contratos para portar`, 96, y + 38);
-  ctx.fillStyle = color("accent"); font(30, true); ctx.fillText("TOTAL DOS TROCOS", 96, y + 91);
+  ctx.fillStyle = color("accent"); font(28, true); ctx.fillText("TOTAL DOS TROCOS LÍQUIDOS", 96, y + 91);
   ctx.textAlign = "right"; font(38, true); ctx.fillText(formatBRL(report.totalTroco), 1144, y + 91); ctx.textAlign = "left";
   for (const [index, page] of pages.entries()) {
     const context = page.getContext("2d");
     if (!context) continue;
     context.fillStyle = color("muted"); context.font = "22px Arial, sans-serif";
-    context.fillText("Trocos brutos, antes do desconto de RPS.", 72, 1620);
+    context.fillText("Trocos líquidos após desconto de RPS.", 72, 1620);
     context.fillText("Valores sujeitos à aprovação do banco.", 72, 1653);
     context.textAlign = "right"; context.fillText(`${index + 1} / ${pages.length}`, 1168, 1653);
   }
   return pages;
 }
 
-export async function downloadPortabilityReport(group: PortabilityGroup, format: "jpg" | "pdf") {
-  const pages = await createPortabilityReportPages(group);
+export async function downloadPortabilityReport(group: PortabilityGroup, format: "jpg" | "pdf", terms: PortabilityReportTerms = {}) {
+  const pages = await createPortabilityReportPages(group, terms);
   const filename = `portabilidade-${group.client.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase() || "cliente"}`;
   if (format === "pdf") {
     const { jsPDF } = await import("jspdf");
