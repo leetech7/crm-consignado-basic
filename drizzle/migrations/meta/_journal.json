@@ -43,6 +43,13 @@
       "when": 1792681303724,
       "tag": "0005_add_client_receiving_bank",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792785250734,
+      "tag": "0006_add_portar_to_client_contracts",
+      "breakpoints": true
     }
   ]
 }
