@@ -18,10 +18,11 @@ interface Contract {
   parcelas_restantes: number | null;
   saldo_devedor: number | null;
   data_inicio: string | null;
+  portar: boolean;
   origem: string;
 }
 
-type Field = keyof Omit<Contract, "id" | "origem">;
+type Field = keyof Omit<Contract, "id" | "origem" | "portar">;
 const COLS: { k: Field; label: string; type: string }[] = [
   { k: "banco", label: "Banco", type: "text" },
   { k: "numero_contrato", label: "Contrato", type: "text" },
