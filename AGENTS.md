@@ -1,4 +1,4 @@
 - Authenticated server functions attach the bearer token per function via `.middleware([attachSupabaseAuth, requireSupabaseAuth])` — there is no src/start.ts global middleware.
 - Receiving-bank fields use a shared schema and text normalization so document extraction preserves leading zeros and account check digits.
-- Portability lists reuse RLS-scoped client contracts and client rates; shared pure helpers own grouping, monetary calculations and proposal generation to keep the screen and exported proposal consistent.
+- Portability lists reuse RLS-scoped client contracts and client rates; shared pure helpers own grouping, monetary calculations, reports and proposal generation to keep shared documents consistent. Contract reports total marked contracts independently of RPS so missing rates do not block a gross-troco report.
 - Portability owns a route-local QueryClientProvider because the existing app shell does not provide a query client; isolate this cache by user identity.

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { formatBRL, formatCPF, formatPhoneForWhatsApp } from "@/lib/pipeline";
-import { buildPortabilityProposal, groupPortabilityContracts, portabilityTotals, portabilityValues, type PortabilityGroup } from "@/lib/portabilidade";
+import { buildPortabilityProposal, buildPortabilityReport, groupPortabilityContracts, portabilityTotals, portabilityValues, type PortabilityGroup } from "@/lib/portabilidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +34,7 @@ function PortabilidadePage() {
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
   const [proposal, setProposal] = useState<PortabilityGroup | null>(null);
+  const [documentMode, setDocumentMode] = useState<"proposal" | "report">("proposal");
   const query = useQuery({
     queryKey: ["portabilidade", user?.id],
     enabled: Boolean(user),
@@ -80,12 +81,13 @@ function PortabilidadePage() {
     finally { setSaving(false); }
   }
 
-  const text = proposal ? buildPortabilityProposal(proposal) : null;
+  const isReport = documentMode === "report";
+  const text = proposal ? (isReport ? buildPortabilityReport(proposal) : buildPortabilityProposal(proposal)) : null;
   const phone = formatPhoneForWhatsApp(proposal?.client.telefone ?? null);
   const copy = async () => {
     if (!text) return;
-    try { await navigator.clipboard.writeText(text); toast.success("Proposta copiada"); }
-    catch { toast.error("Não foi possível copiar a proposta"); }
+    try { await navigator.clipboard.writeText(text); toast.success(isReport ? "Relatório copiado" : "Proposta copiada"); }
+    catch { toast.error("Não foi possível copiar"); }
   };
 
   return (
@@ -107,7 +109,8 @@ function PortabilidadePage() {
               <div className="min-w-0"><h2 className="break-words font-semibold">{group.client.nome}</h2><p className="text-xs text-muted-foreground">{group.client.cpf ? formatCPF(group.client.cpf) : "CPF não informado"}{group.client.orgao ? ` · ${group.client.orgao}` : ""}</p></div>
               <div className="flex flex-wrap items-end gap-3">
                 <div className="space-y-1"><Label htmlFor={`rps-${group.client.id}`} className="text-xs">RPS do cliente (%)</Label><div className="relative w-28"><Input id={`rps-${group.client.id}`} key={`${group.client.id}-${group.client.taxa_rps}`} type="number" min="0" max="100" step="0.01" placeholder="—" defaultValue={group.client.taxa_rps ?? ""} className="h-8 pr-7 font-mono" disabled={saving} onBlur={e => saveValue("rps", group.client.id, e.target.value, group.client.taxa_rps)} /><span className="pointer-events-none absolute right-2 top-1.5 text-sm text-muted-foreground">%</span></div></div>
-                <Button size="sm" disabled={!totals.complete || saving || query.isFetching} onClick={() => setProposal(group)}><FileText className="mr-2 h-4 w-4" />Gerar proposta</Button>
+                <Button variant="outline" size="sm" disabled={!buildPortabilityReport(group) || saving || query.isFetching} onClick={() => { setDocumentMode("report"); setProposal(group); }}><FileText className="mr-2 h-4 w-4" />Relatório dos contratos</Button>
+                <Button size="sm" disabled={!totals.complete || saving || query.isFetching} onClick={() => { setDocumentMode("proposal"); setProposal(group); }}><FileText className="mr-2 h-4 w-4" />Gerar proposta</Button>
               </div>
             </div>
             <div className="hidden grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-3 border-b border-border bg-muted/30 px-4 py-2 text-xs text-muted-foreground lg:grid"><span>Banco / contrato</span><span>Parcela atual</span><span>Troco bruto (R$)</span><span>Valor RPS</span><span>Troco líquido</span></div>
@@ -130,10 +133,10 @@ function PortabilidadePage() {
       </div>
       <Dialog open={Boolean(proposal)} onOpenChange={open => { if (!open) setProposal(null); }}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
-          <DialogHeader><DialogTitle>Proposta de portabilidade</DialogTitle><DialogDescription>{proposal?.client.nome}</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>{isReport ? "Relatório dos contratos para portar" : "Proposta de portabilidade"}</DialogTitle><DialogDescription>{proposal?.client.nome}</DialogDescription></DialogHeader>
           <pre className="max-h-[55vh] overflow-y-auto whitespace-pre-wrap break-words rounded-md border border-border bg-muted/30 p-4 font-mono text-sm leading-relaxed">{text}</pre>
           {!phone && <p className="text-xs text-warning">Telefone de contato ausente ou inválido.</p>}
-          <DialogFooter className="gap-2"><Button variant="outline" onClick={copy}><Copy className="mr-2 h-4 w-4" />Copiar proposta</Button><Button disabled={!phone || !text} onClick={() => { if (phone && text) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer"); }}><MessageCircle className="mr-2 h-4 w-4" />Enviar no WhatsApp</Button></DialogFooter>
+          <DialogFooter className="gap-2"><Button variant="outline" onClick={copy}><Copy className="mr-2 h-4 w-4" />{isReport ? "Copiar relatório" : "Copiar proposta"}</Button><Button disabled={!phone || !text} onClick={() => { if (phone && text) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer"); }}><MessageCircle className="mr-2 h-4 w-4" />Enviar no WhatsApp</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
