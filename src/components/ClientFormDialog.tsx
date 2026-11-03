@@ -11,7 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, ESTADOS_CIVIS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 import { StageFlag } from "@/components/StageFlag";
 import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 

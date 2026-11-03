@@ -36,6 +36,8 @@ export const ORGAOS = [
   "GOVERNO (OUTROS)",
 ] as const;
 
+export const ESTADOS_CIVIS = ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "União estável", "Separado(a)"] as const;
+
 export const ORIGENS = [
   "Manychat",
   "Listagem Kamilly",

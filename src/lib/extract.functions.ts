@@ -26,6 +26,8 @@ export interface ExtractedData {
   cpf: string | null;
   data_nascimento: string | null;
   orgao: string | null;
+  email: string | null;
+  estado_civil: string | null;
   margem_disponivel: number | null;
   margem_rcc: number | null;
   margem_rmc: number | null;
@@ -37,6 +39,7 @@ export interface ExtractedData {
 }
 
 const ORGAOS = ["SIAPE", "CLT", "INSS", "MARINHA", "EXÉRCITO", "AERONÁUTICA", "PREFEITURA RJ", "PREFEITURA (OUTRAS)", "GOVERNO RJ", "GOVERNO (OUTROS)"];
+const ESTADOS_CIVIS = ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "União estável", "Separado(a)"];
 
 const num = { type: ["number", "null"] };
 const str = { type: ["string", "null"] };
@@ -45,12 +48,14 @@ const int = { type: ["integer", "null"] };
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["nome", "cpf", "data_nascimento", "orgao", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
+  required: ["nome", "cpf", "data_nascimento", "orgao", "email", "estado_civil", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
   properties: {
     nome: str,
     cpf: str,
     data_nascimento: { type: ["string", "null"], description: "Formato YYYY-MM-DD" },
     orgao: { type: ["string", "null"], enum: [...ORGAOS, null] },
+    email: str,
+    estado_civil: { type: ["string", "null"], enum: [...ESTADOS_CIVIS, null] },
     margem_disponivel: num,
     margem_rcc: num,
     margem_rmc: num,
@@ -85,6 +90,8 @@ Regras:
 - Valores em reais como número (ex.: 1234.56). Margens podem ser negativas.
 - margem_disponivel = margem consignável de empréstimo disponível; margem_rcc = margem de cartão benefício (RCC); margem_rmc = margem de cartão consignado (RMC).
 - orgao: escolha o mais adequado da lista ou null.
+- email: somente se o e-mail do titular estiver escrito no documento; caso contrário null.
+- estado_civil: somente se constar no documento (ex.: RG, certidão, ficha funcional), escolhendo da lista; caso contrário null.
 - banco_recebimento, agencia_recebimento e conta_recebimento: extraia somente os dados bancários explicitamente indicados para o crédito do salário/benefício do titular na folha de pagamento ou contracheque. Não confunda com os bancos dos empréstimos consignados. Preserve zeros à esquerda, dígitos verificadores e operação da conta como texto. Se ausentes, ilegíveis ou ambíguos, use null; nunca deduza pelo banco dos contratos.
 - contratos: apenas empréstimos consignados ATIVOS/vigentes (ignore excluídos/encerrados). Calcule parcelas_restantes = prazo_total - parcelas_pagas quando possível. saldo_devedor: use o valor do documento ou estime como valor_parcela × parcelas_restantes.
 - observacao: uma frase curta com qualquer alerta relevante (ou null).`;
