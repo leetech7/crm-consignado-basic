@@ -36,6 +36,8 @@ export const ORGAOS = [
   "GOVERNO (OUTROS)",
 ] as const;
 
+export const ESTADOS_CIVIS = ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "União estável", "Separado(a)"] as const;
+
 export const ORIGENS = [
   "Manychat",
   "Listagem Kamilly",
@@ -62,6 +64,8 @@ export interface Client {
   telefone: string | null;
   orgao: string | null;
   origem: string | null;
+  email: string | null;
+  estado_civil: string | null;
   tipo_contrato: string | null;
   banco_recebimento: string | null;
   agencia_recebimento: string | null;
