@@ -83,6 +83,8 @@ const empty = {
   telefone: "",
   orgao: "",
   origem: "",
+  email: "",
+  estado_civil: "",
   tipo_contrato: "",
   banco_recebimento: "",
   agencia_recebimento: "",
@@ -206,6 +208,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
         origem: client.origem ?? "",
+        email: client.email ?? "",
+        estado_civil: client.estado_civil ?? "",
         tipo_contrato: client.tipo_contrato ?? "",
         banco_recebimento: client.banco_recebimento ?? "",
         agencia_recebimento: client.agencia_recebimento ?? "",
@@ -282,6 +286,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       telefone: form.telefone || null,
       orgao: form.orgao || null,
       origem: form.origem || null,
+      email: form.email.trim() || null,
+      estado_civil: form.estado_civil || null,
       tipo_contrato: form.tipo_contrato || null,
       banco_recebimento: form.banco_recebimento.trim() || null,
       agencia_recebimento: form.agencia_recebimento.trim() || null,
@@ -426,7 +432,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <ClientAttachments
               clientId={client?.id}
               pending={!client}
-              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
+              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, email: form.email, estado_civil: form.estado_civil, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
               onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
               onContractsSaved={() => setContractsKey((k) => k + 1)}
               onPendingContracts={setPendingContracts}
@@ -582,6 +588,30 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   {ORIGENS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                   {form.origem && !ORIGENS.includes(form.origem as typeof ORIGENS[number]) && (
                     <SelectItem value={form.origem} disabled>(legado: {form.origem})</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] [&_label]:text-xs">
+            <div className="min-w-0 space-y-1">
+              <Label htmlFor="cliente-email">E-mail</Label>
+              <div className="flex items-center gap-1.5">
+                <Input id="cliente-email" type="email" className="h-9 text-sm" value={form.email} placeholder="nome@exemplo.com" onChange={(e) => update("email", e.target.value)} />
+                <Button type="button" variant="outline" size="icon" className="h-9 w-9 shrink-0" disabled={!form.email} onClick={() => copyToClipboard(form.email)} title="Copiar e-mail">
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              {form.email && !EMAIL_RE.test(form.email.trim()) && <p className="text-xs text-destructive">E-mail inválido</p>}
+            </div>
+            <div className="min-w-0 space-y-1">
+              <Label>Estado civil</Label>
+              <Select value={form.estado_civil || undefined} onValueChange={(v) => update("estado_civil", v)}>
+                <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                <SelectContent>
+                  {ESTADOS_CIVIS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {form.estado_civil && !ESTADOS_CIVIS.includes(form.estado_civil as typeof ESTADOS_CIVIS[number]) && (
+                    <SelectItem value={form.estado_civil} disabled>{form.estado_civil}</SelectItem>
                   )}
                 </SelectContent>
               </Select>
