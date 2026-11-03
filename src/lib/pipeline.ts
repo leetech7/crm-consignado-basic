@@ -64,6 +64,8 @@ export interface Client {
   telefone: string | null;
   orgao: string | null;
   origem: string | null;
+  email: string | null;
+  estado_civil: string | null;
   tipo_contrato: string | null;
   banco_recebimento: string | null;
   agencia_recebimento: string | null;
