@@ -57,6 +57,13 @@
       "when": 1792785314960,
       "tag": "0007_add_valor_troco_to_client_contracts",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793718028254,
+      "tag": "0008_client_email_estado_civil",
+      "breakpoints": true
     }
   ]
 }
