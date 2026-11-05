@@ -11,7 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, stagePriority, type Client, type PipelineStage } from "@/lib/pipeline";
 import { StageFlag } from "@/components/StageFlag";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
