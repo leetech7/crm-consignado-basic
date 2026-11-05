@@ -98,9 +98,10 @@ function ClientesPage() {
     const arr = [...filtered];
     const dir = sortDir === "asc" ? 1 : -1;
     arr.sort((a, b) => {
-      // favoritos sempre no topo
-      if (a.favorito && !b.favorito) return -1;
-      if (!a.favorito && b.favorito) return 1;
+      if (sortKey === "created_at") {
+        const w = stagePriority(a.stage) - stagePriority(b.stage);
+        if (w !== 0) return w;
+      }
       const av = a[sortKey as keyof Client];
       const bv = b[sortKey as keyof Client];
       if (av == null && bv == null) return 0;
