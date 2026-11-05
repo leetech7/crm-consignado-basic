@@ -31,7 +31,7 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/app/dashboard" });
+    if (!loading && user) navigate({ to: "/app/clientes" });
   }, [user, loading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -50,7 +50,7 @@ function LoginPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/app/dashboard`,
+        emailRedirectTo: `${window.location.origin}/app/clientes`,
         data: { full_name: fullName },
       },
     });
