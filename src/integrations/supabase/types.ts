@@ -436,6 +436,41 @@ export type Database = {
         }
         Relationships: []
       }
+      proposal_events: {
+        Row: {
+          canal: string
+          client_id: string | null
+          created_at: string
+          id: string
+          owner_id: string
+          tipo: string
+        }
+        Insert: {
+          canal?: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          owner_id: string
+          tipo?: string
+        }
+        Update: {
+          canal?: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          owner_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
