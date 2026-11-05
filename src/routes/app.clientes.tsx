@@ -11,7 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, stagePriority, type Client, type PipelineStage } from "@/lib/pipeline";
 import { StageFlag } from "@/components/StageFlag";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
@@ -98,9 +98,10 @@ function ClientesPage() {
     const arr = [...filtered];
     const dir = sortDir === "asc" ? 1 : -1;
     arr.sort((a, b) => {
-      // favoritos sempre no topo
-      if (a.favorito && !b.favorito) return -1;
-      if (!a.favorito && b.favorito) return 1;
+      if (sortKey === "created_at") {
+        const w = stagePriority(a.stage) - stagePriority(b.stage);
+        if (w !== 0) return w;
+      }
       const av = a[sortKey as keyof Client];
       const bv = b[sortKey as keyof Client];
       if (av == null && bv == null) return 0;

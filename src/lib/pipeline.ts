@@ -168,3 +168,7 @@ export const formatPhoneForWhatsApp = (phone: string | null): string | null => {
   return `55${national}`;
 };
 
+
+/** Prioridade no topo da lista de clientes: digitado, em negociação, quentes, demais. */
+const STAGE_PRIORITY: Partial<Record<PipelineStage, number>> = { digitado: 0, em_negociacao: 1, quente: 2 };
+export const stagePriority = (s: PipelineStage) => STAGE_PRIORITY[s] ?? 3;
