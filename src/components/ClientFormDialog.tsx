@@ -829,6 +829,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           valorBruto={parseFloat(form.valor_bruto) || 0}
           taxaRps={parseFloat(form.taxa_rps) || 0}
           compraDivida={parseFloat(form.compra_divida) || 0}
+          clientId={client?.id ?? null}
         />
         <ReportImageDialog
           open={openReport}

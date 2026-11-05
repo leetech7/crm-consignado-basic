@@ -21,6 +21,7 @@ import { Route as AppEquipeRouteImport } from './routes/app.equipe'
 import { Route as AppExtratosRouteImport } from './routes/app.extratos'
 import { Route as AppFatoresRouteImport } from './routes/app.fatores'
 import { Route as AppInformativoRouteImport } from './routes/app.informativo'
+import { Route as AppPainelRouteImport } from './routes/app.painel'
 import { Route as AppPipelineRouteImport } from './routes/app.pipeline'
 import { Route as AppPortabilidadeRouteImport } from './routes/app.portabilidade'
 
@@ -84,6 +85,11 @@ const AppInformativoRoute = AppInformativoRouteImport.update({
   path: '/informativo',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPainelRoute = AppPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPipelineRoute = AppPipelineRouteImport.update({
   id: '/pipeline',
   path: '/pipeline',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
+  '/app/painel': typeof AppPainelRoute
   '/app/pipeline': typeof AppPipelineRoute
   '/app/portabilidade': typeof AppPortabilidadeRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
+  '/app/painel': typeof AppPainelRoute
   '/app/pipeline': typeof AppPipelineRoute
   '/app/portabilidade': typeof AppPortabilidadeRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/app/extratos': typeof AppExtratosRoute
   '/app/fatores': typeof AppFatoresRoute
   '/app/informativo': typeof AppInformativoRoute
+  '/app/painel': typeof AppPainelRoute
   '/app/pipeline': typeof AppPipelineRoute
   '/app/portabilidade': typeof AppPortabilidadeRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
+    | '/app/painel'
     | '/app/pipeline'
     | '/app/portabilidade'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
+    | '/app/painel'
     | '/app/pipeline'
     | '/app/portabilidade'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/app/extratos'
     | '/app/fatores'
     | '/app/informativo'
+    | '/app/painel'
     | '/app/pipeline'
     | '/app/portabilidade'
   fileRoutesById: FileRoutesById
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInformativoRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/painel': {
+      id: '/app/painel'
+      path: '/painel'
+      fullPath: '/app/painel'
+      preLoaderRoute: typeof AppPainelRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/pipeline': {
       id: '/app/pipeline'
       path: '/pipeline'
@@ -314,6 +333,7 @@ interface AppRouteChildren {
   AppExtratosRoute: typeof AppExtratosRoute
   AppFatoresRoute: typeof AppFatoresRoute
   AppInformativoRoute: typeof AppInformativoRoute
+  AppPainelRoute: typeof AppPainelRoute
   AppPipelineRoute: typeof AppPipelineRoute
   AppPortabilidadeRoute: typeof AppPortabilidadeRoute
 }
@@ -328,6 +348,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppExtratosRoute: AppExtratosRoute,
   AppFatoresRoute: AppFatoresRoute,
   AppInformativoRoute: AppInformativoRoute,
+  AppPainelRoute: AppPainelRoute,
   AppPipelineRoute: AppPipelineRoute,
   AppPortabilidadeRoute: AppPortabilidadeRoute,
 }

@@ -64,6 +64,13 @@
       "when": 1793718028254,
       "tag": "0008_client_email_estado_civil",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793848685417,
+      "tag": "0009_0009_proposal_events",
+      "breakpoints": true
     }
   ]
 }

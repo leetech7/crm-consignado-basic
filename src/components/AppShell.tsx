@@ -22,11 +22,13 @@ import {
   Megaphone,
   FileScan,
   ArrowRightLeft,
+  Gauge,
 
 } from "lucide-react";
 
 const NAV = [
   { to: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/app/painel", label: "Painel", icon: Gauge },
   { to: "/app/clientes", label: "Clientes", icon: Users },
   { to: "/app/pipeline", label: "Pipeline", icon: KanbanSquare },
   { to: "/app/bolhas", label: "Bolhas", icon: Circle },

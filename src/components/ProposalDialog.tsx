@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { formatBRL, formatPhoneForWhatsApp } from "@/lib/pipeline";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 type Props = {
@@ -15,11 +16,12 @@ type Props = {
   valorBruto: number;
   taxaRps: number; // %
   compraDivida?: number;
+  clientId?: string | null;
 };
 
 const firstName = (n: string) => (n ?? "").trim().split(/\s+/)[0] ?? "";
 
-export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto, taxaRps, compraDivida: compraDividaProp = 0 }: Props) {
+export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto, taxaRps, compraDivida: compraDividaProp = 0, clientId }: Props) {
   const [bruto, setBruto] = useState("");
   const [compraDivida, setCompraDivida] = useState("");
   const [taxa, setTaxa] = useState("");
@@ -70,6 +72,11 @@ export function ProposalDialog({ open, onOpenChange, nome, telefone, valorBruto,
     const phone = formatPhoneForWhatsApp(telefone ?? "");
     if (!phone) return toast.error("Telefone inválido — verifique DDD e número");
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(texto)}`, "_blank", "noopener,noreferrer");
+    void supabase.auth.getUser().then(({ data }) => {
+      const uid = data.user?.id;
+      if (!uid) return;
+      return supabase.from("proposal_events").insert({ owner_id: uid, client_id: clientId ?? null, tipo: "proposta", canal: "whatsapp" });
+    }).then((r) => { if (r?.error) console.error("Falha ao registrar proposta", r.error); });
   };
 
   const copiar = async () => {
