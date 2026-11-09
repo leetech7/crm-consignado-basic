@@ -250,6 +250,7 @@ export type Database = {
           id: string
           idade: number | null
           juros_divida: number | null
+          juros_divida_pct: number | null
           margem_disponivel: number | null
           margem_rcc: number | null
           margem_rmc: number | null
@@ -285,6 +286,7 @@ export type Database = {
           id?: string
           idade?: number | null
           juros_divida?: number | null
+          juros_divida_pct?: number | null
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null
@@ -320,6 +322,7 @@ export type Database = {
           id?: string
           idade?: number | null
           juros_divida?: number | null
+          juros_divida_pct?: number | null
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null

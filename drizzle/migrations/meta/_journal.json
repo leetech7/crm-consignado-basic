@@ -85,6 +85,13 @@
       "when": 1794252945543,
       "tag": "0011_add_juros_divida",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794253006690,
+      "tag": "0012_add_juros_divida_pct",
+      "breakpoints": true
     }
   ]
 }
