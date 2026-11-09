@@ -181,7 +181,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   // Auto-calcula valor bruto = nova margem / fator (a menos que o usuário tenha editado manualmente)
   useEffect(() => {
-    if (valorBrutoTouched) return;
     const m = parseFloat(form.nova_margem);
     const f = parseFloat(form.fator);
     if (Number.isNaN(f) || f <= 0) {
@@ -189,11 +188,9 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       setForm((prev) => (prev.valor_bruto === "" ? prev : { ...prev, valor_bruto: "" }));
       return;
     }
-    if (m > 0) {
-      const calc = (m / f).toFixed(2);
-      setForm((prev) => (prev.valor_bruto === calc ? prev : { ...prev, valor_bruto: calc }));
-    }
-  }, [form.nova_margem, form.fator, valorBrutoTouched]);
+    const calc = Number.isNaN(m) ? "" : (m / f).toFixed(2);
+    setForm((prev) => (prev.valor_bruto === calc ? prev : { ...prev, valor_bruto: calc }));
+  }, [form.nova_margem, form.fator]);
 
   // Juros da dívida (R$) = compra de dívida × % juros da dívida
   useEffect(() => {
@@ -764,10 +761,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <div className="min-w-0 space-y-1">
                 <div className="flex items-center justify-between gap-1">
                   <Label className="truncate">Valor bruto</Label>
-                  {valorBrutoTouched && <span className="text-[10px] text-amber-500 font-medium">manual</span>}
+                  
                 </div>
                 <div className="relative">
-                  <MaskedNumberInput kind="brl" className={`pr-8 ${valorBrutoTouched ? "" : "text-calc"}`} value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
+                  <MaskedNumberInput kind="brl" readOnly className="pr-8 bg-muted/50 text-calc" value={form.valor_bruto} />
                   <Button
                     type="button"
                     variant="ghost"
