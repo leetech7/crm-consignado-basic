@@ -103,6 +103,7 @@ const empty = {
   margem_rmc: "",
   nova_margem: "",
   juros_divida: "",
+  juros_divida_pct: "",
   fator: "",
   stage: "novo" as PipelineStage,
 };
@@ -230,6 +231,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         margem_rmc: client.margem_rmc?.toString() ?? "",
         nova_margem: client.nova_margem?.toString() ?? "",
         juros_divida: client.juros_divida?.toString() ?? "",
+        juros_divida_pct: client.juros_divida_pct != null ? Number(client.juros_divida_pct).toFixed(2) : "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
@@ -314,6 +316,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       margem_rmc: form.margem_rmc ? parseFloat(form.margem_rmc) : 0,
       nova_margem: form.nova_margem ? parseFloat(form.nova_margem) : null,
       juros_divida: form.juros_divida ? parseFloat(form.juros_divida) : null,
+      juros_divida_pct: form.juros_divida_pct ? Math.round(parseFloat(form.juros_divida_pct) * 100) / 100 : null,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
     };
@@ -676,6 +679,13 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <div className="min-w-0 space-y-1">
                 <Label>Juros da dívida</Label>
                 <Input type="number" step="0.01" value={form.juros_divida} onChange={(e) => update("juros_divida", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>% de juros da dívida</Label>
+                <div className="relative">
+                  <Input type="number" step="0.01" value={form.juros_divida_pct} onChange={(e) => update("juros_divida_pct", e.target.value)} onBlur={(e) => e.target.value && update("juros_divida_pct", parseFloat(e.target.value).toFixed(2))} placeholder="0,00" className="pr-7" />
+                  <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">%</span>
+                </div>
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem disponível</Label>
