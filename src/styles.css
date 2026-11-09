@@ -31,6 +31,7 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
+  --color-calc: var(--calc);
   --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
@@ -91,6 +92,7 @@
   --warning-foreground: oklch(0.18 0.02 75);
 
   --info: oklch(0.7 0.16 240);
+  --calc: oklch(0.72 0.12 255);
   --info-foreground: oklch(0.16 0.02 240);
 
   --border: oklch(0.3 0.014 250);
@@ -141,6 +143,7 @@
   --warning: oklch(0.65 0.16 75);
   --warning-foreground: oklch(0.15 0.02 75);
   --info: oklch(0.55 0.16 240);
+  --calc: oklch(0.32 0.12 260);
   --info-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.9 0.008 250);
   --input: oklch(0.93 0.008 250);

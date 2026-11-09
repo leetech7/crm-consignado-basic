@@ -723,7 +723,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Juros da dívida (R$)</Label>
-                <MaskedNumberInput kind="brl" value={form.juros_divida} readOnly className="bg-muted/50" title="Compra de dívida × % de juros da dívida" />
+                <MaskedNumberInput kind="brl" value={form.juros_divida} readOnly className="bg-muted/50 text-calc" title="Compra de dívida × % de juros da dívida" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Total das parcelas da compra</Label>
@@ -731,7 +731,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Nova margem (após compra)</Label>
-                <MaskedNumberInput kind="brl" value={form.nova_margem} readOnly className="bg-muted/50" />
+                <MaskedNumberInput kind="brl" value={form.nova_margem} readOnly className="bg-muted/50 text-calc" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Fator</Label>
@@ -767,7 +767,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   {valorBrutoTouched && <span className="text-[10px] text-amber-500 font-medium">manual</span>}
                 </div>
                 <div className="relative">
-                  <MaskedNumberInput kind="brl" className="pr-8" value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
+                  <MaskedNumberInput kind="brl" className={`pr-8 ${valorBrutoTouched ? "" : "text-calc"}`} value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
                   <Button
                     type="button"
                     variant="ghost"
@@ -786,7 +786,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <MaskedNumberInput
                   kind="brl"
                   readOnly
-                  className="bg-muted/50"
+                  className="bg-muted/50 text-calc"
                   title="Valor bruto − Compra de dívida − Juros da dívida (R$)"
                   value={form.saldo_a}
                 />
@@ -799,7 +799,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <Label>Valor do RPS</Label>
                 <Input
                   readOnly
-                  className="bg-muted font-bold italic"
+                  className="bg-muted font-bold italic text-calc"
                   title="Saldo A × RPS %"
                   value={
                     form.saldo_a && form.taxa_rps
@@ -812,7 +812,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <Label>Líquido cliente</Label>
                 <Input
                   readOnly
-                  className="bg-muted font-semibold"
+                  className="bg-muted font-semibold text-calc"
                   title="Saldo A − Valor do RPS"
                   value={(() => {
                     const sa = parseFloat(form.saldo_a) || 0;
