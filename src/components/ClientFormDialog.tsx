@@ -178,10 +178,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
   const factorNum = Number(form.fator);
   const factorInvalid = form.fator !== "" && Number.isNaN(factorNum);
 
-  // Auto-calcula valor bruto = margem / fator (a menos que o usuário tenha editado manualmente)
+  // Auto-calcula valor bruto = nova margem / fator (a menos que o usuário tenha editado manualmente)
   useEffect(() => {
     if (valorBrutoTouched) return;
-    const m = parseFloat(form.margem_disponivel);
+    const m = parseFloat(form.nova_margem);
     const f = parseFloat(form.fator);
     if (Number.isNaN(f) || f <= 0) {
       // Evita divisão por zero/fator inválido e limpa valor bruto se estava calculado
@@ -192,7 +192,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       const calc = (m / f).toFixed(2);
       setForm((prev) => (prev.valor_bruto === calc ? prev : { ...prev, valor_bruto: calc }));
     }
-  }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
+  }, [form.nova_margem, form.fator, valorBrutoTouched]);
 
   // Juros da dívida (R$) = compra de dívida × % juros da dívida
   useEffect(() => {
@@ -758,8 +758,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                     variant="ghost"
                     size="icon"
                     className="absolute right-0.5 top-1 h-7 w-7"
-                    title="Recalcular: Margem ÷ Fator"
-                    disabled={!form.margem_disponivel || !form.fator || Number(form.fator) <= 0}
+                    title="Recalcular: Nova margem ÷ Fator"
+                    disabled={!form.nova_margem || !form.fator || Number(form.fator) <= 0}
                     onClick={() => { setValorBrutoTouched(false); update("valor_bruto", ""); }}
                   >
                     <RefreshCcw className="h-3.5 w-3.5" />
