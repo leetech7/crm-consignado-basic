@@ -194,6 +194,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     }
   }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
 
+  // Juros da dívida (R$) = compra de dívida × % juros da dívida
+  useEffect(() => {
+    const c = parseFloat(form.compra_divida);
+    const p = parseFloat(form.juros_divida_pct);
+    if (Number.isNaN(c) || Number.isNaN(p)) return;
+    const calc = (c * p / 100).toFixed(2);
+    setForm((prev) => (prev.juros_divida === calc ? prev : { ...prev, juros_divida: calc }));
+  }, [form.compra_divida, form.juros_divida_pct]);
+
   // Nova margem (após compra) = total das parcelas da compra + margem disponível
   useEffect(() => {
     const t = parseFloat(form.total_parcelas_compra);
@@ -699,7 +708,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Juros da dívida (R$)</Label>
-                <MaskedNumberInput kind="brl" value={form.juros_divida} onChange={(v) => update("juros_divida", v)} />
+                <MaskedNumberInput kind="brl" value={form.juros_divida} readOnly className="bg-muted/50" title="Compra de dívida × % de juros da dívida" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Total das parcelas da compra</Label>
