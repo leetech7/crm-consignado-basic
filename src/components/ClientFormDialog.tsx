@@ -342,8 +342,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         : null,
       taxa_rps: form.taxa_rps ? parseFloat(form.taxa_rps) : 0,
       valor_bruto: form.valor_bruto ? parseFloat(form.valor_bruto) : 0,
-      valor_rps_total: form.valor_bruto && form.taxa_rps
-        ? Number((parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toFixed(2))
+      valor_rps_total: form.saldo_a && form.taxa_rps
+        ? Number((parseFloat(form.saldo_a) * parseFloat(form.taxa_rps) / 100).toFixed(2))
         : 0,
       compra_divida: form.compra_divida ? parseFloat(form.compra_divida) : 0,
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
@@ -800,10 +800,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <Input
                   readOnly
                   className="bg-muted font-bold italic"
-                  title="Valor bruto × RPS %"
+                  title="Saldo A × RPS %"
                   value={
-                    form.valor_bruto && form.taxa_rps
-                      ? (parseFloat(form.valor_bruto) * parseFloat(form.taxa_rps) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                    form.saldo_a && form.taxa_rps
+                      ? (parseFloat(form.saldo_a) * parseFloat(form.taxa_rps) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
                       : "R$ 0,00"
                   }
                 />
@@ -817,7 +817,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   value={(() => {
                     const vb = parseFloat(form.valor_bruto) || 0;
                     const tx = parseFloat(form.taxa_rps) || 0;
-                    const rps = vb * tx / 100;
+                    const rps = (parseFloat(form.saldo_a) || 0) * tx / 100;
                     const cd = parseFloat(form.compra_divida) || 0;
                     return (vb - rps - cd).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
                   })()}
