@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Upload, FileText, Download, Trash2, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
@@ -212,11 +212,11 @@ export function ClientAttachments({ clientId, pending = false, current = {}, onA
   const endIdx = Math.min(currentPage * pageSize, items.length);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Upload */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <Select value={categoria} onValueChange={setCategoria}>
-          <SelectTrigger className="sm:w-56"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-8 text-xs sm:w-56"><SelectValue /></SelectTrigger>
           <SelectContent>
             {CATEGORIAS.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}
           </SelectContent>
@@ -228,6 +228,7 @@ export function ClientAttachments({ clientId, pending = false, current = {}, onA
           onKeyDown={(e) => { if (e.key === " ") e.preventDefault(); }}
           disabled={uploading}
           variant="outline"
+          size="sm"
         >
           {uploading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
           {uploading ? "Enviando..." : "Anexar arquivo"}
@@ -238,41 +239,58 @@ export function ClientAttachments({ clientId, pending = false, current = {}, onA
       {/* List */}
       <div className="rounded-md border border-border/50">
         {loading ? (
-          <div className="p-4 text-center text-sm text-muted-foreground">Carregando...</div>
+          <div className="px-3 py-2 text-center text-xs text-muted-foreground">Carregando...</div>
         ) : paginated.length === 0 ? (
-          <div className="p-4 text-center text-sm text-muted-foreground">
+          <div className="px-3 py-2 text-center text-xs text-muted-foreground">
             Nenhum arquivo anexado
           </div>
         ) : (
+          <TooltipProvider delayDuration={250}>
           <ul className="divide-y divide-border/50">
             {paginated.map((a) => (
-              <li key={a.id} className="flex items-center gap-3 p-3">
-                <FileText className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <li key={a.id} className="flex items-center gap-2 px-2 py-1.5 sm:px-3">
+                <FileText className="hidden h-4 w-4 shrink-0 text-muted-foreground sm:block" />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium">{a.file_name}</div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <Badge variant="outline" className="text-[10px]">
-                      {CATEGORIAS.find((c) => c.id === a.categoria)?.label ?? a.categoria}
-                    </Badge>
-                    <span>{fmtSize(a.size_bytes)}</span>
-                    <span>{new Date(a.created_at).toLocaleString("pt-BR")}</span>
+                  <div className="truncate text-xs font-medium leading-5" title={a.file_name}>{a.file_name}</div>
+                  <div className="truncate text-[11px] leading-4 text-muted-foreground">
+                    {CATEGORIAS.find((c) => c.id === a.categoria)?.label ?? a.categoria}
+                    {" · "}{fmtSize(a.size_bytes)}
+                    <span className="hidden sm:inline"> · {new Date(a.created_at).toLocaleString("pt-BR")}</span>
                   </div>
                 </div>
+                <div className="flex shrink-0 items-center gap-0.5">
                 {onApply && (a.mime_type === "application/pdf" || a.mime_type?.startsWith("image/") || a.file_name.toLowerCase().endsWith(".pdf")) && (
-                  <Button type="button" size="sm" variant="secondary" disabled={!!reading} onClick={() => readWithAI(a)} title="Ler extrato com IA">
-                    {reading === a.id ? <Loader2 className="h-4 w-4 animate-spin sm:mr-1" /> : <Sparkles className="h-4 w-4 sm:mr-1" />}
+                  <Tooltip>
+                  <TooltipTrigger asChild>
+                  <Button type="button" size="sm" variant="secondary" className="h-9 w-9 gap-1 px-0 sm:h-8 sm:w-auto sm:px-2" disabled={!!reading} onClick={() => readWithAI(a)} aria-label={reading === a.id ? "Lendo arquivo com IA" : "Ler com IA"}>
+                    {reading === a.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                     <span className="hidden sm:inline">{reading === a.id ? "Lendo..." : "Ler com IA"}</span>
                   </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Ler com IA</TooltipContent>
+                  </Tooltip>
                 )}
-                <Button type="button" size="icon" variant="ghost" onClick={() => download(a)} title="Baixar">
+                <Tooltip>
+                <TooltipTrigger asChild>
+                <Button type="button" size="icon" variant="ghost" className="sm:h-8 sm:w-8" onClick={() => download(a)} aria-label="Baixar arquivo">
                   <Download className="h-4 w-4" />
                 </Button>
-                <Button type="button" size="icon" variant="ghost" onClick={() => remove(a)} title="Excluir">
+                </TooltipTrigger>
+                <TooltipContent>Baixar</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                <Button type="button" size="icon" variant="ghost" className="sm:h-8 sm:w-8" onClick={() => remove(a)} aria-label="Remover arquivo">
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
+                </TooltipTrigger>
+                <TooltipContent>Remover</TooltipContent>
+                </Tooltip>
+                </div>
               </li>
             ))}
           </ul>
+          </TooltipProvider>
         )}
 
         {/* Pagination */}
