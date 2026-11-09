@@ -80,6 +80,7 @@ export interface Client {
   margem_disponivel: number | null;
   margem_rcc: number | null;
   margem_rmc: number | null;
+  nova_margem: number | null;
   fator: number | null;
   stage: PipelineStage;
   favorito: boolean;

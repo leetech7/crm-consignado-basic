@@ -101,6 +101,7 @@ const empty = {
   margem_disponivel: "",
   margem_rcc: "",
   margem_rmc: "",
+  nova_margem: "",
   fator: "",
   stage: "novo" as PipelineStage,
 };
@@ -226,6 +227,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         margem_disponivel: client.margem_disponivel?.toString() ?? "",
         margem_rcc: client.margem_rcc?.toString() ?? "",
         margem_rmc: client.margem_rmc?.toString() ?? "",
+        nova_margem: client.nova_margem?.toString() ?? "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
@@ -308,6 +310,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       margem_disponivel: form.margem_disponivel ? parseFloat(form.margem_disponivel) : 0,
       margem_rcc: form.margem_rcc ? parseFloat(form.margem_rcc) : 0,
       margem_rmc: form.margem_rmc ? parseFloat(form.margem_rmc) : 0,
+      nova_margem: form.nova_margem ? parseFloat(form.nova_margem) : null,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
     };
@@ -660,8 +663,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             />
             <p className="text-xs text-muted-foreground">Opcional (padrão 09:00)</p>
           </div>
-          <div className="col-span-full rounded-md border border-border/50 bg-muted/20 p-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Valores</div>
+          <div className="col-span-full rounded-md border border-success/40 bg-success/10 p-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-success">Valores</div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [&_input]:h-9 [&_input]:text-sm [&_input]:text-right [&_input]:font-mono [&_label]:text-xs">
               <div className="min-w-0 space-y-1">
                 <Label>Compra de dívida</Label>
@@ -670,6 +673,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <div className="min-w-0 space-y-1">
                 <Label>Margem disponível</Label>
                 <Input type="number" step="0.01" value={form.margem_disponivel} onChange={(e) => update("margem_disponivel", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Nova margem (após compra)</Label>
+                <Input type="number" step="0.01" value={form.nova_margem} onChange={(e) => update("nova_margem", e.target.value)} placeholder="0,00" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem RCC</Label>

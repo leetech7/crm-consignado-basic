@@ -253,6 +253,7 @@ export type Database = {
           margem_rcc: number | null
           margem_rmc: number | null
           nome: string
+          nova_margem: number | null
           observacoes: string | null
           orgao: string | null
           origem: string | null
@@ -286,6 +287,7 @@ export type Database = {
           margem_rcc?: number | null
           margem_rmc?: number | null
           nome: string
+          nova_margem?: number | null
           observacoes?: string | null
           orgao?: string | null
           origem?: string | null
@@ -319,6 +321,7 @@ export type Database = {
           margem_rcc?: number | null
           margem_rmc?: number | null
           nome?: string
+          nova_margem?: number | null
           observacoes?: string | null
           orgao?: string | null
           origem?: string | null

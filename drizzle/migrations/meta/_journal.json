@@ -71,6 +71,13 @@
       "when": 1793848685417,
       "tag": "0009_0009_proposal_events",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794252894056,
+      "tag": "0010_add_nova_margem",
+      "breakpoints": true
     }
   ]
 }
