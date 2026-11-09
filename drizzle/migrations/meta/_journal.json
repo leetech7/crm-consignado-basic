@@ -92,6 +92,13 @@
       "when": 1794253006690,
       "tag": "0012_add_juros_divida_pct",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794253095730,
+      "tag": "0013_add_total_parcelas_compra",
+      "breakpoints": true
     }
   ]
 }
