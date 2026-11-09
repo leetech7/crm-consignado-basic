@@ -262,6 +262,7 @@ export type Database = {
           owner_id: string
           paid_at: string | null
           proximo_contato: string | null
+          saldo_a: number | null
           stage: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps: number | null
           telefone: string | null
@@ -299,6 +300,7 @@ export type Database = {
           owner_id: string
           paid_at?: string | null
           proximo_contato?: string | null
+          saldo_a?: number | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps?: number | null
           telefone?: string | null
@@ -336,6 +338,7 @@ export type Database = {
           owner_id?: string
           paid_at?: string | null
           proximo_contato?: string | null
+          saldo_a?: number | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           taxa_rps?: number | null
           telefone?: string | null
