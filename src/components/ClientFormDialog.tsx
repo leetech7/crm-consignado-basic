@@ -102,6 +102,7 @@ const empty = {
   margem_rcc: "",
   margem_rmc: "",
   nova_margem: "",
+  juros_divida: "",
   fator: "",
   stage: "novo" as PipelineStage,
 };
@@ -228,6 +229,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         margem_rcc: client.margem_rcc?.toString() ?? "",
         margem_rmc: client.margem_rmc?.toString() ?? "",
         nova_margem: client.nova_margem?.toString() ?? "",
+        juros_divida: client.juros_divida?.toString() ?? "",
         fator: client.fator != null ? Number(client.fator).toFixed(5) : "",
         stage: client.stage,
       });
@@ -311,6 +313,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       margem_rcc: form.margem_rcc ? parseFloat(form.margem_rcc) : 0,
       margem_rmc: form.margem_rmc ? parseFloat(form.margem_rmc) : 0,
       nova_margem: form.nova_margem ? parseFloat(form.nova_margem) : null,
+      juros_divida: form.juros_divida ? parseFloat(form.juros_divida) : null,
       fator: form.fator ? Number(parseFloat(form.fator).toFixed(5)) : null,
       stage: form.stage,
     };
@@ -669,6 +672,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               <div className="min-w-0 space-y-1">
                 <Label>Compra de dívida</Label>
                 <Input type="number" step="0.01" min="0" value={form.compra_divida} onChange={(e) => update("compra_divida", e.target.value)} placeholder="0,00" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Juros da dívida</Label>
+                <Input type="number" step="0.01" value={form.juros_divida} onChange={(e) => update("juros_divida", e.target.value)} placeholder="0,00" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem disponível</Label>
