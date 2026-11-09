@@ -193,6 +193,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     }
   }, [form.margem_disponivel, form.fator, valorBrutoTouched]);
 
+  // Nova margem (após compra) = total das parcelas da compra + margem disponível
+  useEffect(() => {
+    const t = parseFloat(form.total_parcelas_compra);
+    const m = parseFloat(form.margem_disponivel);
+    if (Number.isNaN(t) && Number.isNaN(m)) return;
+    const calc = ((Number.isNaN(t) ? 0 : t) + (Number.isNaN(m) ? 0 : m)).toFixed(2);
+    setForm((prev) => (prev.nova_margem === calc ? prev : { ...prev, nova_margem: calc }));
+  }, [form.total_parcelas_compra, form.margem_disponivel]);
+
   useEffect(() => {
     if (!open) {
       hydratedRef.current = false;
@@ -700,7 +709,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Nova margem (após compra)</Label>
-                <Input type="number" step="0.01" value={form.nova_margem} onChange={(e) => update("nova_margem", e.target.value)} placeholder="0,00" />
+                <Input type="number" step="0.01" value={form.nova_margem} readOnly className="bg-muted/50" placeholder="0,00" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem RCC</Label>
