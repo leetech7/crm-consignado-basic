@@ -767,7 +767,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   {valorBrutoTouched && <span className="text-[10px] text-amber-500 font-medium">manual</span>}
                 </div>
                 <div className="relative">
-                  <MaskedNumberInput kind="brl" className="pr-8" value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
+                  <MaskedNumberInput kind="brl" className={`pr-8 ${valorBrutoTouched ? "" : "text-calc"}`} value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
                   <Button
                     type="button"
                     variant="ghost"
