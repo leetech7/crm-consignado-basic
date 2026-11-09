@@ -83,6 +83,7 @@ export interface Client {
   nova_margem: number | null;
   juros_divida: number | null;
   juros_divida_pct: number | null;
+  total_parcelas_compra: number | null;
   fator: number | null;
   stage: PipelineStage;
   favorito: boolean;
