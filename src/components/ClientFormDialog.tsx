@@ -686,36 +686,28 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-success">Valores</div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [&_input]:h-9 [&_input]:text-sm [&_input]:text-right [&_input]:font-mono [&_label]:text-xs">
               <div className="min-w-0 space-y-1">
-                <Label>Compra de dívida</Label>
-                <MaskedNumberInput kind="brl" value={form.compra_divida} onChange={(v) => update("compra_divida", v)} />
+                <Label>Margem disponível</Label>
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_disponivel} onChange={(v) => update("margem_disponivel", v)} />
               </div>
               <div className="min-w-0 space-y-1">
-                <Label>Juros da dívida</Label>
-                <MaskedNumberInput kind="brl" value={form.juros_divida} onChange={(v) => update("juros_divida", v)} />
+                <Label>Compra de dívida (saldo)</Label>
+                <MaskedNumberInput kind="brl" value={form.compra_divida} onChange={(v) => update("compra_divida", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>% de juros da dívida</Label>
                 <MaskedNumberInput kind="pct" value={form.juros_divida_pct} onChange={(v) => update("juros_divida_pct", v)} />
               </div>
               <div className="min-w-0 space-y-1">
+                <Label>Juros da dívida (R$)</Label>
+                <MaskedNumberInput kind="brl" value={form.juros_divida} onChange={(v) => update("juros_divida", v)} />
+              </div>
+              <div className="min-w-0 space-y-1">
                 <Label>Total das parcelas da compra</Label>
                 <MaskedNumberInput kind="brl" value={form.total_parcelas_compra} onChange={(v) => update("total_parcelas_compra", v)} />
               </div>
               <div className="min-w-0 space-y-1">
-                <Label>Margem disponível</Label>
-                <MaskedNumberInput kind="brl" allowNegative value={form.margem_disponivel} onChange={(v) => update("margem_disponivel", v)} />
-              </div>
-              <div className="min-w-0 space-y-1">
                 <Label>Nova margem (após compra)</Label>
                 <MaskedNumberInput kind="brl" value={form.nova_margem} readOnly className="bg-muted/50" />
-              </div>
-              <div className="min-w-0 space-y-1">
-                <Label>Margem RCC</Label>
-                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rcc} onChange={(v) => update("margem_rcc", v)} />
-              </div>
-              <div className="min-w-0 space-y-1">
-                <Label>Margem RMC</Label>
-                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rmc} onChange={(v) => update("margem_rmc", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Fator</Label>
@@ -770,10 +762,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <MaskedNumberInput kind="pct" value={form.taxa_rps} onChange={(v) => update("taxa_rps", v)} />
               </div>
               <div className="min-w-0 space-y-1">
-                <Label>Valor RPS</Label>
+                <Label>Valor do RPS</Label>
                 <Input
                   readOnly
-                  className="bg-muted"
+                  className="bg-muted font-bold italic"
                   title="Valor bruto × RPS %"
                   value={
                     form.valor_bruto && form.taxa_rps
@@ -796,6 +788,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                     return (vb - rps - cd).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
                   })()}
                 />
+              </div>
+
+              <div className="min-w-0 space-y-1">
+                <Label>Margem RCC</Label>
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rcc} onChange={(v) => update("margem_rcc", v)} />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <Label>Margem RMC</Label>
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rmc} onChange={(v) => update("margem_rmc", v)} />
               </div>
             </div>
           </div>
