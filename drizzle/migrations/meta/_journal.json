@@ -78,6 +78,13 @@
       "when": 1794252894056,
       "tag": "0010_add_nova_margem",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794252945543,
+      "tag": "0011_add_juros_divida",
+      "breakpoints": true
     }
   ]
 }

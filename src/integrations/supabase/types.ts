@@ -249,6 +249,7 @@ export type Database = {
           favorito: boolean
           id: string
           idade: number | null
+          juros_divida: number | null
           margem_disponivel: number | null
           margem_rcc: number | null
           margem_rmc: number | null
@@ -283,6 +284,7 @@ export type Database = {
           favorito?: boolean
           id?: string
           idade?: number | null
+          juros_divida?: number | null
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null
@@ -317,6 +319,7 @@ export type Database = {
           favorito?: boolean
           id?: string
           idade?: number | null
+          juros_divida?: number | null
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null
