@@ -5,6 +5,7 @@ import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { PortabilityReportDialog } from "@/components/PortabilityReportDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MaskedNumberInput } from "@/components/MaskedNumberInput";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -686,38 +687,35 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [&_input]:h-9 [&_input]:text-sm [&_input]:text-right [&_input]:font-mono [&_label]:text-xs">
               <div className="min-w-0 space-y-1">
                 <Label>Compra de dívida</Label>
-                <Input type="number" step="0.01" min="0" value={form.compra_divida} onChange={(e) => update("compra_divida", e.target.value)} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" value={form.compra_divida} onChange={(v) => update("compra_divida", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Juros da dívida</Label>
-                <Input type="number" step="0.01" value={form.juros_divida} onChange={(e) => update("juros_divida", e.target.value)} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" value={form.juros_divida} onChange={(v) => update("juros_divida", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>% de juros da dívida</Label>
-                <div className="relative">
-                  <Input type="number" step="0.01" value={form.juros_divida_pct} onChange={(e) => update("juros_divida_pct", e.target.value)} onBlur={(e) => e.target.value && update("juros_divida_pct", parseFloat(e.target.value).toFixed(2))} placeholder="0,00" className="pr-7" />
-                  <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">%</span>
-                </div>
+                <MaskedNumberInput kind="pct" value={form.juros_divida_pct} onChange={(v) => update("juros_divida_pct", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Total das parcelas da compra</Label>
-                <Input type="number" step="0.01" value={form.total_parcelas_compra} onChange={(e) => update("total_parcelas_compra", e.target.value)} onBlur={(e) => e.target.value && update("total_parcelas_compra", parseFloat(e.target.value).toFixed(2))} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" value={form.total_parcelas_compra} onChange={(v) => update("total_parcelas_compra", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem disponível</Label>
-                <Input type="number" step="0.01" value={form.margem_disponivel} onChange={(e) => update("margem_disponivel", e.target.value)} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_disponivel} onChange={(v) => update("margem_disponivel", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Nova margem (após compra)</Label>
-                <Input type="number" step="0.01" value={form.nova_margem} readOnly className="bg-muted/50" placeholder="0,00" />
+                <MaskedNumberInput kind="brl" value={form.nova_margem} readOnly className="bg-muted/50" />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem RCC</Label>
-                <Input type="number" step="0.01" value={form.margem_rcc} onChange={(e) => update("margem_rcc", e.target.value)} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rcc} onChange={(v) => update("margem_rcc", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Margem RMC</Label>
-                <Input type="number" step="0.01" value={form.margem_rmc} onChange={(e) => update("margem_rmc", e.target.value)} placeholder="0,00" />
+                <MaskedNumberInput kind="brl" allowNegative value={form.margem_rmc} onChange={(v) => update("margem_rmc", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Fator</Label>
@@ -753,15 +751,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   {valorBrutoTouched && <span className="text-[10px] text-amber-500 font-medium">manual</span>}
                 </div>
                 <div className="relative">
-                  <Input
-                    className="pr-8"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={form.valor_bruto}
-                    onChange={(e) => { setValorBrutoTouched(true); update("valor_bruto", e.target.value); }}
-                    placeholder="0,00"
-                  />
+                  <MaskedNumberInput kind="brl" className="pr-8" value={form.valor_bruto} onChange={(v) => { setValorBrutoTouched(true); update("valor_bruto", v); }} />
                   <Button
                     type="button"
                     variant="ghost"
@@ -777,10 +767,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>RPS %</Label>
-                <div className="relative">
-                  <Input type="number" step="0.01" min="0" className="pr-5" value={form.taxa_rps} onChange={(e) => update("taxa_rps", e.target.value)} placeholder="0,00" />
-                  <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">%</span>
-                </div>
+                <MaskedNumberInput kind="pct" value={form.taxa_rps} onChange={(v) => update("taxa_rps", v)} />
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Valor RPS</Label>
