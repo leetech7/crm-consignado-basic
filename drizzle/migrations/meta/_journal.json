@@ -99,6 +99,13 @@
       "when": 1794253095730,
       "tag": "0013_add_total_parcelas_compra",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794256852049,
+      "tag": "0014_add_saldo_a",
+      "breakpoints": true
     }
   ]
 }

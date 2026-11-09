@@ -103,6 +103,7 @@ const empty = {
   margem_rcc: "",
   margem_rmc: "",
   nova_margem: "",
+  saldo_a: "",
   juros_divida: "",
   juros_divida_pct: "",
   total_parcelas_compra: "",
@@ -203,6 +204,18 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     setForm((prev) => (prev.juros_divida === calc ? prev : { ...prev, juros_divida: calc }));
   }, [form.compra_divida, form.juros_divida_pct]);
 
+  // Saldo A = valor bruto − compra de dívida − juros da dívida (só recalcula quando esses campos mudam)
+  const saldoInputs = `${form.valor_bruto}|${form.compra_divida}|${form.juros_divida}`;
+  const saldoPrev = useRef<string | null>(null);
+  useEffect(() => {
+    if (saldoPrev.current === null) { saldoPrev.current = saldoInputs; if (form.saldo_a !== "") return; }
+    if (saldoPrev.current === saldoInputs && form.saldo_a !== "") return;
+    saldoPrev.current = saldoInputs;
+    if (!form.valor_bruto && !form.compra_divida && !form.juros_divida) return;
+    const calc = ((parseFloat(form.valor_bruto) || 0) - (parseFloat(form.compra_divida) || 0) - (parseFloat(form.juros_divida) || 0)).toFixed(2);
+    setForm((prev) => (prev.saldo_a === calc ? prev : { ...prev, saldo_a: calc }));
+  }, [saldoInputs]);
+
   // Nova margem (após compra) = total das parcelas da compra + margem disponível
   useEffect(() => {
     const t = parseFloat(form.total_parcelas_compra);
@@ -250,6 +263,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         margem_rcc: client.margem_rcc?.toString() ?? "",
         margem_rmc: client.margem_rmc?.toString() ?? "",
         nova_margem: client.nova_margem?.toString() ?? "",
+        saldo_a: (client as { saldo_a?: number | null }).saldo_a?.toString() ?? "",
         juros_divida: client.juros_divida?.toString() ?? "",
         total_parcelas_compra: client.total_parcelas_compra != null ? Number(client.total_parcelas_compra).toFixed(2) : "",
         juros_divida_pct: client.juros_divida_pct != null ? Number(client.juros_divida_pct).toFixed(2) : "",
@@ -336,6 +350,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       margem_rcc: form.margem_rcc ? parseFloat(form.margem_rcc) : 0,
       margem_rmc: form.margem_rmc ? parseFloat(form.margem_rmc) : 0,
       nova_margem: form.nova_margem ? parseFloat(form.nova_margem) : null,
+      saldo_a: form.saldo_a ? parseFloat(form.saldo_a) : null,
       juros_divida: form.juros_divida ? parseFloat(form.juros_divida) : null,
       total_parcelas_compra: form.total_parcelas_compra ? Math.round(parseFloat(form.total_parcelas_compra) * 100) / 100 : null,
       juros_divida_pct: form.juros_divida_pct ? Math.round(parseFloat(form.juros_divida_pct) * 100) / 100 : null,
@@ -773,7 +788,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   readOnly
                   className="bg-muted/50"
                   title="Valor bruto − Compra de dívida − Juros da dívida (R$)"
-                  value={((parseFloat(form.valor_bruto) || 0) - (parseFloat(form.compra_divida) || 0) - (parseFloat(form.juros_divida) || 0)).toFixed(2)}
+                  value={form.saldo_a}
                 />
               </div>
               <div className="min-w-0 space-y-1">
