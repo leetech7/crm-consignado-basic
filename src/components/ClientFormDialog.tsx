@@ -595,7 +595,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </Select>
             </div>
           </div>
-          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] [&_label]:text-xs">
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,3fr)] [&_label]:text-xs">
             <div className="min-w-0 space-y-1">
               <Label htmlFor="cliente-email">E-mail</Label>
               <div className="flex items-center gap-1.5">
@@ -618,10 +618,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="lg:col-span-2 xl:col-span-3 space-y-1.5">
-            <Label>Endereço</Label>
-            <Input value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
+            <div className="min-w-0 space-y-1 sm:col-span-2 lg:col-span-1">
+              <Label htmlFor="cliente-endereco">Endereço</Label>
+              <Input id="cliente-endereco" className="h-9 text-sm" value={form.endereco} onChange={(e) => update("endereco", e.target.value)} />
+            </div>
           </div>
           <fieldset className="col-span-full min-w-0">
             <legend className="mb-2 text-xs font-semibold text-muted-foreground">Recebimento do salário / benefício</legend>
