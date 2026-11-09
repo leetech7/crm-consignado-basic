@@ -767,6 +767,16 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 </div>
               </div>
               <div className="min-w-0 space-y-1">
+                <Label>Saldo A</Label>
+                <MaskedNumberInput
+                  kind="brl"
+                  readOnly
+                  className="bg-muted/50"
+                  title="Valor bruto − Compra de dívida − Juros da dívida (R$)"
+                  value={((parseFloat(form.valor_bruto) || 0) - (parseFloat(form.compra_divida) || 0) - (parseFloat(form.juros_divida) || 0)).toFixed(2)}
+                />
+              </div>
+              <div className="min-w-0 space-y-1">
                 <Label>RPS %</Label>
                 <MaskedNumberInput kind="pct" value={form.taxa_rps} onChange={(v) => update("taxa_rps", v)} />
               </div>
