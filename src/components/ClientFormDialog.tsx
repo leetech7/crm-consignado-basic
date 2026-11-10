@@ -636,7 +636,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 </SelectContent>
               </Select>
             </div>
-            <div className="min-w-0 space-y-1 col-span-3 lg:col-span-1">
+            <div className="min-w-0 space-y-1 col-span-3 lg:col-span-1 lg:w-7/10">
               <Label htmlFor="cliente-orgao">Órgão</Label>
               <Input id="cliente-orgao" value={form.orgao_nome} onChange={(e) => update("orgao_nome", e.target.value)} />
             </div>
