@@ -143,7 +143,7 @@ function ClientesPage() {
   };
 
   const exportCSV = () => {
-    const headers = ["Nome", "CPF", "Idade", "Telefone", "E-mail", "Estado civil", "Órgão", "Origem", "Tipo de contrato", "Endereço", "Estágio", "Taxa RPS (%)", "Valor bruto", "Compra de dívida", "Margem disponível", "Próximo contato", "Observações"];
+    const headers = ["Nome", "CPF", "Idade", "Telefone", "E-mail", "Estado civil", "Convênio", "Origem", "Tipo de contrato", "Endereço", "Estágio", "Taxa RPS (%)", "Valor bruto", "Compra de dívida", "Margem disponível", "Próximo contato", "Observações"];
     const rows = sorted.map((c) => [
       c.nome, c.cpf ?? "", c.idade ?? "", c.telefone ?? "", c.email ?? "", c.estado_civil ?? "", c.orgao ?? "", c.origem ?? "", c.tipo_contrato ?? "", c.endereco ?? "",
       stageLabel(c.stage), c.taxa_rps ?? 0, c.valor_bruto ?? 0, c.compra_divida ?? 0, c.margem_disponivel ?? 0, c.proximo_contato ?? "", (c.observacoes ?? "").replace(/\n/g, " "),
@@ -213,16 +213,16 @@ function ClientesPage() {
               <SelectItem value="nome">Por nome</SelectItem>
               <SelectItem value="cpf">Por CPF</SelectItem>
               <SelectItem value="telefone">Por telefone</SelectItem>
-              <SelectItem value="orgao">Por órgão</SelectItem>
+              <SelectItem value="orgao">Por convênio</SelectItem>
             </SelectContent>
           </Select>
 
           <div className="relative flex-1">
             {searchType === "orgao" ? (
               <Select value={search || "all"} onValueChange={(v) => setSearch(v === "all" ? "" : v)}>
-                <SelectTrigger><SelectValue placeholder="Selecione um órgão..." /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="Selecione um convênio..." /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos os órgãos</SelectItem>
+                  <SelectItem value="all">Todos os convênios</SelectItem>
                   {ORGAOS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                 </SelectContent>
               </Select>
@@ -291,7 +291,7 @@ function ClientesPage() {
           <div className="mt-3 flex flex-wrap gap-2">
             {search.trim() && (
               <Badge variant="secondary" className="gap-1">
-                {searchType === "cpf" ? "CPF" : searchType === "telefone" ? "Telefone" : searchType === "orgao" ? "Órgão" : "Nome"}: {search}
+                {searchType === "cpf" ? "CPF" : searchType === "telefone" ? "Telefone" : searchType === "orgao" ? "Convênio" : "Nome"}: {search}
                 <button onClick={() => setSearch("")} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
               </Badge>
             )}
@@ -322,7 +322,7 @@ function ClientesPage() {
                 <StageFlag stage={c.stage as PipelineStage} className="shrink-0" />
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/50 pt-3 text-xs">
-                <div><span className="block text-muted-foreground">Órgão</span><span className="block truncate">{c.orgao ?? "—"}</span></div>
+                <div><span className="block text-muted-foreground">Convênio</span><span className="block truncate">{c.orgao ?? "—"}</span></div>
                 <div><span className="block text-muted-foreground">Margem</span><span className="font-mono">{formatBRL(Number(c.margem_disponivel ?? 0))}</span></div>
               </div>
               <div className="mt-3 grid grid-cols-4 gap-1">
@@ -356,7 +356,7 @@ function ClientesPage() {
                 </th>
                 <th className="px-4 py-3 text-left">
                   <button onClick={() => toggleSort("orgao")} className="inline-flex items-center gap-1 hover:text-foreground">
-                    Órgão {sortIcon("orgao")}
+                    Convênio {sortIcon("orgao")}
                   </button>
                 </th>
                 <th className="px-4 py-3 text-left">
