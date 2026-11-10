@@ -6,6 +6,7 @@ import { PortabilityReportDialog } from "@/components/PortabilityReportDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { MaskedNumberInput } from "@/components/MaskedNumberInput";
+import { normalizeMatricula } from "@/lib/matricula";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -81,6 +82,7 @@ interface Props {
 const empty = {
   nome: "",
   cpf: "",
+  matricula: "",
   idade: "",
   data_nascimento: "",
   telefone: "",
@@ -238,6 +240,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       setForm(draft ? { ...empty, ...draft } : {
         nome: client.nome ?? "",
         cpf: client.cpf ? formatCPF(client.cpf) : "",
+        matricula: client.matricula ?? "",
         idade: client.idade?.toString() ?? "",
         data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
@@ -321,6 +324,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       owner_id: client?.owner_id ?? user.id,
       nome: form.nome.trim(),
       cpf: form.cpf ? formatCPF(form.cpf) : null,
+      matricula: normalizeMatricula(form.matricula),
       idade: form.idade ? parseInt(form.idade) : null,
       data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
@@ -477,7 +481,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <ClientAttachments
               clientId={client?.id}
               pending={!client}
-              current={{ nome: form.nome, cpf: form.cpf, data_nascimento: form.data_nascimento, orgao: form.orgao, email: form.email, estado_civil: form.estado_civil, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
+              current={{ nome: form.nome, cpf: form.cpf, matricula: form.matricula, data_nascimento: form.data_nascimento, orgao: form.orgao, email: form.email, estado_civil: form.estado_civil, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
               onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
               onContractsSaved={() => setContractsKey((k) => k + 1)}
               onPendingContracts={setPendingContracts}
@@ -486,7 +490,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           <DocsSiapeBaneseDialog open={docsOpen} onOpenChange={setDocsOpen} />
         </div>
 
-          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-5">
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] sm:gap-5">
             <div className="min-w-0 space-y-1.5">
               <Label>Nome *</Label>
               <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />

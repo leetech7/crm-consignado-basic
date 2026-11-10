@@ -59,6 +59,7 @@ export interface Client {
   owner_id: string;
   nome: string;
   cpf: string | null;
+  matricula: string | null;
   idade: number | null;
   data_nascimento: string | null;
   telefone: string | null;

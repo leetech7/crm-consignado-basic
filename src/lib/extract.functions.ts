@@ -4,6 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 import type { Database } from "@/integrations/supabase/types";
 import { receivingBankSchema, normalizeReceivingBank } from "@/lib/receivingBank";
+import { normalizeMatricula } from "@/lib/matricula";
 
 export interface ExtractedContract {
   banco: string | null;
@@ -24,6 +25,7 @@ export interface ExtractResult {
 export interface ExtractedData {
   nome: string | null;
   cpf: string | null;
+  matricula: string | null;
   data_nascimento: string | null;
   orgao: string | null;
   email: string | null;
@@ -48,10 +50,11 @@ const int = { type: ["integer", "null"] };
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["nome", "cpf", "data_nascimento", "orgao", "email", "estado_civil", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
+  required: ["nome", "cpf", "matricula", "data_nascimento", "orgao", "email", "estado_civil", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
   properties: {
     nome: str,
     cpf: str,
+    matricula: { type: ["string", "null"], description: "Matrícula funcional do titular, como texto, preservando zeros à esquerda e dígitos verificadores." },
     data_nascimento: { type: ["string", "null"], description: "Formato YYYY-MM-DD" },
     orgao: { type: ["string", "null"], enum: [...ORGAOS, null] },
     email: str,
@@ -86,6 +89,7 @@ const INSTRUCTIONS = `Você é um analista de crédito consignado brasileiro. Le
 Regras:
 - Use null quando o dado não estiver no documento. Nunca invente.
 - CPF apenas com 11 dígitos, sem pontuação.
+- matricula: extraia a matrícula funcional do titular explicitamente identificada como Matrícula, Matrícula SIAPE ou Matrícula do servidor no extrato de consignados. Preserve zeros à esquerda, letras, pontuação e dígitos verificadores como texto. Não use CPF, número de contrato ou número de benefício no lugar da matrícula. Se ausente, ilegível ou houver mais de uma matrícula sem indicação clara do titular, use null.
 - Datas no formato YYYY-MM-DD.
 - Valores em reais como número (ex.: 1234.56). Margens podem ser negativas.
 - margem_disponivel = margem consignável de empréstimo disponível; margem_rcc = margem de cartão benefício (RCC); margem_rmc = margem de cartão consignado (RMC).
@@ -210,6 +214,7 @@ async function runExtraction(ctx: ExtractCtx): Promise<ExtractResult> {
   try {
     const parsed = JSON.parse(text) as ExtractedData;
     Object.assign(parsed, normalizeReceivingBank(parsed));
+    parsed.matricula = normalizeMatricula(parsed.matricula);
     parsed.contratos = parsed.contratos ?? [];
     if (analysisId) await supabase.from("client_ai_analyses").update({ status: "lido" }).eq("id", analysisId);
     return { analysisId, data: parsed };
