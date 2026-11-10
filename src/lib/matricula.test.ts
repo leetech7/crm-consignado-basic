@@ -1,13 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { normalizeMatricula } from "./matricula";
 
 describe("matrícula extraída", () => {
   it("preserva zeros à esquerda e dígitos verificadores", () => {
-    expect(normalizeMatricula(" 0012345-6 ")).toBe("0012345-6");
+    assert.equal(normalizeMatricula(" 0012345-6 "), "0012345-6");
   });
   it("não inventa matrícula quando ausente ou não textual", () => {
-    expect(normalizeMatricula(null)).toBeNull();
-    expect(normalizeMatricula(" ")).toBeNull();
-    expect(normalizeMatricula(12345)).toBeNull();
+    assert.equal(normalizeMatricula(null), null);
+    assert.equal(normalizeMatricula(" "), null);
+    assert.equal(normalizeMatricula(12345), null);
   });
 });
