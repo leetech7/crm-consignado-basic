@@ -30,7 +30,7 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
   { k: "nome", label: "Nome completo" },
   { k: "cpf", label: "CPF" },
   { k: "data_nascimento", label: "Data de nascimento" },
-  { k: "orgao", label: "Órgão" },
+  { k: "orgao", label: "Convênio" },
   { k: "email", label: "E-mail" },
   { k: "estado_civil", label: "Estado civil" },
   { k: "banco_recebimento", label: "Banco de recebimento" },

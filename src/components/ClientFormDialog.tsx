@@ -543,7 +543,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             </div>
           </div>
 
-          {/* Linha 2: nascimento, idade, telefone, órgão e origem em grade compacta */}
+          {/* Linha 2: nascimento, idade, telefone, convênio e origem em grade compacta */}
           <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5 [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
             <div className="min-w-0 space-y-1">
               <Label>Nascimento</Label>
@@ -614,7 +614,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
             </div>
             <div className="min-w-0 space-y-1">
-              <Label>Órgão</Label>
+              <Label>Convênio</Label>
               <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
                 <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
                 <SelectContent>
