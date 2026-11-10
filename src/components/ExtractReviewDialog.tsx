@@ -10,7 +10,7 @@ import type { ExtractedData, ExtractedContract } from "@/lib/extract.functions";
 import { toast } from "sonner";
 import { AlertTriangle, CheckCircle2, Landmark } from "lucide-react";
 
-export type AppliedFields = Partial<Record<"nome" | "cpf" | "matricula" | "data_nascimento" | "orgao" | "email" | "estado_civil" | "margem_disponivel" | "margem_rcc" | "margem_rmc" | "banco_recebimento" | "agencia_recebimento" | "conta_recebimento", string>>;
+export type AppliedFields = Partial<Record<"nome" | "cpf" | "matricula" | "data_nascimento" | "orgao" | "orgao_nome" | "email" | "estado_civil" | "margem_disponivel" | "margem_rcc" | "margem_rmc" | "banco_recebimento" | "agencia_recebimento" | "conta_recebimento", string>>;
 
 interface Props {
   open: boolean;
@@ -32,6 +32,7 @@ const FIELDS: { k: keyof AppliedFields; label: string; money?: boolean }[] = [
   { k: "matricula", label: "Matrícula" },
   { k: "data_nascimento", label: "Data de nascimento" },
   { k: "orgao", label: "Convênio" },
+  { k: "orgao_nome", label: "Órgão" },
   { k: "email", label: "E-mail" },
   { k: "estado_civil", label: "Estado civil" },
   { k: "banco_recebimento", label: "Banco de recebimento" },

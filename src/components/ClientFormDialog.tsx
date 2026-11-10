@@ -87,6 +87,7 @@ const empty = {
   data_nascimento: "",
   telefone: "",
   orgao: "",
+  orgao_nome: "",
   origem: "",
   email: "",
   estado_civil: "",
@@ -245,6 +246,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
         data_nascimento: client.data_nascimento ?? "",
         telefone: client.telefone ?? "",
         orgao: client.orgao ?? "",
+        orgao_nome: client.orgao_nome ?? "",
         origem: client.origem ?? "",
         email: client.email ?? "",
         estado_civil: client.estado_civil ?? "",
@@ -329,6 +331,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
       data_nascimento: form.data_nascimento || null,
       telefone: form.telefone || null,
       orgao: form.orgao || null,
+      orgao_nome: form.orgao_nome.trim() || null,
       origem: form.origem || null,
       email: form.email.trim() || null,
       estado_civil: form.estado_civil || null,
@@ -481,7 +484,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <ClientAttachments
               clientId={client?.id}
               pending={!client}
-              current={{ nome: form.nome, cpf: form.cpf, matricula: form.matricula, data_nascimento: form.data_nascimento, orgao: form.orgao, email: form.email, estado_civil: form.estado_civil, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
+              current={{ nome: form.nome, cpf: form.cpf, matricula: form.matricula, data_nascimento: form.data_nascimento, orgao: form.orgao, orgao_nome: form.orgao_nome, email: form.email, estado_civil: form.estado_civil, margem_disponivel: form.margem_disponivel, margem_rcc: form.margem_rcc, margem_rmc: form.margem_rmc, banco_recebimento: form.banco_recebimento, agencia_recebimento: form.agencia_recebimento, conta_recebimento: form.conta_recebimento }}
               onApply={(f) => setForm((prev) => ({ ...prev, ...f, idade: f.data_nascimento ? calcAge(f.data_nascimento) || prev.idade : prev.idade }))}
               onContractsSaved={() => setContractsKey((k) => k + 1)}
               onPendingContracts={setPendingContracts}
@@ -632,6 +635,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   )}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="min-w-0 space-y-1 col-span-2 sm:col-span-3">
+              <Label htmlFor="cliente-orgao">Órgão</Label>
+              <Input id="cliente-orgao" value={form.orgao_nome} onChange={(e) => update("orgao_nome", e.target.value)} />
             </div>
             <div className="min-w-0 space-y-1 col-span-2 sm:col-span-1">
               <Label>Origem</Label>
