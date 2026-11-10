@@ -493,7 +493,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           <DocsSiapeBaneseDialog open={docsOpen} onOpenChange={setDocsOpen} />
         </div>
 
-          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] sm:gap-5">
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] sm:gap-5">
             <div className="min-w-0 space-y-1.5">
               <Label>Nome *</Label>
               <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
@@ -548,14 +548,37 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <p className="text-xs text-destructive">CPF inválido</p>
               )}
             </div>
-            <div className="min-w-0 space-y-1.5 sm:col-span-2 lg:col-span-1">
+            <div className="min-w-0 space-y-1.5">
+              <Label>Telefone</Label>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  className="min-w-0 flex-1"
+                  value={form.telefone}
+                  onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
+                  placeholder="+55 (11) 99999-9999"
+                  inputMode="tel"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-7 w-7"
+                  disabled={!form.telefone}
+                  onClick={() => copyToClipboard(form.telefone)}
+                  title="Copiar telefone"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+            <div className="min-w-0 space-y-1.5">
               <Label htmlFor="cliente-matricula">Matrícula</Label>
               <Input id="cliente-matricula" type="text" value={form.matricula} onChange={(e) => update("matricula", e.target.value)} />
             </div>
           </div>
 
           {/* Linha 2: nascimento, idade, telefone, convênio e origem em grade compacta */}
-          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5 [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-[9.5rem_5.5rem_minmax(0,1fr)] gap-x-3 gap-y-2.5 lg:grid-cols-[9.5rem_5.5rem_minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
             <div className="min-w-0 space-y-1">
               <Label>Nascimento</Label>
               <div className="flex items-center gap-1.5">
@@ -602,29 +625,6 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
             </div>
             <div className="min-w-0 space-y-1">
-              <Label>Telefone</Label>
-              <div className="flex items-center gap-1.5">
-                <Input
-                  className="min-w-0 flex-1"
-                  value={form.telefone}
-                  onChange={(e) => update("telefone", formatPhoneInput(e.target.value))}
-                  placeholder="+55 (11) 99999-9999"
-                  inputMode="tel"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0 h-7 w-7"
-                  disabled={!form.telefone}
-                  onClick={() => copyToClipboard(form.telefone)}
-                  title="Copiar telefone"
-                >
-                  <Copy className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-            <div className="min-w-0 space-y-1">
               <Label>Convênio</Label>
               <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
                 <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
@@ -636,11 +636,11 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 </SelectContent>
               </Select>
             </div>
-            <div className="min-w-0 space-y-1 col-span-2 sm:col-span-3">
+            <div className="min-w-0 space-y-1 col-span-3 lg:col-span-1">
               <Label htmlFor="cliente-orgao">Órgão</Label>
               <Input id="cliente-orgao" value={form.orgao_nome} onChange={(e) => update("orgao_nome", e.target.value)} />
             </div>
-            <div className="min-w-0 space-y-1 col-span-2 sm:col-span-1">
+            <div className="min-w-0 space-y-1 col-span-3 lg:col-span-1">
               <Label>Origem</Label>
               <Select value={form.origem || undefined} onValueChange={(v) => update("origem", v)}>
                 <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="De onde veio..." /></SelectTrigger>
