@@ -254,6 +254,7 @@ export type Database = {
           margem_disponivel: number | null
           margem_rcc: number | null
           margem_rmc: number | null
+          matricula: string | null
           nome: string
           nova_margem: number | null
           observacoes: string | null
@@ -292,6 +293,7 @@ export type Database = {
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null
+          matricula?: string | null
           nome: string
           nova_margem?: number | null
           observacoes?: string | null
@@ -330,6 +332,7 @@ export type Database = {
           margem_disponivel?: number | null
           margem_rcc?: number | null
           margem_rmc?: number | null
+          matricula?: string | null
           nome?: string
           nova_margem?: number | null
           observacoes?: string | null

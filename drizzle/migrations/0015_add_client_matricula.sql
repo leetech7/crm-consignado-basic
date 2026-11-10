@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN matricula text; COMMENT ON COLUMN public.clients.matricula IS 'Matrícula funcional do titular, preservada como texto para manter zeros à esquerda.';
