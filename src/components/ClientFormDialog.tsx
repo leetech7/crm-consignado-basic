@@ -578,7 +578,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           </div>
 
           {/* Linha 2: nascimento, idade, telefone, convênio e origem em grade compacta */}
-          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-[9.5rem_5.5rem_minmax(0,1fr)] gap-x-3 gap-y-2.5 lg:grid-cols-[9.5rem_5.5rem_minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
+          <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-[9.5rem_7rem_minmax(0,1fr)] gap-x-3 gap-y-2.5 lg:grid-cols-[9.5rem_7rem_minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] [&_label]:text-xs [&_input]:h-9 [&_input]:text-sm">
             <div className="min-w-0 space-y-1">
               <Label>Nascimento</Label>
               <div className="flex items-center gap-1.5">
