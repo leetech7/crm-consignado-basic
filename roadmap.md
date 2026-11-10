@@ -8,4 +8,4 @@
 - [x] Conferir relatório compartilhado com troco líquido e prazo por contrato na tela e nos arquivos.
 - [x] Criar tela de painel com KPIs: digitados, em negociação, quentes, total de trocos e propostas enviadas.
 - [x] Adicionar Matrícula ao cadastro, leitura de extrato e revisão da IA; conferir preenchimento e persistência.
-- [ ] Adicionar Órgão separado de Convênio ao cadastro e à leitura da IA; verificar aplicação e persistência.
+- [x] Adicionar Órgão separado de Convênio ao cadastro e à leitura da IA; verificar aplicação e persistência.
