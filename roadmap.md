@@ -7,4 +7,4 @@
 - [x] Adicionar downloads JPG/PDF e conferir os arquivos gerados.
 - [x] Conferir relatório compartilhado com troco líquido e prazo por contrato na tela e nos arquivos.
 - [x] Criar tela de painel com KPIs: digitados, em negociação, quentes, total de trocos e propostas enviadas.
-- [ ] Adicionar Matrícula ao cadastro, leitura de extrato e revisão da IA; conferir preenchimento e persistência.
+- [x] Adicionar Matrícula ao cadastro, leitura de extrato e revisão da IA; conferir preenchimento e persistência.
