@@ -545,6 +545,10 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 <p className="text-xs text-destructive">CPF inválido</p>
               )}
             </div>
+            <div className="min-w-0 space-y-1.5 sm:col-span-2 lg:col-span-1">
+              <Label htmlFor="cliente-matricula">Matrícula</Label>
+              <Input id="cliente-matricula" type="text" value={form.matricula} onChange={(e) => update("matricula", e.target.value)} />
+            </div>
           </div>
 
           {/* Linha 2: nascimento, idade, telefone, convênio e origem em grade compacta */}
