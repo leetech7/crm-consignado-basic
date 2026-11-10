@@ -64,6 +64,7 @@ export interface Client {
   data_nascimento: string | null;
   telefone: string | null;
   orgao: string | null;
+  orgao_nome: string | null;
   origem: string | null;
   email: string | null;
   estado_civil: string | null;

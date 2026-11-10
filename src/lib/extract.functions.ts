@@ -28,6 +28,7 @@ export interface ExtractedData {
   matricula: string | null;
   data_nascimento: string | null;
   orgao: string | null;
+  orgao_nome: string | null;
   email: string | null;
   estado_civil: string | null;
   margem_disponivel: number | null;
@@ -50,13 +51,14 @@ const int = { type: ["integer", "null"] };
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["nome", "cpf", "matricula", "data_nascimento", "orgao", "email", "estado_civil", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
+  required: ["nome", "cpf", "matricula", "data_nascimento", "orgao", "orgao_nome", "email", "estado_civil", "margem_disponivel", "margem_rcc", "margem_rmc", "banco_recebimento", "agencia_recebimento", "conta_recebimento", "contratos", "observacao"],
   properties: {
     nome: str,
     cpf: str,
     matricula: { type: ["string", "null"], description: "Matrícula funcional do titular, como texto, preservando zeros à esquerda e dígitos verificadores." },
     data_nascimento: { type: ["string", "null"], description: "Formato YYYY-MM-DD" },
     orgao: { type: ["string", "null"], enum: [...ORGAOS, null] },
+    orgao_nome: { type: ["string", "null"], description: "Nome do órgão/entidade empregadora do titular explicitamente informado no extrato, distinto da categoria de convênio." },
     email: str,
     estado_civil: { type: ["string", "null"], enum: [...ESTADOS_CIVIS, null] },
     margem_disponivel: num,
@@ -93,7 +95,8 @@ Regras:
 - Datas no formato YYYY-MM-DD.
 - Valores em reais como número (ex.: 1234.56). Margens podem ser negativas.
 - margem_disponivel = margem consignável de empréstimo disponível; margem_rcc = margem de cartão benefício (RCC); margem_rmc = margem de cartão consignado (RMC).
-- orgao: escolha o mais adequado da lista ou null.
+- orgao: categoria de CONVÊNIO; escolha o mais adequado da lista ou null (ex.: SIAPE). Não use este campo para o nome do órgão.
+- orgao_nome: nome do órgão ou entidade empregadora do titular explicitamente indicado no extrato de consignados, por exemplo Ministério da Saúde ou Universidade Federal. Preserve o nome e eventual código quando constarem juntos. Não confunda com banco credor, convênio (SIAPE/INSS etc.) ou órgão emissor do RG. Se ausente, ilegível ou ambíguo, use null; não deduza a partir do convênio.
 - email: somente se o e-mail do titular estiver escrito no documento; caso contrário null.
 - estado_civil: somente se constar no documento (ex.: RG, certidão, ficha funcional), escolhendo da lista; caso contrário null.
 - banco_recebimento, agencia_recebimento e conta_recebimento: extraia somente os dados bancários explicitamente indicados para o crédito do salário/benefício do titular na folha de pagamento ou contracheque. Não confunda com os bancos dos empréstimos consignados. Preserve zeros à esquerda, dígitos verificadores e operação da conta como texto. Se ausentes, ilegíveis ou ambíguos, use null; nunca deduza pelo banco dos contratos.

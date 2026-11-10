@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN orgao_nome text; COMMENT ON COLUMN public.clients.orgao_nome IS 'Nome do órgão do titular conforme o extrato de consignados, distinto do convênio armazenado em orgao.';
