@@ -113,6 +113,13 @@
       "when": 1794316664058,
       "tag": "0015_add_client_matricula",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794316935734,
+      "tag": "0016_add_client_orgao_nome",
+      "breakpoints": true
     }
   ]
 }

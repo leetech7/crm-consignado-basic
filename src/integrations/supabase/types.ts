@@ -259,6 +259,7 @@ export type Database = {
           nova_margem: number | null
           observacoes: string | null
           orgao: string | null
+          orgao_nome: string | null
           origem: string | null
           owner_id: string
           paid_at: string | null
@@ -298,6 +299,7 @@ export type Database = {
           nova_margem?: number | null
           observacoes?: string | null
           orgao?: string | null
+          orgao_nome?: string | null
           origem?: string | null
           owner_id: string
           paid_at?: string | null
@@ -337,6 +339,7 @@ export type Database = {
           nova_margem?: number | null
           observacoes?: string | null
           orgao?: string | null
+          orgao_nome?: string | null
           origem?: string | null
           owner_id?: string
           paid_at?: string | null

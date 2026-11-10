@@ -1,6 +1,7 @@
 - Authenticated server functions attach the bearer token per function via `.middleware([attachSupabaseAuth, requireSupabaseAuth])` — there is no src/start.ts global middleware.
 - Receiving-bank fields use a shared schema and text normalization so document extraction preserves leading zeros and account check digits.
 - Client registration identifiers use nullable text and shared normalization across extraction and saving to preserve leading zeros; extraction never substitutes CPF or loan numbers for a registration identifier.
+- Keep the legacy `clients.orgao` field for agreement categories; store the document's employer/agency name separately in `orgao_nome` so extraction does not conflate the two.
 - Portability lists reuse RLS-scoped client contracts and client rates; shared pure helpers own grouping, monetary calculations, reports and proposal generation. Reports show net troco after client RPS and require a known rate; report-local new portability terms must not overwrite original loan terms.
 - Client forms and the portability screen share the same contract report view to expose selected loans consistently.
 - Portability owns a route-local QueryClientProvider because the existing app shell does not provide a query client; isolate this cache by user identity.
