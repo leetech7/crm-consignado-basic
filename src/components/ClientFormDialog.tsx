@@ -624,7 +624,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                 </Button>
               </div>
             </div>
-            <div className="min-w-0 space-y-1">
+            <div className="min-w-0 space-y-1 lg:w-3/5">
               <Label>Convênio</Label>
               <Select value={form.orgao || undefined} onValueChange={(v) => update("orgao", v)}>
                 <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione..." /></SelectTrigger>
