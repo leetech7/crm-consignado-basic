@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, ESTADOS_CIVIS, onlyDigits, formatCPF, isValidCPF, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, ESTADOS_CIVIS, onlyDigits, formatCPF, isValidCPF, findDuplicate, type Client, type PipelineStage } from "@/lib/pipeline";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 import { StageFlag } from "@/components/StageFlag";
@@ -310,6 +310,14 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     setForm((f) => ({ ...f, data_nascimento: v, idade: calcAge(v) || f.idade }));
   };
 
+  const [dupWarn, setDupWarn] = useState<string | null>(null);
+  const checkDup = async () => {
+    if (!form.nome.trim() && !form.cpf) return;
+    const { data } = await supabase.from("clients").select("id,nome,cpf");
+    const dup = findDuplicate(form.nome, form.cpf, data ?? [], client?.id);
+    setDupWarn(dup ? (dup.kind === "cpf" ? `Já existe um cliente com este CPF: ${dup.nome}` : `Já existe um cliente com este nome: ${dup.nome}`) : null);
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -320,6 +328,15 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
     if (form.fator !== "" && Number.isNaN(Number(form.fator))) {
       toast.error("Fator inválido. Informe um número válido ou deixe em branco.");
       return;
+    }
+    {
+      const { data: existing } = await supabase.from("clients").select("id,nome,cpf");
+      const dup = findDuplicate(form.nome, form.cpf, existing ?? [], client?.id);
+      if (dup?.kind === "cpf") {
+        toast.error(`Já existe um cliente com este CPF: ${dup.nome}`);
+        return;
+      }
+      if (dup?.kind === "nome" && !window.confirm(`Já existe um cliente com este nome (${dup.nome}). Salvar mesmo assim?`)) return;
     }
     setBusy(true);
     const payload = {
@@ -496,7 +513,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
           <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] sm:gap-5">
             <div className="min-w-0 space-y-1.5">
               <Label>Nome *</Label>
-              <Input required value={form.nome} onChange={(e) => update("nome", e.target.value)} />
+              <Input required value={form.nome} onChange={(e) => { update("nome", e.target.value); setDupWarn(null); }} onBlur={checkDup} />
+              {dupWarn && <p className="text-xs font-medium text-destructive">{dupWarn}</p>}
             </div>
             <div className="min-w-0 space-y-1.5">
               <Label>CPF</Label>
@@ -507,6 +525,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                   onBlur={(e) => {
                     const v = e.target.value;
                     if (v && !isValidCPF(v)) toast.error("CPF inválido");
+                    else checkDup();
                   }}
                   onPaste={(e) => {
                     e.preventDefault();

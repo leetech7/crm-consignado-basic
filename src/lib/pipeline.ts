@@ -178,3 +178,30 @@ export const formatPhoneForWhatsApp = (phone: string | null): string | null => {
 /** Prioridade no topo da lista de clientes: digitado, em negociação, quentes, demais. */
 const STAGE_PRIORITY: Partial<Record<PipelineStage, number>> = { digitado: 0, em_negociacao: 1, quente: 2 };
 export const stagePriority = (s: PipelineStage) => STAGE_PRIORITY[s] ?? 3;
+
+/** Normaliza nome para comparação: sem acento, minúsculo, espaços simples. */
+export const normalizeName = (s: string | null | undefined) =>
+  (s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+
+export type DuplicateMatch = { kind: "cpf" | "nome"; id: string; nome: string };
+
+/** Procura cliente já cadastrado com o mesmo CPF (prioridade) ou mesmo nome. */
+export const findDuplicate = (
+  nome: string,
+  cpf: string,
+  clients: { id: string; nome: string; cpf: string | null }[],
+  excludeId?: string | null,
+): DuplicateMatch | null => {
+  const c = onlyDigits(cpf ?? "");
+  const n = normalizeName(nome);
+  const others = clients.filter((x) => x.id !== excludeId);
+  if (c) {
+    const hit = others.find((x) => onlyDigits(x.cpf ?? "") === c);
+    if (hit) return { kind: "cpf", id: hit.id, nome: hit.nome };
+  }
+  if (n) {
+    const hit = others.find((x) => normalizeName(x.nome) === n);
+    if (hit) return { kind: "nome", id: hit.id, nome: hit.nome };
+  }
+  return null;
+};
