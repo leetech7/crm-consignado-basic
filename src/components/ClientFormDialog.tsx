@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { Copy, Calculator, RefreshCcw, FileText, Image as ImageIcon, Maximize2, Minimize2, ListChecks } from "lucide-react";
 import { DocsSiapeBaneseDialog } from "@/components/DocsSiapeBaneseDialog";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
@@ -150,6 +151,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
 
   const [valorBrutoTouched, setValorBrutoTouched] = useState(false);
   const [fatorTouched, setFatorTouched] = useState(false);
+  const [fatorListOpen, setFatorListOpen] = useState(false);
+  const [fatorSearch, setFatorSearch] = useState("");
   const [restored, setRestored] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const hydratedRef = useRef(false);
@@ -766,6 +769,8 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
               </div>
               <div className="min-w-0 space-y-1">
                 <Label>Fator</Label>
+                <Popover open={fatorListOpen} onOpenChange={setFatorListOpen}>
+                <PopoverAnchor asChild>
                 <div className="relative">
                   <Input
                     className={`pr-8 ${factorInvalid ? "border-destructive focus-visible:ring-destructive" : ""}`}
@@ -781,7 +786,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                       const el = e.currentTarget;
                       requestAnimationFrame(() => { const len = el.value.length; el.setSelectionRange(len, len); });
                     }}
-                    onClick={(e) => { const el = e.currentTarget; const len = el.value.length; el.setSelectionRange(len, len); }}
+                    onClick={(e) => { const el = e.currentTarget; const len = el.value.length; el.setSelectionRange(len, len); setFatorListOpen(true); }}
                     placeholder="0,00000"
                     title="Opcional. Dígitos entram pela direita (234 → 0,00234)"
                     aria-invalid={factorInvalid}
@@ -790,6 +795,28 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
                 </div>
+                </PopoverAnchor>
+                <PopoverContent side="right" align="start" className="w-[min(16rem,calc(100vw-2rem))] p-2" onOpenAutoFocus={(e) => e.preventDefault()}>
+                  <Input className="mb-2 h-8 text-xs" inputMode="numeric" placeholder="Buscar idade" value={fatorSearch} onChange={(e) => setFatorSearch(e.target.value.replace(/\D/g, ""))} />
+                  {ageFactors.length === 0 ? (
+                    <p className="p-2 text-xs text-muted-foreground">Nenhum fator cadastrado. <a href="/app/fatores" className="text-primary underline">Abrir Fatores</a></p>
+                  ) : (
+                    <div className="max-h-64 overflow-y-auto text-sm">
+                      <div className="sticky top-0 grid grid-cols-2 bg-popover px-2 py-1 text-[11px] font-semibold text-muted-foreground"><span>Idade</span><span className="text-right">Fator</span></div>
+                      {ageFactors.filter((r) => !fatorSearch || String(r.idade).startsWith(fatorSearch)).map((r) => {
+                        const isAge = String(r.idade) === form.idade;
+                        return (
+                          <button type="button" key={r.idade} ref={isAge ? (el) => el?.scrollIntoView({ block: "center" }) : undefined}
+                            onClick={() => { update("fator", Number(r.fator).toFixed(5)); setFatorListOpen(false); }}
+                            className={`grid w-full grid-cols-2 rounded px-2 py-1 text-left hover:bg-accent ${isAge ? "bg-primary/15 font-semibold text-primary" : ""}`}>
+                            <span>{r.idade} anos</span><span className="text-right font-mono">{formatFactorDisplay(String(r.fator))}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </PopoverContent>
+                </Popover>
                 {factorInvalid && <p className="text-[11px] text-destructive">Fator inválido</p>}
               </div>
               <div className="min-w-0 space-y-1">
