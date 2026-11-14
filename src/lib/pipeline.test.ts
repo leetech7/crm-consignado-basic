@@ -7,3 +7,16 @@ describe("stagePriority", () => {
     deepStrictEqual(order, ["digitado", "em_negociacao", "quente", "novo"]);
   });
 });
+import { findDuplicate } from "./pipeline";
+describe("findDuplicate", () => {
+  const list = [{ id: "1", nome: "Lúcia  Helena", cpf: "891.108.897-87" }];
+  test("CPF igual com ou sem máscara é duplicado", () => {
+    deepStrictEqual(findDuplicate("Outro", "89110889787", list)?.kind, "cpf");
+  });
+  test("nome igual ignorando acento, caixa e espaços", () => {
+    deepStrictEqual(findDuplicate("lucia helena", "", list)?.kind, "nome");
+  });
+  test("o próprio cliente em edição não conta", () => {
+    deepStrictEqual(findDuplicate("Lúcia Helena", "89110889787", list, "1"), null);
+  });
+});
