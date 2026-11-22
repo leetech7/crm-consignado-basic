@@ -141,6 +141,13 @@
       "when": 1795345254535,
       "tag": "0019_narrow_reference_approval_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795354840211,
+      "tag": "0020_client_scoped_inserts_revoke_anon",
+      "breakpoints": true
     }
   ]
 }

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,7 +26,6 @@ function LoginPage() {
   const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -43,22 +41,6 @@ function LoginPage() {
     else toast.success("Bem-vindo de volta!");
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/app/clientes`,
-        data: { full_name: fullName },
-      },
-    });
-    setBusy(false);
-    if (error) toast.error(error.message);
-    else toast.success("Conta criada! Você já pode entrar.");
-  };
-
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background p-4" style={{ backgroundImage: "var(--gradient-hero)" }}>
       <div className="w-full max-w-md">
@@ -70,13 +52,7 @@ function LoginPage() {
         </Link>
 
         <Card className="border-border/60 p-4 sm:p-6" style={{ background: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}>
-          <Tabs defaultValue="login">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Criar conta</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="login" className="mt-6">
+          <h1 className="mb-4 text-center text-lg font-semibold">Entrar</h1>
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
@@ -90,29 +66,8 @@ function LoginPage() {
                   {busy ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
-            </TabsContent>
+              <p className="mt-4 text-center text-xs text-muted-foreground">Acesso somente por convite do administrador.</p>
 
-            <TabsContent value="signup" className="mt-6">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nome completo</Label>
-                  <Input id="name" required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="João da Silva" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email2">E-mail</Label>
-                  <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu@email.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password2">Senha</Label>
-                  <Input id="password2" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mín. 6 caracteres" />
-                </div>
-                <Button type="submit" disabled={busy} className="w-full font-semibold" style={{ background: "var(--gradient-primary)" }}>
-                  {busy ? "Criando..." : "Criar conta"}
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">O primeiro usuário criado se torna Administrador.</p>
-              </form>
-            </TabsContent>
-          </Tabs>
         </Card>
       </div>
     </div>

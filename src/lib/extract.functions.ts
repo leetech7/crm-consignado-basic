@@ -226,6 +226,15 @@ async function runExtraction(ctx: ExtractCtx): Promise<ExtractResult> {
   }
 }
 
+async function assertExtractionAllowed(supabase: any, userId: string) {
+  const [{ data: roles }, { data: approval }] = await Promise.all([
+    supabase.from("user_roles").select("role").eq("user_id", userId),
+    supabase.from("team_reference_access").select("user_id").eq("user_id", userId).maybeSingle(),
+  ]);
+  const ok = (roles ?? []).some((r: { role: string }) => r.role === "admin" || r.role === "gerente") || !!approval;
+  if (!ok) throw new Error("Leitura com IA disponível apenas para contas aprovadas pelo administrador.");
+}
+
 export const extractFromAttachment = createServerFn({ method: "POST" })
   .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .validator((input: { attachmentId: string }) => {
@@ -234,6 +243,7 @@ export const extractFromAttachment = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }): Promise<ExtractResult> => {
     const { supabase, userId } = context;
+    await assertExtractionAllowed(supabase, userId);
     const { data: att, error } = await supabase
       .from("client_attachments")
       .select("storage_path, file_name, mime_type, client_id")
@@ -261,6 +271,7 @@ export const extractFromUpload = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }): Promise<ExtractResult> => {
     const { supabase, userId } = context;
+    await assertExtractionAllowed(supabase, userId);
     const prefix = `pending/${userId}/`;
     if (!data.path.startsWith(prefix) || data.path.split("/").some((p) => p === "..")) {
       throw new Error("Arquivo não autorizado.");
