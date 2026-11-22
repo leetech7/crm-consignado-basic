@@ -120,6 +120,13 @@
       "when": 1794316935734,
       "tag": "0016_add_client_orgao_nome",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795342908278,
+      "tag": "0017_add_stage_enviar_proposta",
+      "breakpoints": true
     }
   ]
 }

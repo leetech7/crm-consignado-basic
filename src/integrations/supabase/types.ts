@@ -541,6 +541,7 @@ export type Database = {
         | "remarketing"
         | "cliente_rejeitou"
         | "reprovado"
+        | "enviar_proposta"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -681,6 +682,7 @@ export const Constants = {
         "remarketing",
         "cliente_rejeitou",
         "reprovado",
+        "enviar_proposta",
       ],
     },
   },

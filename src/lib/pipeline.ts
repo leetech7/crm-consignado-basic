@@ -4,6 +4,7 @@ export type PipelineStage =
   | "frio"
   | "descartado"
   | "em_negociacao"
+  | "enviar_proposta"
   | "digitado"
   | "pago"
   | "remarketing"
@@ -15,6 +16,7 @@ export const STAGES: { id: PipelineStage; label: string; color: string }[] = [
   { id: "quente", label: "Quentes", color: "oklch(0.7 0.2 35)" },
   { id: "frio", label: "Frios", color: "oklch(0.65 0.12 220)" },
   { id: "em_negociacao", label: "EM NEGOCIAÇÃO", color: "oklch(0.78 0.16 75)" },
+  { id: "enviar_proposta", label: "Enviar Proposta", color: "var(--info)" },
   { id: "digitado", label: "CONTRATO DIGITADO", color: "oklch(0.7 0.18 300)" },
   { id: "pago", label: "PAGO (FINALIZADO)", color: "oklch(0.74 0.18 158)" },
   { id: "cliente_rejeitou", label: "C.REJEITOU", color: "oklch(0.72 0.18 50)" },
