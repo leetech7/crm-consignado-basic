@@ -162,6 +162,13 @@
       "when": 1795358041093,
       "tag": "0022_commission_only_by_manager",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795370416024,
+      "tag": "0023_add_client_urgente",
+      "breakpoints": true
     }
   ]
 }

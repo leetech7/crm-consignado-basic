@@ -91,6 +91,7 @@ export interface Client {
   fator: number | null;
   stage: PipelineStage;
   favorito: boolean;
+  urgente?: boolean;
   paid_at: string | null;
   created_at: string;
   updated_at: string;
@@ -207,3 +208,5 @@ export const findDuplicate = (
   }
   return null;
 };
+
+export const compareUrgent = (a: { urgente?: boolean | null }, b: { urgente?: boolean | null }) => (b.urgente ? 1 : 0) - (a.urgente ? 1 : 0);

@@ -18,6 +18,7 @@ import { STAGES, ORGAOS, ORIGENS, TIPO_CONTRATOS, ESTADOS_CIVIS, onlyDigits, for
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 import { StageFlag } from "@/components/StageFlag";
+import { UrgentToggle } from "@/components/UrgentToggle";
 import { useAgeFactors, factorForAge } from "@/lib/ageFactors";
 
 // Formata o telefone progressivamente da esquerda para a direita.
@@ -139,6 +140,8 @@ const clearDraft = (id?: string | null) => {
 export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props) {
   const { user } = useAuth();
   const [form, setForm] = useState(empty);
+  const [urgente, setUrgente] = useState(false);
+  useEffect(() => { setUrgente(!!client?.urgente); }, [client?.id, client?.urgente]);
   const [busy, setBusy] = useState(false);
   const [openProposal, setOpenProposal] = useState(false);
   const [openReport, setOpenReport] = useState(false);
@@ -895,6 +898,7 @@ export function ClientFormDialog({ open, onOpenChange, client, onSaved }: Props)
             <div className="min-w-0 flex-1 space-y-1.5">
               <Label>Estágio</Label>
               <div className="flex flex-wrap gap-1.5">
+                {client?.id && <UrgentToggle clientId={client.id} value={urgente} onChange={setUrgente} showLabel className="h-6" />}
                 {STAGES.map((s) => (
                   <button key={s.id} type="button" onClick={() => update("stage", s.id)} title={s.label} className="transition-transform hover:scale-105">
                     <StageFlag stage={s.id} active={form.stage === s.id} />

@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { STAGES, formatBRL, formatPct, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, formatBRL, formatPct, compareUrgent, type Client, type PipelineStage } from "@/lib/pipeline";
 import { Button } from "@/components/ui/button";
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
 import { toast } from "sonner";
 import { GripVertical, Plus, ChevronLeft, ChevronRight, MoveRight } from "lucide-react";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
 import { StageFlag } from "@/components/StageFlag";
+import { UrgentToggle } from "@/components/UrgentToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/app/pipeline")({
   component: PipelinePage,
 });
 
-function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Client) => void; onMove: (c: Client, stage: PipelineStage) => void }) {
+function ClientCard({ client, onEdit, onMove, onUrgent }: { client: Client; onEdit: (c: Client) => void; onMove: (c: Client, stage: PipelineStage) => void; onUrgent: (id: string, v: boolean) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: client.id });
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 50, opacity: isDragging ? 0.6 : 1 }
@@ -56,6 +57,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
         <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1">
+            <UrgentToggle clientId={client.id} value={!!client.urgente} onChange={(v) => onUrgent(client.id, v)} />
             <button
               type="button"
               onPointerDown={stop}
@@ -128,7 +130,7 @@ function ClientCard({ client, onEdit, onMove }: { client: Client; onEdit: (c: Cl
   );
 }
 
-function Column({ stage, clients, onEdit, onMove }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void; onMove: (c: Client, s: PipelineStage) => void }) {
+function Column({ stage, clients, onEdit, onMove, onUrgent }: { stage: typeof STAGES[number]; clients: Client[]; onEdit: (c: Client) => void; onMove: (c: Client, s: PipelineStage) => void; onUrgent: (id: string, v: boolean) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
   const total = clients.reduce((s, c) => s + Number(c.valor_rps_total ?? 0), 0);
 
@@ -148,7 +150,7 @@ function Column({ stage, clients, onEdit, onMove }: { stage: typeof STAGES[numbe
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
         {clients.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted-foreground">Vazio</div>
-        ) : clients.map((c) => <ClientCard key={c.id} client={c} onEdit={onEdit} onMove={onMove} />)}
+        ) : clients.map((c) => <ClientCard key={c.id} client={c} onEdit={onEdit} onMove={onMove} onUrgent={onUrgent} />)}
       </div>
     </div>
   );
@@ -208,7 +210,7 @@ function PipelinePage() {
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {STAGES.map((s) => (
-            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id)} onEdit={handleEdit} onMove={moveClient} />
+            <Column key={s.id} stage={s} clients={clients.filter((c) => c.stage === s.id).sort(compareUrgent)} onEdit={handleEdit} onMove={moveClient} onUrgent={(id, v) => setClients((cs) => cs.map((c) => (c.id === id ? { ...c, urgente: v } : c)))} />
           ))}
         </div>
       </DndContext>

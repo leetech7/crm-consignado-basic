@@ -20,3 +20,9 @@ describe("findDuplicate", () => {
     deepStrictEqual(findDuplicate("Lúcia Helena", "89110889787", list, "1"), null);
   });
 });
+
+import { compareUrgent } from "./pipeline";
+test("cliente urgente vem antes de não urgente", () => {
+  const list = [{ urgente: false }, { urgente: true }].sort(compareUrgent);
+  deepStrictEqual(list[0]?.urgente, true);
+});

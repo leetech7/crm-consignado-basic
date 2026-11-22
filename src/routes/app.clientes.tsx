@@ -11,8 +11,9 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ClientFormDialog } from "@/components/ClientFormDialog";
-import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, stagePriority, type Client, type PipelineStage } from "@/lib/pipeline";
+import { STAGES, ORGAOS, formatBRL, formatPct, formatPhoneForWhatsApp, onlyDigits, isValidCPF, formatCPF, stageLabel, stageColor, stagePriority, compareUrgent, type Client, type PipelineStage } from "@/lib/pipeline";
 import { StageFlag } from "@/components/StageFlag";
+import { UrgentToggle } from "@/components/UrgentToggle";
 import { Plus, Search, MessageCircle, Pencil, Trash2, Download, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { ReportImageDialog } from "@/components/ReportImageDialog";
 import { toast } from "sonner";
@@ -42,6 +43,8 @@ function ClientesPage() {
   const [searchType, setSearchType] = useState<"nome" | "cpf" | "telefone" | "orgao">("nome");
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
+  const [onlyUrgent, setOnlyUrgent] = useState(false);
+  const setUrgent = (id: string, v: boolean) => setClients((cs) => cs.map((c) => (c.id === id ? { ...c, urgente: v } : c)));
 
   // sort & pagination
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
@@ -75,6 +78,7 @@ function ClientesPage() {
     const qDigits = onlyDigits(search);
     return clients.filter((c) => {
       if (stageFilter !== "all" && c.stage !== stageFilter) return false;
+      if (onlyUrgent && !c.urgente) return false;
       if (!q) return true;
       if (searchType === "cpf") {
         // Only filter by CPF when 11 digits AND check digits are valid
@@ -92,13 +96,15 @@ function ClientesPage() {
       }
       return c.nome.toLowerCase().includes(q);
     });
-  }, [clients, search, searchType, stageFilter, cpfValid]);
+  }, [clients, search, searchType, stageFilter, cpfValid, onlyUrgent]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
     const dir = sortDir === "asc" ? 1 : -1;
     arr.sort((a, b) => {
       if (sortKey === "created_at") {
+        const u = compareUrgent(a, b);
+        if (u !== 0) return u;
         const w = stagePriority(a.stage) - stagePriority(b.stage);
         if (w !== 0) return w;
       }
@@ -280,6 +286,10 @@ function ClientesPage() {
             </SelectContent>
           </Select>
 
+          <Button variant={onlyUrgent ? "destructive" : "outline"} onClick={() => setOnlyUrgent((v) => !v)} className="md:w-auto">
+            Só urgentes
+          </Button>
+
           {hasFilters && (
             <Button variant="ghost" onClick={clearFilters} className="md:w-auto">
               <X className="h-4 w-4 mr-2" />Limpar
@@ -315,7 +325,7 @@ function ClientesPage() {
             <article key={c.id} className="rounded-md border border-border/60 bg-card p-3">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                 <button type="button" className="min-w-0 text-left" onClick={() => { setEditing(c); setOpenForm(true); }}>
-                  <span className="block truncate font-semibold">{c.nome}</span>
+                  <span className="flex items-center gap-1"><UrgentToggle clientId={c.id} value={!!c.urgente} onChange={(v) => setUrgent(c.id, v)} /><span className="truncate font-semibold">{c.nome}</span></span>
                   <span className="block truncate text-xs text-muted-foreground">{c.cpf || c.orgao || "Sem CPF informado"}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{dateLabel(c)}</span>
                 </button>
@@ -385,6 +395,7 @@ function ClientesPage() {
               ) : paginated.map((c) => (
                 <tr key={c.id} onDoubleClick={() => { setEditing(c); setOpenForm(true); }} className="border-t border-border/50 transition-colors hover:bg-muted/20 cursor-pointer select-none">
                    <td className="px-4 py-3">
+                    <UrgentToggle clientId={c.id} value={!!c.urgente} onChange={(v) => setUrgent(c.id, v)} className="mr-1 align-middle" />
                     <button
                       type="button"
                       onClick={() => { setEditing(c); setOpenForm(true); }}

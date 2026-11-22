@@ -271,6 +271,7 @@ export type Database = {
           tipo_contrato: string | null
           total_parcelas_compra: number | null
           updated_at: string
+          urgente: boolean
           valor_bruto: number | null
           valor_rps_total: number | null
         }
@@ -311,6 +312,7 @@ export type Database = {
           tipo_contrato?: string | null
           total_parcelas_compra?: number | null
           updated_at?: string
+          urgente?: boolean
           valor_bruto?: number | null
           valor_rps_total?: number | null
         }
@@ -351,6 +353,7 @@ export type Database = {
           tipo_contrato?: string | null
           total_parcelas_compra?: number | null
           updated_at?: string
+          urgente?: boolean
           valor_bruto?: number | null
           valor_rps_total?: number | null
         }
