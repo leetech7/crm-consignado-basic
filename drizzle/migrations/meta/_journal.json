@@ -148,6 +148,13 @@
       "when": 1795354840211,
       "tag": "0020_client_scoped_inserts_revoke_anon",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795357229621,
+      "tag": "0021_harden_role_functions_and_signup",
+      "breakpoints": true
     }
   ]
 }
