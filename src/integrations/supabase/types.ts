@@ -492,6 +492,29 @@ export type Database = {
           },
         ]
       }
+      team_reference_access: {
+        Row: {
+          granted_at: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_reference_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

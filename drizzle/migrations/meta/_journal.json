@@ -127,6 +127,20 @@
       "when": 1795342908278,
       "tag": "0017_add_stage_enviar_proposta",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1795345074784,
+      "tag": "0018_restrict_announcements_age_factors_reads",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1795345254535,
+      "tag": "0019_narrow_reference_approval_grants",
+      "breakpoints": true
     }
   ]
 }

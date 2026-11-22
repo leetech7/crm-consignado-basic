@@ -6,3 +6,4 @@
 - Client forms and the portability screen share the same contract report view to expose selected loans consistently.
 - Portability owns a route-local QueryClientProvider because the existing app shell does not provide a query client; isolate this cache by user identity.
 - Portability JPG and PDF exports share paginated browser canvas rendering and report data; dynamically load jsPDF in the download handler to preserve identical accented text and avoid SSR browser dependencies.
+- Announcements and age-factor SELECT policies require manager/admin roles or a self-scoped team_reference_access approval; only admins manage approvals in Equipe, and signup must never create them, so new Sales accounts cannot read shared references automatically.
